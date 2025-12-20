@@ -62,14 +62,14 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                 {/* Main Data */}
                 <div className="lg:col-span-2 space-y-8">
                     <div>
-                        <h3 className="text-xs bg-[#33ff00] text-black inline-block px-2 py-0.5 mb-2 font-bold"> > MISSION_OBJECTIVE</h3>
+                        <h3 className="text-xs bg-[#33ff00] text-black inline-block px-2 py-0.5 mb-2 font-bold">&gt; MISSION_OBJECTIVE</h3>
                         <p className="text-lg opacity-90 leading-relaxed">
                             {project.what}
                         </p>
                     </div>
 
                     <div>
-                        <h3 className="text-xs border border-[#33ff00]/50 inline-block px-2 py-0.5 mb-2 opacity-70"> > EXECUTION_PROTOCOL</h3>
+                        <h3 className="text-xs border border-[#33ff00]/50 inline-block px-2 py-0.5 mb-2 opacity-70">&gt; EXECUTION_PROTOCOL</h3>
                         <p className="text-sm opacity-80 leading-relaxed whitespace-pre-wrap">
                             {project.how}
                         </p>

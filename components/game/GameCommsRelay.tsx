@@ -9,14 +9,36 @@ interface GameCommsRelayProps {
 }
 
 const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
-  const [step, setStep] = useState<'menu' | 'compose' | 'sending' | 'sent'>('menu');
+  const [step, setStep] = useState<'menu' | 'compose' | 'sending' | 'sent' | 'error'>('menu');
   const [formData, setFormData] = useState({ name: '', message: '' });
 
-  const handleSend = () => {
+  const handleSend = async () => {
     setStep('sending');
-    setTimeout(() => {
+    
+    // NOTE: In a static export (Cloudflare Pages), internal API routes (/api/contact) are not supported.
+    // To implement real email sending, use an external service like Formspree, EmailJS, or a Cloudflare Worker.
+    // For this portfolio demo, we will simulate the transmission.
+
+    try {
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // For production, uncomment and use an external endpoint:
+        /*
+        const response = await fetch('https://formspree.io/f/your-form-id', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData),
+        });
+        if (!response.ok) throw new Error('Network response was not ok');
+        */
+
         setStep('sent');
-    }, 2000);
+
+    } catch (error) {
+        console.error('Failed to send message:', error);
+        setStep('error');
+    }
   };
 
   return (
@@ -35,7 +57,7 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
                 <p className="text-xs opacity-60">SECURE CHANNEL // ENCRYPTED</p>
              </div>
              <div className="text-xs animate-pulse">
-                {step === 'sending' ? 'TRANSMITTING...' : 'SIGNAL: STRONG'}
+                {step === 'sending' ? 'TRANSMITTING...' : step === 'error' ? 'SIGNAL LOST' : 'SIGNAL: STRONG'}
              </div>
          </div>
 
@@ -44,7 +66,7 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
             
             {step === 'menu' && (
                 <div className="space-y-6">
-                    <p className="opacity-80 mb-8"> > WELCOME, GUEST. SELECT PROTOCOL:</p>
+                    <p className="opacity-80 mb-8">&gt; WELCOME, GUEST. SELECT PROTOCOL:</p>
                     
                     <button 
                         onClick={() => setStep('compose')}
@@ -77,7 +99,7 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
             {step === 'compose' && (
                 <div className="space-y-6">
                     <div className="space-y-2">
-                        <label className="text-xs opacity-50 block"> > ENTER_IDENTITY</label>
+                        <label className="text-xs opacity-50 block">&gt; ENTER_IDENTITY</label>
                         <input 
                             type="text" 
                             value={formData.name}
@@ -88,7 +110,7 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-xs opacity-50 block"> > ENTER_PAYLOAD</label>
+                        <label className="text-xs opacity-50 block">&gt; ENTER_PAYLOAD</label>
                         <textarea 
                             value={formData.message}
                             onChange={(e) => setFormData({...formData, message: e.target.value})}
@@ -151,6 +173,19 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
                         className="bg-cyan-500 text-black px-8 py-3 font-bold hover:bg-white transition-colors"
                     >
                         [CLOSE TERMINAL]
+                    </button>
+                </div>
+            )}
+
+            {step === 'error' && (
+                <div className="h-full flex flex-col items-center justify-center space-y-6 text-center">
+                    <div className="text-red-500 text-4xl font-bold">ERROR</div>
+                    <p className="text-red-500 opacity-70">UPLINK FAILED. CHECK NETWORK CONNECTION.</p>
+                    <button 
+                        onClick={() => setStep('compose')}
+                        className="bg-red-900/20 border border-red-500 text-red-500 px-8 py-3 font-bold hover:bg-red-500 hover:text-white transition-colors"
+                    >
+                        [RETRY CONNECTION]
                     </button>
                 </div>
             )}
