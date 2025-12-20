@@ -1,3 +1,4 @@
+
 import { Project } from './types';
 
 export const PROJECT_DATA: Record<string, Project> = {
@@ -11,7 +12,9 @@ export const PROJECT_DATA: Record<string, Project> = {
       what: "Conceptualized NOVA, a first-of-its-kind agentic AI concept for RBC’s Advice Centre. Built the roadmap from MVP to scaled deployment, defining value proposition and operational mechanics.",
       how: "Identified key administrative bottlenecks and translated them into agent workflows. Built the business case for AI adoption, focusing on operational velocity, reduced friction, and scalable advisor efficiency.",
       impact: "Won the $20,000 Prize for 'Best Business Value'. The solution demonstrated forward-looking leadership at the intersection of AI and Operations, directly influencing senior leadership decisions.",
-      category: ['product', 'tech']
+      category: ['product', 'tech'],
+      year: 2025,
+      stats: { strategy: 90, tech: 85, product: 100, leadership: 80 }
   },
   wfp: {
       id: "wfp",
@@ -23,7 +26,9 @@ export const PROJECT_DATA: Record<string, Project> = {
       what: "Analyzed 150K+ records to determine how humanitarian organizations can collect data at scale under cost constraints. Co-authored a critical study on data quality tradeoffs.",
       how: "Built predictive models to forecast program demand and executed econometric analysis using rCARI indicators. Navigated complex non-random selection bias to ensure validity across 200+ operational metrics.",
       impact: "Work directly affects program targeting and funding allocation for the WFP. Established new methodological standards for food security measurement in crisis settings.",
-      category: ['strategy', 'tech']
+      category: ['strategy', 'tech'],
+      year: 2023,
+      stats: { strategy: 95, tech: 90, product: 40, leadership: 30 }
   },
   weg: {
       id: "weg",
@@ -35,19 +40,9 @@ export const PROJECT_DATA: Record<string, Project> = {
       what: "Designed the operating infrastructure, pricing models, and evaluation frameworks. Created the 'Impact 100' methodology for the Western Canada Economic Forum.",
       how: "Authored comprehensive economic valuation reports and board-ready briefs. Translated technical data into clear strategic narratives for clients like Project HAIRitage.",
       impact: "Established standing evidence of market trust, delivering high-quality impact reports and strategic briefs that rival top-tier consultancies.",
-      category: ['strategy', 'tech']
-  },
-  ess: {
-      id: "ess",
-      title: "Economics Students Society",
-      subtitle: "Co-Founder & President",
-      tag: "Leadership",
-      context: "Recognized a gap in professional development and community for Economics students at the university level.",
-      stack: ["Community Building", "Partnerships", "Career Dev"],
-      what: "Founded and scaled the first dedicated society for Economics students, filling a critical gap in professional development and academic support.",
-      how: "Scaled organization to 40+ members from ground zero. Built collaborative relationships with faculty and industry partners to launch career development programming.",
-      impact: "Created a sustainable institution that provides students with mentorship, industry access, and a sense of belonging within the department.",
-      category: ['strategy']
+      category: ['strategy', 'tech'],
+      year: 2024,
+      stats: { strategy: 100, tech: 60, product: 70, leadership: 100 }
   },
   city: {
       id: "city",
@@ -59,7 +54,9 @@ export const PROJECT_DATA: Record<string, Project> = {
       what: "Developed 6 scalable financial dashboards using Power BI and SQL to analyze $1B+ in municipal budget data, translating ambiguous policy into structured performance systems.",
       how: "Performed rigorous variance analysis to identify $1M+ in budget optimizations. Automating monthly reporting processes reduced manual cycle time by 30%.",
       impact: "City leadership gained real-time visibility into strategic priorities. Decisions affecting nearly 300,000 residents were grounded in measurable progress rather than static reports.",
-      category: ['strategy', 'tech']
+      category: ['strategy', 'tech'],
+      year: 2025,
+      stats: { strategy: 85, tech: 75, product: 50, leadership: 40 }
   },
   sctc: {
       id: "sctc",
@@ -71,7 +68,9 @@ export const PROJECT_DATA: Record<string, Project> = {
       what: "Authored a comprehensive economic valuation report contributing to a $11M fundraising strategy.",
       how: "Quantified community impact to secure major capital infrastructure. Translated technical findings into clear language for funders and policymakers.",
       impact: "Arts organizations gained credible, quantitative evidence to unlock funding ($11M strategy) and defend cultural infrastructure as economic infrastructure.",
-      category: ['tech', 'strategy']
+      category: ['tech', 'strategy'],
+      year: 2025,
+      stats: { strategy: 90, tech: 60, product: 20, leadership: 50 }
   },
   pasa: {
       id: "pasa",
@@ -83,6 +82,22 @@ export const PROJECT_DATA: Record<string, Project> = {
       what: "Orchestrated a growth strategy that increased annual events from 2 to 10. Led the association to create a durable institutional community.",
       how: "Secured $10K in external funding through strategic financial planning. Positioned PASA as a legitimate stakeholder within the university ecosystem.",
       impact: "Achieved 40% YoY membership growth and created lasting professional access. PASA outlives my tenure—the marker of real leadership.",
-      category: ['strategy']
+      category: ['strategy'],
+      year: 2023,
+      stats: { strategy: 80, tech: 10, product: 60, leadership: 95 }
+  },
+  ess: {
+      id: "ess",
+      title: "Economics Students Society",
+      subtitle: "Co-Founder & President",
+      tag: "Leadership",
+      context: "Recognized a gap in professional development and community for Economics students at the university level.",
+      stack: ["Community Building", "Partnerships", "Career Dev"],
+      what: "Founded and scaled the first dedicated society for Economics students, filling a critical gap in professional development and academic support.",
+      how: "Scaled organization to 40+ members from ground zero. Built collaborative relationships with faculty and industry partners to launch career development programming.",
+      impact: "Created a sustainable institution that provides students with mentorship, industry access, and a sense of belonging within the department.",
+      category: ['strategy'],
+      year: 2023,
+      stats: { strategy: 70, tech: 10, product: 50, leadership: 90 }
   }
 };

@@ -1,3 +1,11 @@
+
+export interface ProjectStats {
+  strategy: number;
+  tech: number;
+  product: number;
+  leadership: number;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -10,6 +18,8 @@ export interface Project {
   impact: string;
   category: ('strategy' | 'product' | 'tech')[];
   featured?: boolean;
+  year: number;
+  stats: ProjectStats;
 }
 
 export type Theme = 'light' | 'dark';
