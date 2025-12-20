@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { PROJECT_DATA } from '../constants';
 import ProjectCard from './ProjectCard';

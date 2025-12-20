@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { IconMenu, IconClose, IconMoon, IconSun } from './Icons';
 import { useTheme } from '../hooks/useTheme';

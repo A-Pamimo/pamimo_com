@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { IconMail } from '../Icons';
@@ -42,7 +44,7 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
             
             {step === 'menu' && (
                 <div className="space-y-6">
-                    <p className="opacity-80 mb-8"> {'>'} WELCOME, GUEST. SELECT PROTOCOL:</p>
+                    <p className="opacity-80 mb-8"> > WELCOME, GUEST. SELECT PROTOCOL:</p>
                     
                     <button 
                         onClick={() => setStep('compose')}
@@ -75,7 +77,7 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
             {step === 'compose' && (
                 <div className="space-y-6">
                     <div className="space-y-2">
-                        <label className="text-xs opacity-50 block"> {'>'} ENTER_IDENTITY</label>
+                        <label className="text-xs opacity-50 block"> > ENTER_IDENTITY</label>
                         <input 
                             type="text" 
                             value={formData.name}
@@ -86,7 +88,7 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-xs opacity-50 block"> {'>'} ENTER_PAYLOAD</label>
+                        <label className="text-xs opacity-50 block"> > ENTER_PAYLOAD</label>
                         <textarea 
                             value={formData.message}
                             onChange={(e) => setFormData({...formData, message: e.target.value})}
