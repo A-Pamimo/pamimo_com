@@ -26,7 +26,7 @@ module.exports = {
         'hard-hover': '6px 6px 0px 0px currentColor',
       },
       animation: {
-        'marquee': 'marquee 60s linear infinite',
+        'marquee': 'marquee 30s linear infinite',
       },
       keyframes: {
         marquee: {

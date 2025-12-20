@@ -115,34 +115,6 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
                             <p className="font-display text-2xl md:text-4xl font-bold">{project.impact}</p>
                         </div>
                     </div>
-
-                    {project.image && (
-                        <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:750ms]">
-                            <div className="relative group overflow-hidden rounded-xl border-2 border-ink dark:border-white">
-                                <img
-                                    src={project.image}
-                                    alt={project.imageCaption || project.title}
-                                    className="w-full h-auto object-cover"
-                                />
-                                {project.imageCaption && (
-                                    <div className="absolute bottom-0 left-0 right-0 bg-ink/90 text-cream p-4 backdrop-blur-sm">
-                                        <p className="font-mono text-xs">{project.imageCaption}</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {project.blog && (
-                        <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:800ms]">
-                            <h3 className="font-mono text-xs text-pop font-bold mb-6 uppercase tracking-widest">03. The Full Story</h3>
-                            <div className="prose prose-lg dark:prose-invert font-sans opacity-90 leading-relaxed max-w-none">
-                                {project.blog.split('\n\n').map((paragraph, idx) => (
-                                    <p key={idx} className="mb-6">{paragraph}</p>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

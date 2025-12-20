@@ -624,27 +624,8 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
                 <MobileBtn dir="right" />
             </div>
 
-            <div className="text-center space-y-2 bg-black/60 backdrop-blur-sm border border-white/10 p-4 rounded">
-                <div className="text-xs text-white/60 tracking-widest uppercase mb-3">
-                    🎮 NAVIGATION GUIDE
-                </div>
-                <div className="grid md:grid-cols-2 gap-2 text-[10px] text-white/50 tracking-wider">
-                    <div className="hidden md:block">
-                        <span className="text-pop">KEYBOARD:</span> WASD or Arrow Keys to Move
-                    </div>
-                    <div className="hidden md:block">
-                        <span className="text-pop">MOUSE:</span> Click objects to interact
-                    </div>
-                    <div className="md:col-span-2">
-                        <span className="text-pop">MOBILE:</span> Use D-pad below • Tap highlighted objects
-                    </div>
-                    <div className="md:col-span-2">
-                        <span className="text-pop">INTERACT:</span> Press SPACE when near objects or click/tap them
-                    </div>
-                    <div className="md:col-span-2">
-                        <span className="text-pop">EXIT:</span> Press ESC or click [DISCONNECT] button
-                    </div>
-                </div>
+            <div className="hidden md:block text-center text-[10px] text-white/30 tracking-widest uppercase">
+                WASD TO MOVE • CLICK TO INTERACT
             </div>
         </div>
       )}
