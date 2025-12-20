@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "next build && wrangler pages deploy out"
+    "deploy": "next build && wrangler pages deploy out --project-name pamimo_com"
   },
   "dependencies": {
     "framer-motion": "^11.0.8",
