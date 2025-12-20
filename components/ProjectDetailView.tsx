@@ -7,7 +7,6 @@ import Footer from './Footer';
 import CustomCursor from './CustomCursor';
 import BackgroundCanvas from './BackgroundCanvas';
 import { IconTrophy, IconCheck, IconArrow } from './Icons';
-import Link from 'next/link';
 
 interface ProjectDetailViewProps {
   project: Project;
@@ -24,9 +23,9 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
         <div className="max-w-7xl mx-auto px-6 md:px-12">
             
             {/* Back Link */}
-            <Link href="/work" className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest opacity-50 hover:opacity-100 hover:text-pop transition-all mb-12">
+            <a href="/work" className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest opacity-50 hover:opacity-100 hover:text-pop transition-all mb-12">
                 <IconArrow className="w-4 h-4 rotate-180" /> Back to Index
-            </Link>
+            </a>
 
             {/* Header */}
             <div className="mb-16 border-b border-ink/10 dark:border-white/10 pb-10">

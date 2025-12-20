@@ -2,9 +2,8 @@
 
 import React, { useEffect } from 'react';
 import { Project } from '../types';
-import { IconClose, IconTrophy, IconCheck, IconArrow } from './Icons';
+import { IconClose, IconTrophy, IconCheck } from './Icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
 
 interface ProjectModalProps {
   project: Project | null;
@@ -47,12 +46,12 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
         >
             {/* Header / Close Button */}
             <div className="absolute top-6 right-6 z-50 flex gap-4">
-                 <Link
+                 <a
                     href={`/work/${project.id}`}
                     className="bg-ink/10 text-ink dark:bg-white/10 dark:text-white h-12 px-6 rounded-full flex items-center justify-center hover:bg-pop hover:text-white dark:hover:bg-pop dark:hover:text-white transition-colors cursor-hoverable font-mono text-xs font-bold backdrop-blur-md"
                  >
                     OPEN_FULL_PAGE
-                 </Link>
+                 </a>
                  <button
                     onClick={onClose}
                     className="bg-ink text-cream dark:bg-white dark:text-ink w-12 h-12 rounded-full flex items-center justify-center hover:bg-pop hover:text-white dark:hover:bg-pop dark:hover:text-white transition-colors shadow-lg cursor-hoverable"
