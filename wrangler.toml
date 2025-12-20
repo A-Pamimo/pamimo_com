@@ -1,0 +1,25 @@
+# Wrangler configuration template for Cloudflare Pages
+# Replace values or remove comments as needed. Do NOT commit API tokens.
+
+name = "pamimosite"
+account_id = "5fbd11c289b1b09029dd7839f46f9762"
+compatibility_date = "2025-12-20"
+
+[build]
+# Command used to build your site before deploying with `wrangler pages deploy`
+command = "npm run build"
+
+[pages]
+# The Pages project name (must match the Pages project in the Cloudflare dashboard)
+project_name = "pamimosite"
+# Directory that contains the static output you'll deploy. Your deploy command
+# currently publishes the `out` directory produced by Next.js (see package.json).
+site_dir = "out"
+# If you use Pages Functions, uncomment and set functions_dir to the folder
+# where your functions live (e.g. "functions").
+# functions_dir = "functions"
+
+# Notes:
+# - Wrangler will read your API token from the CLOUDFLARE_API_TOKEN env var or
+#   use interactive login. Do NOT place tokens in this file.
+# - If your account/project differ, update account_id and project_name above.
