@@ -1,3 +1,5 @@
+// Added missing React import for React.ReactNode type
+import React from 'react';
 import type { Metadata } from 'next';
 import { Inter, Syne, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
