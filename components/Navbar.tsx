@@ -1,0 +1,141 @@
+import React, { useEffect, useState } from 'react';
+import { IconMenu, IconClose, IconMoon, IconSun } from './Icons';
+import { useTheme } from '../hooks/useTheme';
+import { AnimatePresence, motion } from 'framer-motion';
+
+interface NavbarProps {
+    simulationMode?: boolean;
+    toggleSimulation?: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => {
+  const { theme, toggleTheme } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navClasses = scrolled
+    ? 'py-4 bg-cream/90 dark:bg-charcoal/90 backdrop-blur-md shadow-sm border-b border-ink/10 dark:border-white/10'
+    : 'py-6 pointer-events-none';
+    
+  const linkClasses = scrolled ? 'pointer-events-auto' : 'pointer-events-auto';
+
+  return (
+    <>
+      <nav className={`fixed top-0 w-full z-50 px-6 flex justify-between items-center transition-all duration-300 ${navClasses}`}>
+        <a href="#" className={`font-display font-bold text-xl tracking-tighter hover:text-pop transition-colors text-ink dark:text-cream ${linkClasses}`}>
+          PAMIMO.
+        </a>
+
+        <div className={`flex items-center gap-6 ${linkClasses}`}>
+          {/* Desktop Links */}
+          <div className="hidden md:flex items-center gap-8">
+            <a href="#about" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">NARRATIVE</a>
+            <a href="#work" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">INDEX</a>
+          </div>
+
+          {/* Gamification Toggle (Renamed to XP.MODE) */}
+          {toggleSimulation && (
+             <div className="relative group hidden md:block">
+                <button
+                  onClick={toggleSimulation}
+                  className={`font-mono text-xs font-bold border px-3 py-1.5 transition-all cursor-hoverable items-center gap-2 flex ${
+                      simulationMode 
+                      ? 'bg-pop text-white border-pop shadow-hard' 
+                      : 'border-ink/20 text-ink/70 dark:border-white/20 dark:text-white/70 hover:border-pop hover:text-pop'
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full ${simulationMode ? 'bg-white' : 'bg-pop'}`}></span>
+                  {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
+                </button>
+             </div>
+          )}
+
+          {/* Theme Toggle - Updated for clarity */}
+          <button
+            onClick={toggleTheme}
+            className="group flex items-center gap-2 border border-ink bg-white dark:bg-zinc text-ink dark:text-white px-3 py-1.5 hover:bg-pop hover:border-pop hover:text-white transition-all shadow-hard active:translate-y-1 active:shadow-none cursor-hoverable"
+            aria-label="Toggle Theme"
+          >
+            {theme === 'dark' ? <IconSun className="w-4 h-4 pixel-icon" /> : <IconMoon className="w-4 h-4 pixel-icon" />}
+            <span className="font-mono text-xs font-bold">
+                {theme === 'dark' ? 'LIGHT' : 'DARK'}
+            </span>
+          </button>
+
+          {/* Hire Me (Desktop) */}
+          <a
+            href="mailto:pamimo@example.com"
+            className="hidden md:flex text-sm font-bold bg-ink text-cream dark:bg-cream dark:text-ink px-4 py-2 hover:bg-pop hover:text-white dark:hover:bg-pop dark:hover:text-white transition-colors items-center gap-2 shadow-hard hover:shadow-hard-hover cursor-hoverable"
+          >
+            <span className="w-2 h-2 bg-green-500 animate-pulse"></span>
+            HIRE ME
+          </a>
+
+          {/* Mobile Menu Btn */}
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="md:hidden text-ink dark:text-cream focus:outline-none cursor-hoverable"
+          >
+            <IconMenu className="w-8 h-8 pixel-icon" />
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="fixed inset-0 bg-ink dark:bg-black z-[60] flex flex-col justify-center px-8"
+          >
+             <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="absolute top-6 right-6 text-cream text-2xl cursor-hoverable"
+            >
+                <IconClose className="w-8 h-8 pixel-icon" />
+            </button>
+            
+            <nav className="flex flex-col">
+                 {['Narrative', 'Index'].map((item, i) => (
+                    <motion.a
+                        key={item}
+                        href={`#${item.toLowerCase() === 'narrative' ? 'about' : 'work'}`}
+                        onClick={() => setMobileMenuOpen(false)}
+                        initial={{ x: 50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: i * 0.1, duration: 0.5 }}
+                        className="text-cream font-display text-5xl font-bold mb-6 hover:text-pop transition-colors cursor-hoverable"
+                    >
+                        {item}
+                    </motion.a>
+                 ))}
+                 <div className="h-px bg-white/20 w-full mb-8" />
+                 <motion.a
+                    href="mailto:pamimo@example.com"
+                    initial={{ x: 50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-pop text-xl font-mono cursor-hoverable"
+                 >
+                    pamimo@example.com
+                 </motion.a>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+
+export default Navbar;
