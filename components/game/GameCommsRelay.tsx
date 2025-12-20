@@ -1,45 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { IconMail } from '../Icons';
 
 interface GameCommsRelayProps {
   onBack: () => void;
 }
 
 const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
-  const [step, setStep] = useState<'menu' | 'compose' | 'sending' | 'sent' | 'error'>('menu');
-  const [formData, setFormData] = useState({ name: '', message: '' });
-
-  const handleSend = async () => {
-    setStep('sending');
-    
-    // NOTE: In a static export (Cloudflare Pages), internal API routes (/api/contact) are not supported.
-    // To implement real email sending, use an external service like Formspree, EmailJS, or a Cloudflare Worker.
-    // For this portfolio demo, we will simulate the transmission.
-
-    try {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        // For production, uncomment and use an external endpoint:
-        /*
-        const response = await fetch('https://formspree.io/f/your-form-id', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
-        });
-        if (!response.ok) throw new Error('Network response was not ok');
-        */
-
-        setStep('sent');
-
-    } catch (error) {
-        console.error('Failed to send message:', error);
-        setStep('error');
-    }
-  };
 
   return (
     <motion.div
@@ -57,28 +25,28 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
                 <p className="text-xs opacity-60">SECURE CHANNEL // ENCRYPTED</p>
              </div>
              <div className="text-xs animate-pulse">
-                {step === 'sending' ? 'TRANSMITTING...' : step === 'error' ? 'SIGNAL LOST' : 'SIGNAL: STRONG'}
+                SIGNAL: STRONG
              </div>
          </div>
 
          {/* Content Area */}
          <div className="flex-1 font-mono text-cyan-500">
-            
-            {step === 'menu' && (
+
+            <div className="h-full flex flex-col justify-center">
                 <div className="space-y-6">
                     <p className="opacity-80 mb-8">&gt; WELCOME, GUEST. SELECT PROTOCOL:</p>
-                    
-                    <button 
-                        onClick={() => setStep('compose')}
+
+                    <a
+                        href="mailto:oluwapamimoakinjide@gmail.com"
                         className="w-full text-left border border-cyan-500/30 p-4 hover:bg-cyan-500 hover:text-black transition-all group flex justify-between items-center"
                     >
-                        <span>[1] INITIATE_MESSAGE_SEQUENCE</span>
+                        <span>[1] SEND_EMAIL_TRANSMISSION</span>
                         <span className="opacity-0 group-hover:opacity-100">&lt;&lt;</span>
-                    </button>
+                    </a>
 
-                    <a 
-                        href="https://www.linkedin.com/in/pamimo" 
-                        target="_blank" 
+                    <a
+                        href="https://www.linkedin.com/in/pamimo"
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="w-full text-left border border-cyan-500/30 p-4 hover:bg-cyan-500 hover:text-black transition-all group block flex justify-between items-center"
                     >
@@ -86,7 +54,12 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
                         <span className="opacity-0 group-hover:opacity-100">EXT_LINK</span>
                     </a>
 
-                    <button 
+                    <div className="border border-cyan-500/30 p-4 bg-cyan-500/5">
+                        <p className="text-xs opacity-60 mb-2">DIRECT_CONTACT:</p>
+                        <p className="text-sm">oluwapamimoakinjide@gmail.com</p>
+                    </div>
+
+                    <button
                         onClick={onBack}
                         className="w-full text-left border border-cyan-500/30 p-4 hover:bg-red-500 hover:border-red-500 hover:text-white transition-all group flex justify-between items-center"
                     >
@@ -94,101 +67,7 @@ const GameCommsRelay: React.FC<GameCommsRelayProps> = ({ onBack }) => {
                         <span className="opacity-0 group-hover:opacity-100">X</span>
                     </button>
                 </div>
-            )}
-
-            {step === 'compose' && (
-                <div className="space-y-6">
-                    <div className="space-y-2">
-                        <label className="text-xs opacity-50 block">&gt; ENTER_IDENTITY</label>
-                        <input 
-                            type="text" 
-                            value={formData.name}
-                            onChange={(e) => setFormData({...formData, name: e.target.value})}
-                            className="w-full bg-cyan-900/10 border-b border-cyan-500/50 p-2 focus:outline-none focus:border-cyan-500 text-cyan-100"
-                            placeholder="Identify yourself..."
-                            autoFocus
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-xs opacity-50 block">&gt; ENTER_PAYLOAD</label>
-                        <textarea 
-                            value={formData.message}
-                            onChange={(e) => setFormData({...formData, message: e.target.value})}
-                            className="w-full bg-cyan-900/10 border-b border-cyan-500/50 p-2 focus:outline-none focus:border-cyan-500 text-cyan-100 h-32 resize-none"
-                            placeholder="Type your message..."
-                        />
-                    </div>
-                    
-                    <div className="flex gap-4 pt-4">
-                        <button 
-                            onClick={handleSend}
-                            disabled={!formData.name || !formData.message}
-                            className="flex-1 bg-cyan-500 text-black font-bold py-3 hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            [TRANSMIT]
-                        </button>
-                        <button 
-                            onClick={() => setStep('menu')}
-                            className="px-6 border border-cyan-500/50 hover:bg-cyan-900/20 transition-colors"
-                        >
-                            CANCEL
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {step === 'sending' && (
-                <div className="h-full flex flex-col items-center justify-center space-y-4">
-                    <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-                    <div className="text-center">
-                        <p className="animate-pulse">UPLOADING PACKETS...</p>
-                        <p className="text-xs opacity-50 mt-2">ENCRYPTING DATA STREAM</p>
-                    </div>
-                    
-                    {/* Simulated Progress Bar */}
-                    <div className="w-64 h-2 bg-cyan-900/30 mt-4 overflow-hidden">
-                        <motion.div 
-                            initial={{ width: 0 }}
-                            animate={{ width: '100%' }}
-                            transition={{ duration: 2 }}
-                            className="h-full bg-cyan-500"
-                        />
-                    </div>
-                </div>
-            )}
-
-            {step === 'sent' && (
-                <div className="h-full flex flex-col items-center justify-center space-y-6 text-center">
-                    <div className="w-20 h-20 bg-cyan-500/20 rounded-full flex items-center justify-center border-2 border-cyan-500">
-                        <IconMail className="w-10 h-10" />
-                    </div>
-                    <div>
-                        <h2 className="text-2xl font-bold mb-2">TRANSMISSION COMPLETE</h2>
-                        <p className="opacity-70 text-sm max-w-xs mx-auto">
-                            Your message has been logged in the central mainframe. I will respond to your frequency shortly.
-                        </p>
-                    </div>
-                    <button 
-                        onClick={onBack}
-                        className="bg-cyan-500 text-black px-8 py-3 font-bold hover:bg-white transition-colors"
-                    >
-                        [CLOSE TERMINAL]
-                    </button>
-                </div>
-            )}
-
-            {step === 'error' && (
-                <div className="h-full flex flex-col items-center justify-center space-y-6 text-center">
-                    <div className="text-red-500 text-4xl font-bold">ERROR</div>
-                    <p className="text-red-500 opacity-70">UPLINK FAILED. CHECK NETWORK CONNECTION.</p>
-                    <button 
-                        onClick={() => setStep('compose')}
-                        className="bg-red-900/20 border border-red-500 text-red-500 px-8 py-3 font-bold hover:bg-red-500 hover:text-white transition-colors"
-                    >
-                        [RETRY CONNECTION]
-                    </button>
-                </div>
-            )}
+            </div>
 
          </div>
 
