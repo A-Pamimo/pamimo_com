@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Project } from '../../types';
 import { IconCheck, IconTrophy } from '../Icons';
@@ -10,6 +10,15 @@ interface GameProjectConsoleProps {
 }
 
 const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack }) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Auto-focus content for immediate scrolling via keyboard
+  useEffect(() => {
+    if (contentRef.current) {
+        contentRef.current.focus();
+    }
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
@@ -21,7 +30,11 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
       <div className="w-full max-w-5xl h-[85vh] bg-black border-4 border-[#333] rounded-lg relative overflow-hidden shadow-2xl flex flex-col">
         
         {/* Screen Content */}
-        <div className="relative flex-1 p-8 md:p-12 overflow-y-auto font-mono text-[#33ff00] selection:bg-[#33ff00] selection:text-black scrollbar-hide">
+        <div 
+            ref={contentRef}
+            tabIndex={-1} 
+            className="relative flex-1 p-8 md:p-12 overflow-y-auto font-mono text-[#33ff00] selection:bg-[#33ff00] selection:text-black scrollbar-hide focus:outline-none"
+        >
             
             {/* Header */}
             <div className="flex justify-between items-start border-b border-[#33ff00]/30 pb-4 mb-8">

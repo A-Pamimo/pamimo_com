@@ -1,0 +1,41 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  darkMode: 'class',
+  content: [
+    "./index.html",
+    "./*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./hooks/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        display: ['Syne', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+      colors: {
+        cream: '#F2F0E9',
+        ink: '#121212',
+        charcoal: '#1A1A1A',
+        zinc: '#27272a',
+        pop: '#FF4400',
+        gold: '#eab308',
+      },
+      boxShadow: {
+        'hard': '4px 4px 0px 0px currentColor',
+        'hard-hover': '6px 6px 0px 0px currentColor',
+      },
+      animation: {
+        'marquee': 'marquee 30s linear infinite',
+      },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        }
+      }
+    }
+  },
+  plugins: [],
+}
