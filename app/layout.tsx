@@ -25,7 +25,14 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'Pamimo Akinjide | Strategy & Systems',
-  description: 'A high-fidelity port of the Pamimo Akinjide portfolio website featuring dark mode, custom canvas animations, and interactive project showcases.',
+  description: 'Product Strategist, Economist, and Systems Builder at the intersection of Strategy, Data, and Community.',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({
