@@ -85,7 +85,7 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack }) => {
                         exit={{ opacity: 0, x: -20 }}
                         className="space-y-8"
                     >
-                        <h2 className="text-2xl font-bold mb-6"> > ATTRIBUTE_MATRIX</h2>
+                        <h2 className="text-2xl font-bold mb-6">&gt; ATTRIBUTE_MATRIX</h2>
                         
                         <div className="space-y-4">
                             {[
@@ -133,7 +133,7 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack }) => {
                         exit={{ opacity: 0, x: -20 }}
                         className="space-y-6 overflow-y-auto h-full pr-4"
                     >
-                         <h2 className="text-2xl font-bold mb-4"> > SYSTEM_LOGS</h2>
+                         <h2 className="text-2xl font-bold mb-4">&gt; SYSTEM_LOGS</h2>
                          
                          <div className="space-y-6 text-sm">
                             <div className="border-l-2 border-amber-500 pl-4 py-1">
