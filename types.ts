@@ -1,3 +1,5 @@
+// Added missing React import to resolve namespace error
+import React from 'react';
 
 export interface ProjectStats {
   strategy: number;
