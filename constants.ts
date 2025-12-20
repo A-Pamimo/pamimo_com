@@ -27,7 +27,7 @@ export const PROJECT_DATA: Record<string, Project> = {
       how: "Built predictive models to forecast program demand and executed econometric analysis using rCARI indicators. Navigated complex non-random selection bias to ensure validity across 200+ operational metrics.",
       impact: "Work directly affects program targeting and funding allocation for the WFP. Established new methodological standards for food security measurement in crisis settings.",
       category: ['strategy', 'tech'],
-      year: 2023,
+      year: 2025,
       stats: { strategy: 95, tech: 90, product: 40, leadership: 30 }
   },
   weg: {

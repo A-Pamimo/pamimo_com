@@ -66,7 +66,24 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
     
     // Build the "Data Lab" World
     const worldObjects: GameObject[] = [];
-    const projectList = Object.values(PROJECT_DATA).sort((a, b) => b.year - a.year);
+    
+    // Sort by "Impact" (Total Stats Score) - Ascending (Progression)
+    // This orders from lower complexity/impact to higher, effectively placing WEG and NOVA at the end (Climax)
+    const getImpactScore = (p: Project) => {
+        return p.stats.strategy + p.stats.tech + p.stats.product + p.stats.leadership;
+    };
+    const projectList = Object.values(PROJECT_DATA).sort((a, b) => getImpactScore(a) - getImpactScore(b));
+
+    // Color Palette
+    const projectColors: Record<string, string> = {
+        nova: '#FFD700', // Gold
+        wfp: '#3B82F6',  // Blue
+        weg: '#A855F7',  // Purple
+        city: '#F97316', // Orange
+        sctc: '#EC4899', // Pink
+        pasa: '#06B6D4', // Cyan
+        ess: '#84CC16'   // Lime
+    };
 
     // 1. Floor Labels (Decorations)
     worldObjects.push({ id: 'lbl_core', x: -60, y: -450, w: 0, h: 0, type: 'label', label: 'CORE SYSTEM', color: '#333', fontSize: 40 });
@@ -99,8 +116,6 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
             col = 0;
         }
         
-        const isAwardWinner = p.id === 'nova';
-        
         worldObjects.push({
             id: p.id,
             x: startX + (col * gapX),
@@ -110,7 +125,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
             type: 'project',
             label: p.title,
             data: p,
-            color: isAwardWinner ? '#FFD700' : '#4ade80', 
+            color: projectColors[p.id] || '#4ade80', 
             isSolid: true
         });
         col++;
