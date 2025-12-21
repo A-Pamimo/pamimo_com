@@ -35,6 +35,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`scroll-smooth ${inter.variable} ${syne.variable} ${jetbrains.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon.svg" />
+      </head>
       <body className="bg-cream text-ink dark:bg-charcoal dark:text-cream antialiased overflow-x-hidden selection:bg-pop selection:text-white">
         {children}
       </body>
