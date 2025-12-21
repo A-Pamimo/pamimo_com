@@ -9,7 +9,7 @@ const About: React.FC = () => {
         <div className="relative group cursor-hoverable">
           <div className="absolute inset-0 bg-pop translate-x-2 translate-y-2 border border-ink dark:border-white transition-transform duration-300 group-hover:translate-x-4 group-hover:translate-y-4"></div>
           <div className="relative bg-white dark:bg-zinc border border-ink dark:border-white p-2 aspect-[4/5] overflow-hidden">
-            <img src="/IMG_3961.mov" alt="Pamimo" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+            <video src="/IMG_3961.mov" alt="Pamimo" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
             <div className="absolute bottom-0 left-0 w-full p-4 bg-ink/90 text-cream backdrop-blur-sm transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
               <p className="font-mono text-xs">LOC: TORONTO, CA</p>
               <p className="font-mono text-xs">ORIGIN: NIGERIA</p>
