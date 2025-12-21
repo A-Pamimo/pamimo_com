@@ -8,7 +8,7 @@ export const PROJECT_DATA: Record<string, Project> = {
       subtitle: "Product Lead // RBC Amplify",
       tag: "Product Innovation",
       context: "RBC Amplify is one of Canada's most competitive innovation programs. Selected to lead product strategy for a cross-functional squad tackling complex banking operations.",
-      stack: ["Agentic AI", "Product Strategy", "Roadmapping", "Stakeholder Mgmt"],
+      stack: ["Agentic AI", "Product Strategy", "Roadmapping", "Stakeholder Mgmt", "A/B Testing", "Business Case", "MVP Development", "Go-to-Market", "User Research","Crew-AI", "LangChain"],
       what: "Conceptualized NOVA, a first-of-its-kind agentic AI concept for RBC’s Advice Centre. Built the roadmap from MVP to scaled deployment, defining value proposition and operational mechanics.",
       how: "Identified key administrative bottlenecks and translated them into agent workflows. Built the business case for AI adoption, focusing on operational velocity, reduced friction, and scalable advisor efficiency.",
       impact: "Won the $20,000 Prize for 'Best Business Value'. The solution demonstrated forward-looking leadership at the intersection of AI and Operations, directly influencing senior leadership decisions.",
@@ -98,6 +98,6 @@ export const PROJECT_DATA: Record<string, Project> = {
       impact: "Created a sustainable institution that provides students with mentorship, industry access, and a sense of belonging within the department.",
       category: ['strategy'],
       year: 2023,
-      stats: { strategy: 70, tech: 10, product: 50, leadership: 90 }
+      stats: { strategy: 70, tech: 10, product: 50, leadership: 99 }
   }
 };
