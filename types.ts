@@ -22,6 +22,9 @@ export interface Project {
   featured?: boolean;
   year: number;
   stats: ProjectStats;
+  blog?: string;
+  image?: string;
+  imageCaption?: string;
 }
 
 export type Theme = 'light' | 'dark';

@@ -24,8 +24,79 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Pamimo Akinjide | Strategy & Systems',
-  description: 'A high-fidelity port of the Pamimo Akinjide portfolio website featuring dark mode, custom canvas animations, and interactive project showcases.',
+  metadataBase: new URL('https://pamimoakinjide.com'),
+  title: {
+    default: 'Pamimo Akinjide | Product Strategist, Economist & Systems Builder',
+    template: '%s | Pamimo Akinjide'
+  },
+  description: 'Pamimo Akinjide is a Product Strategist, Economist, and Systems Builder specializing in AI strategy, data analytics, and community development. Award-winning work at RBC, World Food Programme, and more.',
+  keywords: [
+    'Pamimo Akinjide',
+    'Product Strategist',
+    'Economist',
+    'Data Analyst',
+    'AI Strategy',
+    'Agentic AI',
+    'RBC Amplify',
+    'World Food Programme',
+    'Economic Consulting',
+    'Systems Builder',
+    'Toronto Product Manager',
+    'Strategy Consultant',
+    'Community Leadership'
+  ],
+  authors: [{ name: 'Pamimo Akinjide', url: 'https://pamimoakinjide.com' }],
+  creator: 'Pamimo Akinjide',
+  publisher: 'Pamimo Akinjide',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://pamimoakinjide.com',
+    title: 'Pamimo Akinjide | Product Strategist, Economist & Systems Builder',
+    description: 'Award-winning Product Strategist and Economist specializing in AI strategy, data analytics, and systems design. $20K RBC Amplify winner, WFP researcher, community builder.',
+    siteName: 'Pamimo Akinjide Portfolio',
+    images: [
+      {
+        url: '/og-image.jpg', // You'll need to create this
+        width: 1200,
+        height: 630,
+        alt: 'Pamimo Akinjide - Strategy × Data × Systems'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pamimo Akinjide | Product Strategist & Economist',
+    description: 'Award-winning strategist at the intersection of AI, data, and community. RBC Amplify winner | WFP Researcher | Systems Builder',
+    images: ['/og-image.jpg'],
+    creator: '@pamimo' // Replace with your actual Twitter handle if you have one
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
+  verification: {
+    google: 'your-google-verification-code', // Add after setting up Google Search Console
+    // yandex: 'your-yandex-verification-code',
+    // bing: 'your-bing-verification-code',
+  },
+  alternates: {
+    canonical: 'https://pamimoakinjide.com',
+  },
 };
 
 export default function RootLayout({
@@ -36,10 +107,61 @@ export default function RootLayout({
   return (
     <html lang="en" className={`scroll-smooth ${inter.variable} ${syne.variable} ${jetbrains.variable}`}>
       <head>
-        <link rel="icon" href="/favicon.svg" />
+        <link rel="canonical" href="https://pamimoakinjide.com" />
+        <meta name="author" content="Pamimo Akinjide" />
+        <meta name="geo.region" content="CA-ON" />
+        <meta name="geo.placename" content="Toronto" />
       </head>
       <body className="bg-cream text-ink dark:bg-charcoal dark:text-cream antialiased overflow-x-hidden selection:bg-pop selection:text-white">
         {children}
+
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": "Pamimo Akinjide",
+              "url": "https://pamimoakinjide.com",
+              "image": "https://pamimoakinjide.com/og-image.jpg",
+              "sameAs": [
+                "https://www.linkedin.com/in/pamimo",
+                "https://github.com/pamimo" // Add if you have one
+              ],
+              "jobTitle": "Product Strategist & Economist",
+              "worksFor": {
+                "@type": "Organization",
+                "name": "World's Edge Group"
+              },
+              "alumniOf": [
+                {
+                  "@type": "Organization",
+                  "name": "University of Saskatchewan"
+                }
+              ],
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Toronto",
+                "addressRegion": "ON",
+                "addressCountry": "CA"
+              },
+              "email": "oluwapamimoakinjide@gmail.com",
+              "description": "Product Strategist, Economist, and Systems Builder specializing in AI strategy, data analytics, and community development. Award-winning work at RBC, World Food Programme, and more.",
+              "award": [
+                "RBC Amplify Best Business Value - $20,000 Prize"
+              ],
+              "knowsAbout": [
+                "Product Strategy",
+                "Agentic AI",
+                "Economic Analysis",
+                "Data Analytics",
+                "Strategic Planning",
+                "Community Building"
+              ]
+            })
+          }}
+        />
       </body>
     </html>
   );
