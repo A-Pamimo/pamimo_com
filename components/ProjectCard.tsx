@@ -121,7 +121,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
                  {getIcon('wfp')}
              </div>
         )}
-        {project.id === 'city' && getIcon('city')}
         {project.id === 'sctc' && <div className="flex items-end">{getIcon('sctc')}</div>}
       </div>
     </div>
