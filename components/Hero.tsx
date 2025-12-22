@@ -28,7 +28,7 @@ const Hero: React.FC = () => {
         </motion.div>
         
         {/* Refactored Typography: Grouped lines for tighter, less awkward spacing */}
-        <div className="font-display font-extrabold text-[10vw] md:text-[9vw] leading-[0.85] mb-12 tracking-tighter">
+        <div className="font-display font-extrabold text-[10vw] md:text-[9vw] leading-[0.9] mb-12 tracking-tighter space-y-2">
             <div className="flex flex-wrap gap-x-4 md:gap-x-8">
                 {lineOne.map((text, i) => (
                     <motion.div
