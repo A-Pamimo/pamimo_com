@@ -56,7 +56,10 @@ const CustomCursor: React.FC = () => {
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
-      interactiveElements.forEach(el => {
+      // Query all interactive elements again to ensure we clean up
+      // elements that were added by the MutationObserver
+      const allInteractiveElements = document.querySelectorAll('a, button, .cursor-hoverable');
+      allInteractiveElements.forEach(el => {
         el.removeEventListener('mouseenter', onMouseEnter);
         el.removeEventListener('mouseleave', onMouseLeave);
       });
