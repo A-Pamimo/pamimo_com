@@ -62,24 +62,24 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
   // WEG Prominent layout
   if (project.id === 'weg') {
     return (
-      <div onClick={() => onClick(project)} className={`project-card ${className} border border-ink dark:border-white/20 p-6 group hover:shadow-hard transition-all cursor-hoverable cursor-pointer bg-white dark:bg-charcoal flex flex-col justify-between`}>
+      <div onClick={() => onClick(project)} className={`project-card ${className} border border-ink dark:border-white/20 p-6 group hover:shadow-hard transition-all cursor-hoverable cursor-pointer bg-white dark:bg-charcoal flex flex-col justify-between overflow-hidden`}>
          <div className="flex flex-col md:flex-row gap-8 h-full pointer-events-none">
-             <div className="flex-1 flex flex-col justify-between">
+             <div className="flex-1 flex flex-col justify-between min-w-0">
                  <div>
                     <div className="flex justify-between items-center mb-4">
                         <span className="font-mono text-xs bg-ink text-cream dark:bg-white dark:text-ink px-2 py-1">ENTREPRENEURSHIP</span>
                     </div>
-                    <h3 className="font-display font-bold text-3xl mb-2">{project.title}</h3>
+                    <h3 className="font-display font-bold text-3xl mb-2 break-words">{project.title}</h3>
                     <p className="text-sm font-mono opacity-50 mb-4">{project.subtitle}</p>
                     <p className="opacity-70 max-w-lg">Founded an independent economic advisory platform. Designed the operating infrastructure, pricing models, and evaluation frameworks from scratch.</p>
                  </div>
-                 <div className="mt-6 flex gap-2">
+                 <div className="mt-6 flex gap-2 flex-wrap">
                     {project.stack.map(s => (
                         <span key={s} className="border border-current opacity-30 px-2 py-1 text-xs font-mono">{s}</span>
                     ))}
                  </div>
              </div>
-             <div className="md:w-1/3 flex items-center justify-center bg-cream dark:bg-zinc-800/50 p-4 border border-ink/5 dark:border-white/5">
+             <div className="md:w-1/3 flex-shrink-0 flex items-center justify-center bg-cream dark:bg-zinc-800/50 p-4 border border-ink/5 dark:border-white/5">
                  {getIcon('weg')}
              </div>
          </div>

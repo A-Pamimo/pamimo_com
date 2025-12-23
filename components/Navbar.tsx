@@ -46,12 +46,12 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
 
           {/* Gamification Toggle (Renamed to XP.MODE) */}
           {toggleSimulation && (
-             <div className="relative group hidden md:block">
+             <div className="relative group">
                 <button
                   onClick={toggleSimulation}
                   className={`font-mono text-xs font-bold border px-3 py-1.5 transition-all cursor-hoverable items-center gap-2 flex ${
-                      simulationMode 
-                      ? 'bg-pop text-white border-pop shadow-hard' 
+                      simulationMode
+                      ? 'bg-pop text-white border-pop shadow-hard'
                       : 'border-ink/20 text-ink/70 dark:border-white/20 dark:text-white/70 hover:border-pop hover:text-pop'
                   }`}
                 >
