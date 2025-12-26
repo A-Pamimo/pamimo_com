@@ -39,6 +39,9 @@ export default function Home() {
 
       {!loading && (
         <div className={`${simulationMode ? 'font-mono tracking-tight' : ''} ${simulationPreview ? 'dark' : ''}`}>
+          {/* Base Background Layer - Moved here to respect local dark mode & z-indexing */}
+          <div className="fixed inset-0 z-[-50] bg-cream dark:bg-charcoal transition-colors duration-500 pointer-events-none" />
+
           <CustomCursor />
           <BackgroundCanvas simulationMode={simulationMode} simulationPreview={simulationPreview} />
 

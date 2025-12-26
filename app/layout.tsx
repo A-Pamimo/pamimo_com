@@ -110,7 +110,7 @@ export default function RootLayout({
         <meta name="geo.region" content="CA-ON" />
         <meta name="geo.placename" content="Toronto" />
       </head>
-      <body className="bg-cream text-ink dark:bg-charcoal dark:text-cream antialiased overflow-x-hidden selection:bg-pop selection:text-white">
+      <body className="text-ink dark:text-cream antialiased overflow-x-hidden selection:bg-pop selection:text-white">
         <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] mix-blend-overlay">
           <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <filter id="noiseFilter">
