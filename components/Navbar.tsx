@@ -47,15 +47,26 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
           {/* Gamification Toggle (Renamed to XP.MODE) */}
           {toggleSimulation && (
             <div className="relative group hidden md:flex">
-              <div className="absolute inset-0 bg-pop blur-lg opacity-0 group-hover:opacity-40 transition-opacity duration-100"></div>
+              {/* Portal Effect Background */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden border border-pop"
+                style={{
+                  backgroundImage: 'radial-gradient(#FF4400 2px, transparent 2px), radial-gradient(#FF4400 2px, transparent 2px)',
+                  backgroundSize: '10px 10px',
+                  backgroundPosition: '0 0, 5px 5px',
+                  backgroundColor: '#1a1a1a'
+                }}
+              />
+
               <button
                 onClick={toggleSimulation}
-                className="relative font-mono font-bold text-xs border border-ink dark:border-white px-4 py-2 hover:bg-pop hover:text-white hover:border-pop transition-all overflow-hidden group-hover:skew-x-[-10deg]"
+                className="relative font-mono font-bold text-xs border border-ink dark:border-white px-4 py-2 hover:border-pop transition-all group-hover:skew-x-[-10deg] overflow-hidden"
               >
-                <span className="relative z-10 group-hover:animate-pulse flex items-center gap-2">
-                  {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
+                <div className="relative z-10 flex items-center gap-2 group-hover:text-pop transition-colors">
+                  <span className="group-hover:hidden">{simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}</span>
+                  <span className="hidden group-hover:block font-bold animate-pulse">{simulationMode ? 'EXIT GAME' : 'PRESS START'}</span>
                   {simulationMode && <span className="w-2 h-2 bg-white rounded-full animate-ping" />}
-                </span>
+                </div>
               </button>
             </div>
           )}
