@@ -50,8 +50,8 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
               <button
                 onClick={toggleSimulation}
                 className={`font-mono text-xs font-bold border px-3 py-1.5 transition-all cursor-hoverable items-center gap-2 flex ${simulationMode
-                    ? 'bg-pop text-white border-pop shadow-hard'
-                    : 'border-ink/20 text-ink/70 dark:border-white/20 dark:text-white/70 hover:border-pop hover:text-pop'
+                  ? 'bg-pop text-white border-pop shadow-hard'
+                  : 'border-ink/20 text-ink/70 dark:border-white/20 dark:text-white/70 hover:border-pop hover:text-pop'
                   }`}
               >
                 <span className={`w-2 h-2 rounded-full ${simulationMode ? 'bg-white' : 'bg-pop'}`}></span>
@@ -83,11 +83,23 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
 
           {/* Mobile Menu Btn */}
           <button
-            onClick={() => setMobileMenuOpen(true)}
-            className="md:hidden text-ink dark:text-cream focus:outline-none cursor-hoverable"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden z-50 p-2 text-ink dark:text-white"
+            aria-label="Toggle Menu"
           >
-            <IconMenu className="w-8 h-8 pixel-icon" />
+            {mobileMenuOpen ? 'CLOSE' : 'MENU'}
           </button>
+
+          {/* Mobile Sticky CTA (Persistent Bottom Right) */}
+          {!mobileMenuOpen && (
+            <a
+              href="mailto:contact@pamimo.com" // Update with actual email if known, effectively acts as 'Contact'
+              className="md:hidden fixed bottom-6 right-6 z-[40] bg-pop text-white px-5 py-3 rounded-full font-mono text-xs font-bold shadow-lg shadow-pop/30 hover:scale-105 transition-transform flex items-center gap-2"
+            >
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              HIRE ME
+            </a>
+          )}
         </div>
       </nav>
 

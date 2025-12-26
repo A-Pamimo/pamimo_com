@@ -25,6 +25,8 @@ export interface Project {
   blog?: string;
   image?: string;
   imageCaption?: string;
+  testimonial?: string;
+  testimonialAuthor?: string;
 }
 
 export type Theme = 'light' | 'dark';
