@@ -42,7 +42,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                     animate={{ y: '0%', scale: 1 }}
                     exit={{ y: '100%', scale: 0.95 }}
                     transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-                    className="relative w-full max-w-7xl h-[90vh] bg-cream dark:bg-zinc rounded-none overflow-hidden pointer-events-auto flex flex-col shadow-2xl shadow-black/50"
+                    className="relative w-full max-w-7xl h-[90vh] bg-cream dark:bg-zinc rounded-none overflow-hidden pointer-events-auto flex flex-col shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] dark:shadow-[12px_12px_0px_0px_rgba(255,255,255,0.2)]"
                 >
                     {/* Header / Close Button */}
                     <div className="absolute top-6 right-6 z-50">
