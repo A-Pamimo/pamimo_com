@@ -4,21 +4,21 @@ import type { Metadata } from 'next';
 import { Inter, Syne, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({ 
-  subsets: ['latin'], 
+const inter = Inter({
+  subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
 });
 
-const syne = Syne({ 
-  subsets: ['latin'], 
+const syne = Syne({
+  subsets: ['latin'],
   variable: '--font-syne',
   display: 'swap',
   weight: ['400', '700', '800']
 });
 
-const jetbrains = JetBrains_Mono({ 
-  subsets: ['latin'], 
+const jetbrains = JetBrains_Mono({
+  subsets: ['latin'],
   variable: '--font-mono',
   display: 'swap',
 });
@@ -84,7 +84,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
     ],
   },
   verification: {
