@@ -7,8 +7,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Logo from './Logo';
 
 interface NavbarProps {
-    simulationMode?: boolean;
-    toggleSimulation?: () => void;
+  simulationMode?: boolean;
+  toggleSimulation?: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => {
@@ -27,7 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
   const navClasses = scrolled
     ? 'py-4 bg-cream/90 dark:bg-charcoal/90 backdrop-blur-md shadow-sm border-b border-ink/10 dark:border-white/10'
     : 'py-6 pointer-events-none';
-    
+
   const linkClasses = scrolled ? 'pointer-events-auto' : 'pointer-events-auto';
 
   return (
@@ -46,19 +46,18 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
 
           {/* Gamification Toggle (Renamed to XP.MODE) */}
           {toggleSimulation && (
-             <div className="relative group">
-                <button
-                  onClick={toggleSimulation}
-                  className={`font-mono text-xs font-bold border px-3 py-1.5 transition-all cursor-hoverable items-center gap-2 flex ${
-                      simulationMode
-                      ? 'bg-pop text-white border-pop shadow-hard'
-                      : 'border-ink/20 text-ink/70 dark:border-white/20 dark:text-white/70 hover:border-pop hover:text-pop'
+            <div className="relative group hidden md:flex">
+              <button
+                onClick={toggleSimulation}
+                className={`font-mono text-xs font-bold border px-3 py-1.5 transition-all cursor-hoverable items-center gap-2 flex ${simulationMode
+                    ? 'bg-pop text-white border-pop shadow-hard'
+                    : 'border-ink/20 text-ink/70 dark:border-white/20 dark:text-white/70 hover:border-pop hover:text-pop'
                   }`}
-                >
-                  <span className={`w-2 h-2 rounded-full ${simulationMode ? 'bg-white' : 'bg-pop'}`}></span>
-                  {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
-                </button>
-             </div>
+              >
+                <span className={`w-2 h-2 rounded-full ${simulationMode ? 'bg-white' : 'bg-pop'}`}></span>
+                {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
+              </button>
+            </div>
           )}
 
           {/* Theme Toggle - Updated for clarity */}
@@ -69,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
           >
             {theme === 'dark' ? <IconSun className="w-4 h-4 pixel-icon" /> : <IconMoon className="w-4 h-4 pixel-icon" />}
             <span className="font-mono text-xs font-bold">
-                {theme === 'dark' ? 'LIGHT' : 'DARK'}
+              {theme === 'dark' ? 'LIGHT' : 'DARK'}
             </span>
           </button>
 
@@ -102,37 +101,51 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
             transition={{ duration: 0.5, ease: 'easeOut' }}
             className="fixed inset-0 bg-ink dark:bg-black z-[60] flex flex-col justify-center px-8"
           >
-             <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="absolute top-6 right-6 text-cream text-2xl cursor-hoverable"
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="absolute top-6 right-6 text-cream text-2xl cursor-hoverable"
             >
-                <IconClose className="w-8 h-8 pixel-icon" />
+              <IconClose className="w-8 h-8 pixel-icon" />
             </button>
-            
+
             <nav className="flex flex-col">
-                 {['Narrative', 'Index'].map((item, i) => (
-                    <motion.a
-                        key={item}
-                        href={`#${item.toLowerCase() === 'narrative' ? 'about' : 'work'}`}
-                        onClick={() => setMobileMenuOpen(false)}
-                        initial={{ x: 50, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: i * 0.1, duration: 0.5 }}
-                        className="text-cream font-display text-5xl font-bold mb-6 hover:text-pop transition-colors cursor-hoverable"
-                    >
-                        {item}
-                    </motion.a>
-                 ))}
-                 <div className="h-px bg-white/20 w-full mb-8" />
-                 <motion.a
-                    href="mailto:oluwapamimoakinjide@gmail.com"
-                    initial={{ x: 50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-pop text-xl font-mono cursor-hoverable"
-                 >
-                    oluwapamimoakinjide@gmail.com
-                 </motion.a>
+              {['Narrative', 'Index'].map((item, i) => (
+                <motion.a
+                  key={item}
+                  href={`#${item.toLowerCase() === 'narrative' ? 'about' : 'work'}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  initial={{ x: 50, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                  className="text-cream font-display text-5xl font-bold mb-6 hover:text-pop transition-colors cursor-hoverable"
+                >
+                  {item}
+                </motion.a>
+              ))}
+              {/* Mobile Game Mode Toggle */}
+              {toggleSimulation && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    toggleSimulation();
+                  }}
+                  className="text-left font-mono text-xl font-bold mb-8 flex items-center gap-3 text-pop hover:text-white transition-colors cursor-hoverable"
+                >
+                  <span className={`w-3 h-3 rounded-full ${simulationMode ? 'bg-white' : 'bg-pop'}`}></span>
+                  {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
+                </button>
+              )}
+
+              <div className="h-px bg-white/20 w-full mb-8" />
+              <motion.a
+                href="mailto:oluwapamimoakinjide@gmail.com"
+                initial={{ x: 50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-pop text-xl font-mono cursor-hoverable"
+              >
+                oluwapamimoakinjide@gmail.com
+              </motion.a>
             </nav>
           </motion.div>
         )}
