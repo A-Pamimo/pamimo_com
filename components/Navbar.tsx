@@ -47,15 +47,15 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
           {/* Gamification Toggle (Renamed to XP.MODE) */}
           {toggleSimulation && (
             <div className="relative group hidden md:flex">
+              <div className="absolute inset-0 bg-pop blur-lg opacity-0 group-hover:opacity-40 transition-opacity duration-100"></div>
               <button
                 onClick={toggleSimulation}
-                className={`font-mono text-xs font-bold border px-3 py-1.5 transition-all cursor-hoverable items-center gap-2 flex ${simulationMode
-                  ? 'bg-pop text-white border-pop shadow-hard'
-                  : 'border-ink/20 text-ink/70 dark:border-white/20 dark:text-white/70 hover:border-pop hover:text-pop'
-                  }`}
+                className="relative font-mono font-bold text-xs border border-ink dark:border-white px-4 py-2 hover:bg-pop hover:text-white hover:border-pop transition-all overflow-hidden group-hover:skew-x-[-10deg]"
               >
-                <span className={`w-2 h-2 rounded-full ${simulationMode ? 'bg-white' : 'bg-pop'}`}></span>
-                {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
+                <span className="relative z-10 group-hover:animate-pulse flex items-center gap-2">
+                  {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
+                  {simulationMode && <span className="w-2 h-2 bg-white rounded-full animate-ping" />}
+                </span>
               </button>
             </div>
           )}
@@ -84,7 +84,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
           {/* Mobile Menu Btn */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden z-50 p-2 text-ink dark:text-white"
+            className="md:hidden z-50 p-2 text-ink dark:text-white transform transition-transform active:scale-95"
             aria-label="Toggle Menu"
           >
             {mobileMenuOpen ? 'CLOSE' : 'MENU'}
@@ -94,7 +94,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
           {!mobileMenuOpen && (
             <a
               href="mailto:contact@pamimo.com" // Update with actual email if known, effectively acts as 'Contact'
-              className="md:hidden fixed bottom-6 right-6 z-[40] bg-pop text-white px-5 py-3 rounded-full font-mono text-xs font-bold shadow-lg shadow-pop/30 hover:scale-105 transition-transform flex items-center gap-2"
+              className="md:hidden fixed bottom-6 right-6 z-[40] bg-pop text-white px-5 py-3 rounded-full font-mono text-xs font-bold shadow-lg shadow-pop/30 hover:scale-105 active:scale-90 transition-transform flex items-center gap-2"
             >
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
               HIRE ME
