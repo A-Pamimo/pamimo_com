@@ -32,9 +32,9 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                             <div className="flex-1">
                                 <div className="flex flex-wrap gap-2 mb-6">
-                                    <span className="font-mono text-xs font-bold bg-pop text-white px-3 py-1 rounded-full uppercase tracking-wider">CASE STUDY</span>
+                                    <span className="font-mono text-xs font-bold bg-pop text-white px-3 py-1 rounded-none uppercase tracking-wider">CASE STUDY</span>
                                     {project.id === 'nova' && (
-                                        <span className="font-mono text-xs font-bold bg-gold text-ink px-3 py-1 rounded-full inline-flex items-center gap-2 uppercase tracking-wider">
+                                        <span className="font-mono text-xs font-bold bg-gold text-ink px-3 py-1 rounded-none inline-flex items-center gap-2 uppercase tracking-wider">
                                             <IconTrophy className="w-3 h-3 pixel-icon" /> AWARD WINNER
                                         </span>
                                     )}
@@ -60,7 +60,7 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
                         <div className="space-y-12">
                             <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:200ms]">
                                 <h3 className="font-display font-bold text-xl mb-4 flex items-center gap-3">
-                                    <span className="w-2 h-2 bg-pop rounded-full"></span>
+                                    <span className="w-2 h-2 bg-pop rounded-none"></span>
                                     CONTEXT
                                 </h3>
                                 <p className="font-sans opacity-80 leading-relaxed text-lg">{project.context}</p>
@@ -68,19 +68,19 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
 
                             <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:300ms]">
                                 <h3 className="font-display font-bold text-xl mb-4 flex items-center gap-3">
-                                    <span className="w-2 h-2 bg-ink dark:bg-white rounded-full"></span>
+                                    <span className="w-2 h-2 bg-ink dark:bg-white rounded-none"></span>
                                     TECH STACK
                                 </h3>
                                 <div className="flex flex-wrap gap-2">
                                     {project.stack.map(tech => (
-                                        <span key={tech} className="border border-current opacity-60 px-3 py-1 text-xs font-mono rounded-md font-bold hover:bg-ink hover:text-white dark:hover:bg-white dark:hover:text-ink transition-colors cursor-default">{tech}</span>
+                                        <span key={tech} className="border border-current opacity-60 px-3 py-1 text-xs font-mono rounded-none font-bold hover:bg-ink hover:text-white dark:hover:bg-white dark:hover:text-ink transition-colors cursor-default">{tech}</span>
                                     ))}
                                 </div>
                             </div>
 
                             <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:400ms]">
                                 <h3 className="font-display font-bold text-xl mb-4 flex items-center gap-3">
-                                    <span className="w-2 h-2 bg-ink dark:bg-white rounded-full"></span>
+                                    <span className="w-2 h-2 bg-ink dark:bg-white rounded-none"></span>
                                     STATS
                                 </h3>
                                 <div className="space-y-3 font-mono text-sm">
@@ -106,7 +106,7 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
                                 </div>
                             </div>
 
-                            <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:700ms] bg-ink text-cream dark:bg-white dark:text-ink p-8 md:p-12 rounded-2xl shadow-xl relative overflow-hidden group">
+                            <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:700ms] bg-ink text-cream dark:bg-white dark:text-ink p-8 md:p-12 rounded-none shadow-xl relative overflow-hidden group">
                                 <div className="absolute inset-0 bg-pop opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
                                 <div className="relative z-10">
                                     <h3 className="font-mono text-xs text-pop font-bold mb-4 uppercase flex items-center gap-2">
@@ -129,7 +129,7 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
 
                             {project.image && (
                                 <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:750ms]">
-                                    <div className="relative group overflow-hidden rounded-xl border-2 border-ink dark:border-white">
+                                    <div className="relative group overflow-hidden rounded-none border-2 border-ink dark:border-white">
                                         <img
                                             src={project.image}
                                             alt={project.imageCaption || project.title}

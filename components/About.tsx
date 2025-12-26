@@ -30,22 +30,6 @@ const About: React.FC = () => {
           <div className="prose prose-lg dark:prose-invert opacity-80 font-sans space-y-6">
             <p>My narrative isn't just about where I'm from; it's about what I've built. Across every role, three things recur:</p>
 
-            {/* Career Metrics - Added per Product Review */}
-            <div className="grid grid-cols-3 gap-2 py-4 my-2 border-y border-ink/10 dark:border-white/10">
-              <div className="text-center">
-                <div className="font-display font-bold text-2xl md:text-3xl text-pop">3+</div>
-                <div className="font-mono text-[10px] md:text-xs uppercase opacity-60">Years Exp</div>
-              </div>
-              <div className="text-center border-l border-ink/10 dark:border-white/10">
-                <div className="font-display font-bold text-2xl md:text-3xl text-pop">5+</div>
-                <div className="font-mono text-[10px] md:text-xs uppercase opacity-60">Products</div>
-              </div>
-              <div className="text-center border-l border-ink/10 dark:border-white/10">
-                <div className="font-display font-bold text-2xl md:text-3xl text-pop">100k+</div>
-                <div className="font-mono text-[10px] md:text-xs uppercase opacity-60">Impact</div>
-              </div>
-            </div>
-
             <div className="space-y-6 mt-8">
               {[
                 { title: 'Building Institutions', desc: 'I don\'t just participate; I build structures that last. From founding student associations to scaling advisory ventures.' },
