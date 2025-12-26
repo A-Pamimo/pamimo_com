@@ -17,16 +17,17 @@ import { Project } from '../types';
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [simulationMode, setSimulationMode] = useState(false);
+  const [simulationPreview, setSimulationPreview] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const handleProjectSelect = (project: Project) => {
     // If selecting from Story Mode, close Story Mode first
     if (simulationMode) {
-        setSimulationMode(false);
-        // Small timeout to allow transition
-        setTimeout(() => setSelectedProject(project), 300);
+      setSimulationMode(false);
+      // Small timeout to allow transition
+      setTimeout(() => setSelectedProject(project), 300);
     } else {
-        setSelectedProject(project);
+      setSelectedProject(project);
     }
   };
 
@@ -37,15 +38,16 @@ export default function Home() {
       </AnimatePresence>
 
       {!loading && (
-        <div className={simulationMode ? 'font-mono tracking-tight' : ''}>
+        <div className={`${simulationMode ? 'font-mono tracking-tight' : ''} ${simulationPreview ? 'dark' : ''}`}>
           <CustomCursor />
-          <BackgroundCanvas simulationMode={simulationMode} />
-          
-          <Navbar 
-            simulationMode={simulationMode} 
-            toggleSimulation={() => setSimulationMode(!simulationMode)} 
+          <BackgroundCanvas simulationMode={simulationMode} simulationPreview={simulationPreview} />
+
+          <Navbar
+            simulationMode={simulationMode}
+            toggleSimulation={() => setSimulationMode(!simulationMode)}
+            setSimulationPreview={setSimulationPreview}
           />
-          
+
           <main className={`transition-all duration-500 ${simulationMode ? 'blur-md opacity-20 pointer-events-none' : 'opacity-100'}`}>
             <Hero />
             <About />
@@ -55,19 +57,19 @@ export default function Home() {
 
           <AnimatePresence>
             {simulationMode && (
-                <StoryMode 
-                    active={simulationMode} 
-                    onExit={() => setSimulationMode(false)}
-                    onSelectProject={handleProjectSelect}
-                />
+              <StoryMode
+                active={simulationMode}
+                onExit={() => setSimulationMode(false)}
+                onSelectProject={handleProjectSelect}
+              />
             )}
           </AnimatePresence>
 
           {selectedProject && (
-             <ProjectModal 
-                project={selectedProject} 
-                onClose={() => setSelectedProject(null)} 
-             />
+            <ProjectModal
+              project={selectedProject}
+              onClose={() => setSelectedProject(null)}
+            />
           )}
         </div>
       )}

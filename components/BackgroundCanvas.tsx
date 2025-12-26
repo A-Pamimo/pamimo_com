@@ -3,10 +3,11 @@
 import React, { useEffect, useRef } from 'react';
 
 interface BackgroundCanvasProps {
-    simulationMode: boolean;
+  simulationMode: boolean;
+  simulationPreview?: boolean;
 }
 
-const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode }) => {
+const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, simulationPreview }) => {
   const geoCanvasRef = useRef<HTMLCanvasElement>(null);
   const noiseCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -34,7 +35,7 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode }) =
 
   // --- GEO SHAPES (Normal Mode Only) ---
   useEffect(() => {
-    if (simulationMode) return; 
+    if (simulationMode) return;
 
     const canvas = geoCanvasRef.current;
     if (!canvas) return;
@@ -44,7 +45,7 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode }) =
     let width = 0;
     let height = 0;
     let animationFrameId: number;
-    
+
     interface Shape {
       x: number;
       y: number;
@@ -73,17 +74,17 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode }) =
           if (this.y < -100 || this.y > height + 100) this.dy *= -1;
         },
         draw() {
-           // We check for dark mode via document class manually since canvas is outside React render cycle largely
-           const isDark = document.documentElement.classList.contains('dark');
-           ctx.beginPath();
-           ctx.lineWidth = 1;
-           ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(18, 18, 18, 0.05)';
-           if (this.type === 'circle') {
-             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-           } else {
-             ctx.rect(this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
-           }
-           ctx.stroke();
+          // We check for dark mode via document class manually since canvas is outside React render cycle largely
+          const isDark = document.documentElement.classList.contains('dark') || simulationPreview;
+          ctx.beginPath();
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(18, 18, 18, 0.05)';
+          if (this.type === 'circle') {
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          } else {
+            ctx.rect(this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
+          }
+          ctx.stroke();
         }
       };
     };
@@ -114,23 +115,35 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode }) =
     resize();
     initShapes();
     animateBg();
-    
+
     window.addEventListener('resize', resize);
 
     return () => {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [simulationMode]);
+  }, [simulationMode, simulationPreview]);
 
   return (
     <>
       <canvas ref={noiseCanvasRef} className="fixed inset-0 z-[-1] opacity-[0.05] pointer-events-none" />
-      
+
+      {/* Simulation Preview Grid Overlay */}
+      <div
+        className={`fixed inset-0 z-[-1.5] pointer-events-none transition-opacity duration-300 bg-zinc-900 ${simulationPreview ? 'opacity-100' : 'opacity-0'}`}
+        style={{
+          backgroundImage: `
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
+            `,
+          backgroundSize: '40px 40px'
+        }}
+      />
+
       {/* Standard Mode Canvas: Background */}
-      <canvas 
-        ref={geoCanvasRef} 
-        className={`fixed inset-0 z-[-2] pointer-events-none transition-opacity duration-500 ${simulationMode ? 'opacity-0' : 'opacity-100'}`} 
+      <canvas
+        ref={geoCanvasRef}
+        className={`fixed inset-0 z-[-2] pointer-events-none transition-opacity duration-500 ${simulationMode ? 'opacity-0' : 'opacity-100'}`}
       />
     </>
   );

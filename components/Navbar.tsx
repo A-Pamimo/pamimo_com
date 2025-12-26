@@ -9,9 +9,10 @@ import Logo from './Logo';
 interface NavbarProps {
   simulationMode?: boolean;
   toggleSimulation?: () => void;
+  setSimulationPreview?: (active: boolean) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => {
+const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSimulationPreview }) => {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -49,6 +50,8 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation }) => 
             <div className="hidden md:flex">
               <button
                 onClick={toggleSimulation}
+                onMouseEnter={() => setSimulationPreview && setSimulationPreview(true)}
+                onMouseLeave={() => setSimulationPreview && setSimulationPreview(false)}
                 className="group relative font-mono font-bold text-xs border border-ink dark:border-white px-4 py-2 transition-all hover:bg-black hover:text-green-400 hover:border-green-400 overflow-hidden"
               >
                 <div className="relative z-10 flex items-center gap-2">
