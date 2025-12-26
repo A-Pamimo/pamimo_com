@@ -220,15 +220,13 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
 
 
     // --- Mouse / Touch Handling ---
-    const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        if (currentView !== 'world') return;
-
+    const updateCursorPos = (clientX: number, clientY: number) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
         const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
         const wx = x - cx + camera.current.x;
@@ -252,8 +250,25 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
         if (!hit && isHoveringObject) setIsHoveringObject(false);
     };
 
-    const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
         if (currentView !== 'world') return;
+        updateCursorPos(e.clientX, e.clientY);
+    };
+
+    const handleCanvasTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+        if (currentView !== 'world') return;
+        // e.preventDefault(); // removed to allow scrolling if needed, but usually we want to prevent for full screen apps
+        const touch = e.touches[0];
+        if (touch) {
+            updateCursorPos(touch.clientX, touch.clientY);
+        }
+    };
+
+    const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+        if (currentView !== 'world') return;
+
+        // For touch end where we might not have a current position, we rely on the last updateCursorPos
+        // However, it's safer to just check if hoveredObject is set.
         if (hoveredObject.current) {
             triggerInteraction(hoveredObject.current);
         }
@@ -529,14 +544,14 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
 
     const MobileBtn = ({ dir }: { dir: string }) => (
         <button
-            className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-full border border-white/20 active:bg-pop/50 flex items-center justify-center transition-colors"
+            className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-full border border-white/20 active:bg-pop/50 flex items-center justify-center transition-colors touch-none"
             onPointerDown={() => setActiveKeys(p => ({ ...p, [dir]: true }))}
             onPointerUp={() => setActiveKeys(p => ({ ...p, [dir]: false }))}
             onPointerLeave={() => setActiveKeys(p => ({ ...p, [dir]: false }))}
         >
             <IconArrow className={`w-6 h-6 text-white ${dir === 'up' ? '-rotate-90' :
-                    dir === 'down' ? 'rotate-90' :
-                        dir === 'left' ? 'rotate-180' : ''
+                dir === 'down' ? 'rotate-90' :
+                    dir === 'left' ? 'rotate-180' : ''
                 }`} />
         </button>
     );
@@ -558,6 +573,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
                 ref={canvasRef}
                 className="block w-full h-full"
                 onMouseMove={handleCanvasMouseMove}
+                onTouchStart={handleCanvasTouch}
                 onClick={handleCanvasClick}
             />
 
