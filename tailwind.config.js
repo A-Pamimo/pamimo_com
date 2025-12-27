@@ -18,7 +18,7 @@ module.exports = {
         ink: '#121212',
         charcoal: '#1A1A1A',
         zinc: '#27272a',
-        pop: '#FF4400',
+        pop: 'var(--color-pop)',
         gold: '#eab308',
       },
       boxShadow: {

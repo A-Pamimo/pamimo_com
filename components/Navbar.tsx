@@ -41,7 +41,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
         <div className={`flex items-center gap-6 ${linkClasses}`}>
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#about" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">NARRATIVE</a>
+            <a href="#about" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">ABOUT ME</a>
             <a href="#work" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">INDEX</a>
           </div>
 
@@ -96,15 +96,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
           </button>
 
           {/* Mobile Sticky CTA (Persistent Bottom Right) */}
-          {!mobileMenuOpen && (
-            <a
-              href="mailto:contact@pamimo.com" // Update with actual email if known, effectively acts as 'Contact'
-              className="md:hidden fixed bottom-6 right-6 z-[40] bg-pop text-white px-5 py-3 rounded-full font-mono text-xs font-bold shadow-lg shadow-pop/30 hover:scale-105 active:scale-90 transition-transform flex items-center gap-2"
-            >
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-              HIRE ME
-            </a>
-          )}
+
         </div>
       </nav>
 
@@ -126,10 +118,10 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
             </button>
 
             <nav className="flex flex-col">
-              {['Narrative', 'Index'].map((item, i) => (
+              {['About Me', 'Index'].map((item, i) => (
                 <motion.a
                   key={item}
-                  href={`#${item.toLowerCase() === 'narrative' ? 'about' : 'work'}`}
+                  href={`#${item.toLowerCase() === 'about me' ? 'about' : 'work'}`}
                   onClick={() => setMobileMenuOpen(false)}
                   initial={{ x: 50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}

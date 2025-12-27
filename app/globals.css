@@ -2,10 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-pop: #FF4400;
+  }
+  .dark {
+    --color-pop: #FF5522; /* Optical adjustment: Slightly lighter/desaturated for dark mode legibility */
+  }
+}
+
 /* Base transitions */
 body { 
     transition-property: background-color, border-color, color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1); /* "Apple-like" Snappy Ease-Out */
     transition-duration: 500ms;
 }
 
