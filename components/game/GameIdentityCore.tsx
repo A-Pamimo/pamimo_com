@@ -53,20 +53,22 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack }) => {
                                 exit={{ opacity: 0, x: -20 }}
                                 className="grid grid-cols-1 md:grid-cols-3 gap-8 h-full"
                             >
-                                <div className="md:col-span-1 border border-amber-500/30 p-2">
-                                    <img
-                                        src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=800"
+                                <div className="md:col-span-1 border border-amber-500/30 p-2 bg-black">
+                                    <video
+                                        src="/IMG_3961.mov"
                                         className="w-full h-full object-cover grayscale opacity-80"
-                                        alt="Subject"
+                                        autoPlay
+                                        loop
+                                        muted
+                                        playsInline
                                     />
                                 </div>
                                 <div className="md:col-span-2 space-y-6">
                                     <h2 className="text-3xl font-bold border-b border-amber-500/30 pb-2">SUBJECT: PAMIMO</h2>
                                     <div className="grid grid-cols-2 gap-4 text-sm">
-                                        <div className="opacity-70">CLASS:</div><div>STRATEGIST</div>
-                                        <div className="opacity-70">LEVEL:</div><div>25</div>
-                                        <div className="opacity-70">ORIGIN:</div><div>NIGERIA</div>
+                                        <div className="opacity-70">CLASS:</div><div>BUILDER</div>
                                         <div className="opacity-70">BASE:</div><div>TORONTO, CA</div>
+                                        <div className="opacity-70">STATUS:</div><div>ONLINE</div>
                                     </div>
                                     <div className="bg-amber-500/10 p-4 border border-amber-500/30 mt-4">
                                         <p className="leading-relaxed text-sm opacity-90">
@@ -89,11 +91,11 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack }) => {
 
                                 <div className="space-y-4">
                                     {[
-                                        { label: 'STRATEGIC_PLANNING', val: 95 },
-                                        { label: 'SYSTEMS_ARCHITECTURE', val: 85 },
-                                        { label: 'COMMUNITY_BUILDING', val: 90 },
-                                        { label: 'ECONOMETRICS', val: 80 },
-                                        { label: 'RESILIENCE', val: 100 }
+                                        { label: 'PRODUCT_SENSE', val: 95 },
+                                        { label: 'STRATEGIC_ALIGNMENT', val: 90 },
+                                        { label: 'TECHNICAL_FLUENCY', val: 85 },
+                                        { label: 'STAKEHOLDER_MGMT', val: 90 },
+                                        { label: 'DATA_ANALYTICS', val: 80 }
                                     ].map(stat => (
                                         <div key={stat.label}>
                                             <div className="flex justify-between text-xs mb-1">
@@ -114,8 +116,8 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack }) => {
 
                                 <div className="grid grid-cols-2 gap-4 mt-8">
                                     <div className="border border-amber-500/30 p-4 text-center">
-                                        <div className="text-3xl font-bold mb-1">4+</div>
-                                        <div className="text-xs opacity-60">YEARS_EXP</div>
+                                        <div className="text-3xl font-bold mb-1">NEW</div>
+                                        <div className="text-xs opacity-60">GRAD</div>
                                     </div>
                                     <div className="border border-amber-500/30 p-4 text-center">
                                         <div className="text-3xl font-bold mb-1">300K</div>
@@ -137,18 +139,23 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack }) => {
 
                                 <div className="space-y-6 text-sm">
                                     <div className="border-l-2 border-amber-500 pl-4 py-1">
-                                        <span className="text-xs opacity-50 block mb-1">LOG_2023.11</span>
-                                        <p className="opacity-90">Deployed "Impact 100" methodology. System efficiency increased by 40%. The goal was to prove that cultural infrastructure is economic infrastructure.</p>
+                                        <span className="text-xs opacity-50 block mb-1">LOG_2025.11</span>
+                                        <p className="opacity-90">Impact 100 Methodology deployed. Framework finalized for Western Canada Economic Forum to quantify cultural value.</p>
                                     </div>
 
                                     <div className="border-l-2 border-amber-500 pl-4 py-1">
-                                        <span className="text-xs opacity-50 block mb-1">LOG_2022.05</span>
-                                        <p className="opacity-90">City Strategy Initiated. Processed $1B+ in budget data. Found $1M in optimizations. Variance analysis successful.</p>
+                                        <span className="text-xs opacity-50 block mb-1">LOG_2025.05 - 2025.08</span>
+                                        <p className="opacity-90">RBC Product Manager (Amplify). Built Agentic AI solution for banking advisors. Filed patent for automated workflows.</p>
                                     </div>
 
                                     <div className="border-l-2 border-amber-500 pl-4 py-1">
-                                        <span className="text-xs opacity-50 block mb-1">LOG_2021.09</span>
-                                        <p className="opacity-90">Founded PASA node. Community fragmentation detected. Executed unification protocol. Status: Thriving.</p>
+                                        <span className="text-xs opacity-50 block mb-1">LOG_2024.07 - 2025.04</span>
+                                        <p className="opacity-90">City Strategy Protocol. Processed $1B+ in budget data for Saskatoon (300k+ citizens). Executed rigorous variance analysis.</p>
+                                    </div>
+
+                                    <div className="border-l-2 border-amber-500 pl-4 py-1">
+                                        <span className="text-xs opacity-50 block mb-1">LOG_2023.08</span>
+                                        <p className="opacity-90">Founded ESS node. Community fragmentation detected. Executed unification protocol. Status: Thriving.</p>
                                     </div>
                                 </div>
                             </motion.div>

@@ -204,12 +204,18 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
     useEffect(() => {
         if (!active) return;
         const handleInteract = (e: KeyboardEvent) => {
+            // Prevent scrolling for game keys
+            if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+                e.preventDefault();
+            }
+
             if (currentView !== 'world') {
                 if (e.key === 'Escape') setCurrentView('world');
                 return;
             }
 
             if ((e.key === 'Enter' || e.key === ' ') && interactionTarget) {
+                e.preventDefault();
                 triggerInteraction(interactionTarget);
             }
             if (e.key === 'Escape') onExit();

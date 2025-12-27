@@ -5,7 +5,7 @@ export const PROJECT_DATA: Record<string, Project> = {
     nova: {
         id: "nova",
         title: "NOVA: Agentic AI for Banking",
-        subtitle: "Product Lead // RBC Amplify (Royal Bank of Canada)",
+        subtitle: "Product Manager // RBC Amplify (Royal Bank of Canada)",
         tag: "Product Innovation",
         context: "I was selected for RBC Amplify, one of Canada's most competitive innovation programs, where I led product strategy for a cross-functional squad tackling complex banking operations.",
         stack: ["Agentic AI", "Product Strategy", "Roadmapping", "Stakeholder Management", "Cross-functional Leadership", "Strategic Communication", "AI/ML Frameworks", "Business Case Development"],
@@ -45,7 +45,7 @@ export const PROJECT_DATA: Record<string, Project> = {
         how: "I authored comprehensive economic valuation reports and board-ready briefs. I translated technical data into clear strategic narratives for clients like Project HAIRitage.",
         impact: "I established standing evidence of market trust, delivering high-quality impact reports and strategic briefs that rival top-tier consultancies.",
         category: ['strategy', 'tech'],
-        year: 2024,
+        year: 2025,
         stats: { strategy: 100, tech: 60, product: 70, leadership: 100 },
         testimonial: "The final report met our expectations. We really appreciated how detailed it was in direct connection to our goals. It was very clear and efficient. I really appreciated the time taken to explain, in detail, how to present the report to stakeholders.",
         testimonialAuthor: "Executive Director // Regional Arts Organization",
@@ -54,7 +54,7 @@ export const PROJECT_DATA: Record<string, Project> = {
     city: {
         id: "city",
         title: "Municipal Performance System",
-        subtitle: "Strategy Analyst // City of Saskatoon",
+        subtitle: "Strategy Intern // City of Saskatoon",
         tag: "Strategy",
         context: "I was a contributor to a city-wide strategic plan for a municipality of 300,000+ citizens, moving from high-level policy goals to execution readiness.",
         stack: ["Power BI", "SQL", "Strategic Planning", "Variance Analysis", "Data Visualization", "Process Automation", "Stakeholder Reporting", "Financial Analysis"],
