@@ -128,15 +128,16 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
     <>
       <canvas ref={noiseCanvasRef} className="fixed inset-0 z-[-1] opacity-[0.05] pointer-events-none" />
 
-      {/* Simulation Preview Grid Overlay */}
+      {/* Simulation Preview Grid Overlay - High Contrast Neon */}
       <div
-        className={`fixed inset-0 z-[-1.5] pointer-events-none transition-opacity duration-300 bg-zinc-900 ${simulationPreview ? 'opacity-100' : 'opacity-0'}`}
+        className={`fixed inset-0 z-[-1.5] pointer-events-none transition-opacity duration-300 bg-black ${simulationPreview ? 'opacity-100' : 'opacity-0'}`}
         style={{
           backgroundImage: `
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
+                linear-gradient(rgba(0, 255, 65, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 65, 0.2) 1px, transparent 1px)
             `,
-          backgroundSize: '40px 40px'
+          backgroundSize: '50px 50px',
+          boxShadow: 'inset 0 0 100px rgba(0, 255, 65, 0.1)'
         }}
       />
 
