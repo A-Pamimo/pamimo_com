@@ -4,163 +4,163 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface GameIdentityCoreProps {
-  onBack: () => void;
+    onBack: () => void;
 }
 
 type Tab = 'profile' | 'stats' | 'lore';
 
 const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack }) => {
-  const [activeTab, setActiveTab] = useState<Tab>('profile');
+    const [activeTab, setActiveTab] = useState<Tab>('profile');
 
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="absolute inset-0 z-50 flex items-center justify-center p-4 pointer-events-auto bg-black/95 backdrop-blur-sm"
-    >
-      <div className="w-full max-w-4xl bg-black border-2 border-amber-500/50 relative shadow-[0_0_30px_rgba(245,158,11,0.15)] flex flex-col h-[600px] overflow-hidden">
-         
-         {/* Navigation Tabs */}
-         <div className="flex border-b border-amber-500/30">
-            {['profile', 'stats', 'lore'].map((tab) => (
-                <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab as Tab)}
-                    className={`flex-1 py-4 font-mono text-sm uppercase tracking-widest transition-colors border-r border-amber-500/30 last:border-r-0 hover:bg-amber-500/10 ${
-                        activeTab === tab ? 'bg-amber-500 text-black font-bold' : 'text-amber-500'
-                    }`}
-                >
-                    [{tab.toUpperCase()}]
-                </button>
-            ))}
-            <button 
-                onClick={onBack}
-                className="px-6 py-4 font-mono text-sm text-amber-500 hover:bg-red-900/20 hover:text-red-500 transition-colors border-l border-amber-500/30"
-            >
-                [X]
-            </button>
-         </div>
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 flex items-center justify-center p-4 pointer-events-auto bg-black/95 backdrop-blur-sm"
+            onClick={(e) => e.stopPropagation()}
+        >
+            <div className="w-full max-w-4xl bg-black border-2 border-amber-500/50 relative shadow-[0_0_30px_rgba(245,158,11,0.15)] flex flex-col h-[600px] overflow-hidden">
 
-         {/* Content Area */}
-         <div className="flex-1 p-8 md:p-12 font-mono text-amber-500 overflow-y-auto relative">
-             <AnimatePresence mode="wait">
-                {activeTab === 'profile' && (
-                    <motion.div 
-                        key="profile"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="grid grid-cols-1 md:grid-cols-3 gap-8 h-full"
+                {/* Navigation Tabs */}
+                <div className="flex border-b border-amber-500/30">
+                    {['profile', 'stats', 'lore'].map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveTab(tab as Tab)}
+                            className={`flex-1 py-4 font-mono text-sm uppercase tracking-widest transition-colors border-r border-amber-500/30 last:border-r-0 hover:bg-amber-500/10 ${activeTab === tab ? 'bg-amber-500 text-black font-bold' : 'text-amber-500'
+                                }`}
+                        >
+                            [{tab.toUpperCase()}]
+                        </button>
+                    ))}
+                    <button
+                        onClick={onBack}
+                        className="px-6 py-4 font-mono text-sm text-amber-500 hover:bg-red-900/20 hover:text-red-500 transition-colors border-l border-amber-500/30"
                     >
-                        <div className="md:col-span-1 border border-amber-500/30 p-2">
-                             <img 
-                                src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=800" 
-                                className="w-full h-full object-cover grayscale opacity-80"
-                                alt="Subject" 
-                             />
-                        </div>
-                        <div className="md:col-span-2 space-y-6">
-                            <h2 className="text-3xl font-bold border-b border-amber-500/30 pb-2">SUBJECT: PAMIMO</h2>
-                            <div className="grid grid-cols-2 gap-4 text-sm">
-                                <div className="opacity-70">CLASS:</div><div>STRATEGIST</div>
-                                <div className="opacity-70">LEVEL:</div><div>25</div>
-                                <div className="opacity-70">ORIGIN:</div><div>NIGERIA</div>
-                                <div className="opacity-70">BASE:</div><div>TORONTO, CA</div>
-                            </div>
-                            <div className="bg-amber-500/10 p-4 border border-amber-500/30 mt-4">
-                                <p className="leading-relaxed text-sm opacity-90">
-                                    "Primary Directive: To bridge the gap between technical rigor and human-centric strategy. Operates with high agency in complex systems."
-                                </p>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
+                        [X]
+                    </button>
+                </div>
 
-                {activeTab === 'stats' && (
-                    <motion.div 
-                        key="stats"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="space-y-8"
-                    >
-                        <h2 className="text-2xl font-bold mb-6">&gt; ATTRIBUTE_MATRIX</h2>
-                        
-                        <div className="space-y-4">
-                            {[
-                                { label: 'STRATEGIC_PLANNING', val: 95 },
-                                { label: 'SYSTEMS_ARCHITECTURE', val: 85 },
-                                { label: 'COMMUNITY_BUILDING', val: 90 },
-                                { label: 'ECONOMETRICS', val: 80 },
-                                { label: 'RESILIENCE', val: 100 }
-                            ].map(stat => (
-                                <div key={stat.label}>
-                                    <div className="flex justify-between text-xs mb-1">
-                                        <span>{stat.label}</span>
-                                        <span>{stat.val}%</span>
+                {/* Content Area */}
+                <div className="flex-1 p-8 md:p-12 font-mono text-amber-500 overflow-y-auto relative">
+                    <AnimatePresence mode="wait">
+                        {activeTab === 'profile' && (
+                            <motion.div
+                                key="profile"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="grid grid-cols-1 md:grid-cols-3 gap-8 h-full"
+                            >
+                                <div className="md:col-span-1 border border-amber-500/30 p-2">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=800"
+                                        className="w-full h-full object-cover grayscale opacity-80"
+                                        alt="Subject"
+                                    />
+                                </div>
+                                <div className="md:col-span-2 space-y-6">
+                                    <h2 className="text-3xl font-bold border-b border-amber-500/30 pb-2">SUBJECT: PAMIMO</h2>
+                                    <div className="grid grid-cols-2 gap-4 text-sm">
+                                        <div className="opacity-70">CLASS:</div><div>STRATEGIST</div>
+                                        <div className="opacity-70">LEVEL:</div><div>25</div>
+                                        <div className="opacity-70">ORIGIN:</div><div>NIGERIA</div>
+                                        <div className="opacity-70">BASE:</div><div>TORONTO, CA</div>
                                     </div>
-                                    <div className="w-full h-2 bg-amber-900/30">
-                                        <motion.div 
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${stat.val}%` }}
-                                            transition={{ duration: 1, delay: 0.2 }}
-                                            className="h-full bg-amber-500"
-                                        />
+                                    <div className="bg-amber-500/10 p-4 border border-amber-500/30 mt-4">
+                                        <p className="leading-relaxed text-sm opacity-90">
+                                            "Primary Directive: To bridge the gap between technical rigor and human-centric strategy. Operates with high agency in complex systems."
+                                        </p>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            </motion.div>
+                        )}
 
-                        <div className="grid grid-cols-2 gap-4 mt-8">
-                            <div className="border border-amber-500/30 p-4 text-center">
-                                <div className="text-3xl font-bold mb-1">4+</div>
-                                <div className="text-xs opacity-60">YEARS_EXP</div>
-                            </div>
-                            <div className="border border-amber-500/30 p-4 text-center">
-                                <div className="text-3xl font-bold mb-1">300K</div>
-                                <div className="text-xs opacity-60">LIVES_IMPACTED</div>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
+                        {activeTab === 'stats' && (
+                            <motion.div
+                                key="stats"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="space-y-8"
+                            >
+                                <h2 className="text-2xl font-bold mb-6">&gt; ATTRIBUTE_MATRIX</h2>
 
-                {activeTab === 'lore' && (
-                    <motion.div 
-                        key="lore"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="space-y-6 overflow-y-auto h-full pr-4"
-                    >
-                         <h2 className="text-2xl font-bold mb-4">&gt; SYSTEM_LOGS</h2>
-                         
-                         <div className="space-y-6 text-sm">
-                            <div className="border-l-2 border-amber-500 pl-4 py-1">
-                                <span className="text-xs opacity-50 block mb-1">LOG_2023.11</span>
-                                <p className="opacity-90">Deployed "Impact 100" methodology. System efficiency increased by 40%. The goal was to prove that cultural infrastructure is economic infrastructure.</p>
-                            </div>
-                            
-                            <div className="border-l-2 border-amber-500 pl-4 py-1">
-                                <span className="text-xs opacity-50 block mb-1">LOG_2022.05</span>
-                                <p className="opacity-90">City Strategy Initiated. Processed $1B+ in budget data. Found $1M in optimizations. Variance analysis successful.</p>
-                            </div>
+                                <div className="space-y-4">
+                                    {[
+                                        { label: 'STRATEGIC_PLANNING', val: 95 },
+                                        { label: 'SYSTEMS_ARCHITECTURE', val: 85 },
+                                        { label: 'COMMUNITY_BUILDING', val: 90 },
+                                        { label: 'ECONOMETRICS', val: 80 },
+                                        { label: 'RESILIENCE', val: 100 }
+                                    ].map(stat => (
+                                        <div key={stat.label}>
+                                            <div className="flex justify-between text-xs mb-1">
+                                                <span>{stat.label}</span>
+                                                <span>{stat.val}%</span>
+                                            </div>
+                                            <div className="w-full h-2 bg-amber-900/30">
+                                                <motion.div
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${stat.val}%` }}
+                                                    transition={{ duration: 1, delay: 0.2 }}
+                                                    className="h-full bg-amber-500"
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
 
-                            <div className="border-l-2 border-amber-500 pl-4 py-1">
-                                <span className="text-xs opacity-50 block mb-1">LOG_2021.09</span>
-                                <p className="opacity-90">Founded PASA node. Community fragmentation detected. Executed unification protocol. Status: Thriving.</p>
-                            </div>
-                         </div>
-                    </motion.div>
-                )}
-             </AnimatePresence>
-         </div>
+                                <div className="grid grid-cols-2 gap-4 mt-8">
+                                    <div className="border border-amber-500/30 p-4 text-center">
+                                        <div className="text-3xl font-bold mb-1">4+</div>
+                                        <div className="text-xs opacity-60">YEARS_EXP</div>
+                                    </div>
+                                    <div className="border border-amber-500/30 p-4 text-center">
+                                        <div className="text-3xl font-bold mb-1">300K</div>
+                                        <div className="text-xs opacity-60">LIVES_IMPACTED</div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
 
-         {/* Scanlines */}
-         <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
-      </div>
-    </motion.div>
-  );
+                        {activeTab === 'lore' && (
+                            <motion.div
+                                key="lore"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="space-y-6 overflow-y-auto h-full pr-4"
+                            >
+                                <h2 className="text-2xl font-bold mb-4">&gt; SYSTEM_LOGS</h2>
+
+                                <div className="space-y-6 text-sm">
+                                    <div className="border-l-2 border-amber-500 pl-4 py-1">
+                                        <span className="text-xs opacity-50 block mb-1">LOG_2023.11</span>
+                                        <p className="opacity-90">Deployed "Impact 100" methodology. System efficiency increased by 40%. The goal was to prove that cultural infrastructure is economic infrastructure.</p>
+                                    </div>
+
+                                    <div className="border-l-2 border-amber-500 pl-4 py-1">
+                                        <span className="text-xs opacity-50 block mb-1">LOG_2022.05</span>
+                                        <p className="opacity-90">City Strategy Initiated. Processed $1B+ in budget data. Found $1M in optimizations. Variance analysis successful.</p>
+                                    </div>
+
+                                    <div className="border-l-2 border-amber-500 pl-4 py-1">
+                                        <span className="text-xs opacity-50 block mb-1">LOG_2021.09</span>
+                                        <p className="opacity-90">Founded PASA node. Community fragmentation detected. Executed unification protocol. Status: Thriving.</p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+
+                {/* Scanlines */}
+                <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
+            </div>
+        </motion.div>
+    );
 };
 
 export default GameIdentityCore;
