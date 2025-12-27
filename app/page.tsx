@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
@@ -11,6 +11,7 @@ import CustomCursor from '../components/CustomCursor';
 import BackgroundCanvas from '../components/BackgroundCanvas';
 import Preloader from '../components/Preloader';
 import StoryMode from '../components/StoryMode';
+import MobileTerminal from '../components/MobileTerminal';
 import ProjectModal from '../components/ProjectModal';
 import { Project } from '../types';
 
@@ -19,6 +20,14 @@ export default function Home() {
   const [simulationMode, setSimulationMode] = useState(false);
   const [simulationPreview, setSimulationPreview] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize(); // Initial check
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleProjectSelect = (project: Project) => {
     // If selecting from Story Mode, close Story Mode first
@@ -60,11 +69,20 @@ export default function Home() {
 
           <AnimatePresence>
             {simulationMode && (
-              <StoryMode
-                active={simulationMode}
-                onExit={() => setSimulationMode(false)}
-                onSelectProject={handleProjectSelect}
-              />
+              isMobile ? (
+                <MobileTerminal
+                  key="mobile-terminal"
+                  onExit={() => setSimulationMode(false)}
+                  onSelectProject={handleProjectSelect}
+                />
+              ) : (
+                <StoryMode
+                  key="desktop-story-mode"
+                  active={simulationMode}
+                  onExit={() => setSimulationMode(false)}
+                  onSelectProject={handleProjectSelect}
+                />
+              )
             )}
           </AnimatePresence>
 
