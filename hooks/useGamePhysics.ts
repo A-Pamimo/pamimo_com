@@ -42,9 +42,10 @@ interface UseGamePhysicsProps {
     onDraw: (ctx: CanvasRenderingContext2D, state: GamePhysicsState) => void;
     onExit: () => void;
     currentView: 'world' | 'project' | 'identity' | 'comms';
+    keys: React.MutableRefObject<Record<string, boolean>>;
 }
 
-export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView }: UseGamePhysicsProps) => {
+export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView, keys }: UseGamePhysicsProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const requestRef = useRef<number>(0);
 
@@ -54,7 +55,7 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
 
     // Refs (Physics State)
     const player = useRef<Player>({ pos: { x: 0, y: 0 }, vel: { x: 0, y: 0 }, facing: 'down' });
-    const keys = useRef<Record<string, boolean>>({});
+    // Keys are now passed in via props
     const activeKeys = useRef<Record<string, boolean>>({}); // For mobile controls
     const camera = useRef<Vector>({ x: 0, y: 0 });
     const objects = useRef<GameObject[]>([]);
@@ -148,12 +149,6 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
         player.current.pos = { x: 0, y: 0 };
         player.current.vel = { x: 0, y: 0 };
 
-        // Event Listeners
-        const handleKeyDown = (e: KeyboardEvent) => { keys.current[e.key] = true; };
-        const handleKeyUp = (e: KeyboardEvent) => { keys.current[e.key] = false; };
-        window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('keyup', handleKeyUp);
-
         // Loop
         const loop = () => {
             if (currentView === 'world') update();
@@ -180,8 +175,6 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
         requestRef.current = requestAnimationFrame(loop);
 
         return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('keyup', handleKeyUp);
             if (requestRef.current) cancelAnimationFrame(requestRef.current);
         };
     }, [active, currentView]);
@@ -284,40 +277,7 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
         setInteractionTarget(target);
     };
 
-    // --- Interaction Listener ---
-    useEffect(() => {
-        if (!active) return;
-        const handleInteract = (e: KeyboardEvent) => {
-            if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
-
-            if (e.key === 'Escape') {
-                // Priority: Close interaction first, then exit game
-                if (interactionTarget && (currentView !== 'world' || isHoveringObject /* Logic handled by hook but effect is here */)) {
-                    // Actually, useGamePhysics doesn't know about `projectModal` state of StoryMode.
-                    // So we let StoryMode handle the Escape logic for modals.
-                    // The hook should only call onExit if we are "clean".
-                    // BUT the hook receives onExit.
-                }
-
-                // If we are in the hook, we don't know about StoryMode state.
-                // We should remove onExit call from here and handle it in StoryMode?
-                // Or: Pass a customized onExit to the hook.
-            }
-
-            // Since we moved modal logic to standard React state in StoryMode,
-            // the Hook's "currentView" might be desynced or irrelevant for Escape logic.
-            // Let's rely on the Parent (StoryMode)'s useEffect for Escape.
-
-            // MOVED ESCAPE LOGIC TO STORYMODE COMPONENT
-
-            if ((e.key === 'Enter' || e.key === ' ') && interactionTarget) {
-                e.preventDefault();
-                onInteract(interactionTarget);
-            }
-        };
-        window.addEventListener('keydown', handleInteract);
-        return () => window.removeEventListener('keydown', handleInteract);
-    }, [active, interactionTarget, currentView, onInteract]); // Removed onExit dependency as we handle it elsewhere or manually
+    // --- Interaction Listener Removed (Handled by useGameInput) ---
 
     // --- Mouse/Touch Handlers ---
     const updateCursorPos = (clientX: number, clientY: number) => {
@@ -373,6 +333,7 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
         cameraRef: camera,
         canvasHandlers,
         handleMobileInput,
-        hoveredObject
+        hoveredObject,
+        objects // Exposed for A11y Overlay
     };
 };

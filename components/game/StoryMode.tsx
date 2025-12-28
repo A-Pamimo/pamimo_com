@@ -7,8 +7,11 @@ import GameProjectConsole from './GameProjectConsole';
 import GameIdentityCore from './GameIdentityCore';
 import GameCommsRelay from './GameCommsRelay';
 import GameContactTerminal from './GameContactTerminal';
+
+import GameA11yOverlay from './GameA11yOverlay';
 import { IconArrow } from '../ui/Icons';
 import { useGamePhysics, GamePhysicsState, GameObject } from '../../hooks/useGamePhysics';
+import { useGameInput } from '../../hooks/useGameInput';
 import { CONTACT_EMAIL } from '../../constants';
 
 interface StoryModeProps {
@@ -60,6 +63,43 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
             setIdentityModal(true);
         }
     }, [onSelectProject]); // Dependencies
+
+    // --- Input & Physics Ref Sync ---
+    // We need to bridge the "Physics says target is X" -> "Input says Interact" gap.
+    const latestInteractionTarget = React.useRef<GameObject | null>(null);
+
+    // --- Input Handlers ---
+    const handleEscape = useCallback(() => {
+        // Priority 1: Close Modals
+        if (projectModal) {
+            setProjectModal(null);
+            return;
+        }
+        if (identityModal) {
+            setIdentityModal(false);
+            return;
+        }
+        if (contactModal) {
+            setContactModal(false);
+            return;
+        }
+
+        // Priority 2: Exit Game
+        onExit();
+    }, [projectModal, identityModal, contactModal, onExit]);
+
+    const handleInputInteract = useCallback(() => {
+        if (latestInteractionTarget.current) {
+            onInteract(latestInteractionTarget.current);
+        }
+    }, [onInteract]);
+
+    // --- Input Hook ---
+    const inputKeys = useGameInput({
+        active,
+        onEscape: handleEscape,
+        onInteract: handleInputInteract
+    });
 
     // --- Physics Hook ---
     // We need to define `draw` before calling the hook? No, useCallback handles it.
@@ -270,9 +310,15 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
         active,
         onInteract,
         onDraw: draw,
-        onExit, // Escape key triggers this
-        currentView
+        onExit, // Legacy exit handler (passed for completeness)
+        currentView,
+        keys: inputKeys
     });
+
+    // Sync Ref for Input Handler
+    useEffect(() => {
+        latestInteractionTarget.current = physics.interactionTarget;
+    }, [physics.interactionTarget]);
 
     // We must handle setting modalOriginRect when interaction occurs.
     useEffect(() => {
@@ -295,33 +341,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
     }, [physics]); // Added physics as dependency
 
     // Unified Escape Key Handler & Interaction
-    useEffect(() => {
-        if (!active) return;
-
-        const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                // Priority 1: Close Modals
-                if (projectModal) {
-                    setProjectModal(null);
-                    return;
-                }
-                if (identityModal) {
-                    setIdentityModal(false);
-                    return;
-                }
-                if (contactModal) {
-                    setContactModal(false);
-                    return;
-                }
-
-                // Priority 2: Exit Game
-                onExit();
-            }
-        };
-
-        window.addEventListener('keydown', handleEscape);
-        return () => window.removeEventListener('keydown', handleEscape);
-    }, [active, projectModal, identityModal, contactModal, onExit]);
+    // --- Manual Escape Logic Removed (Handled by useGameInput) ---
 
     // Effect to Capture Bounds on Modal Open
     useEffect(() => {
@@ -370,6 +390,13 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
                 ref={physics.canvasRef}
                 className="block w-full h-full"
                 {...physics.canvasHandlers}
+            />
+
+            {/* Accessibility Overlay */}
+            <GameA11yOverlay
+                active={active}
+                objects={physics.objects.current}
+                onInteract={onInteract}
             />
 
             {/* HUD */}

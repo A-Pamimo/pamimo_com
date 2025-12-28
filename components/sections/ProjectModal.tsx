@@ -68,6 +68,16 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                         </button>
                     </div>
 
+                    {/* Mobile Bottom Sticky Close Button */}
+                    <div className="md:hidden absolute bottom-6 right-6 z-[60]">
+                        <button
+                            onClick={onClose}
+                            className="bg-pop text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl active:scale-90 transition-transform"
+                        >
+                            <IconClose className="w-6 h-6" />
+                        </button>
+                    </div>
+
                     <div className="flex-1 overflow-y-auto no-scrollbar p-6 md:p-12">
                         <div className="max-w-6xl mx-auto">
                             {/* Title Section */}
