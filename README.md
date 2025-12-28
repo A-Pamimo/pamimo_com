@@ -1,31 +1,39 @@
-# Pamimo Akinjide | Portfolio
+# System Status: Online v2.0
+> "We shape our tools and thereafter our tools shape us." — Marshall McLuhan
 
-Hey, I'm Pamimo! 👋
+This repository is more than a portfolio; it is a digital artifact representing the intersection of **Product Strategy**, **Quantitative Economics**, and **Engineering**.
 
-Welcome to my personal website. This is where I share my work in product strategy, economics, and systems building. I wanted to build something that felt like *me*—interactive, strategic, and a little bit fun.
+In an era of Agentic AI and rapid automation, I built this platform to demonstrate a core belief: **Technology should amplify human intent, not replace it.**
 
-## The Tech Stack
+## The Philosophy
+I eschewed templates to build this system from scratch, driven by three principles:
 
-For the developers and curious minds out there, here's what makes this site tick:
+1.  **Craft**: If you can't build it, you can't lead it.
+    *   *Implementation*: A rigorous TypeScript architecture ensures type safety, mirroring the precision required in economic modeling.
+2.  **Narrative**: Data without story is noise.
+    *   *Implementation*: A bespoke CMS-lite structure (`constants.ts`) separates content from presentation, treating my career narrative as a dataset.
+3.  **Play**: Complex systems should be intuitive.
+    *   *Implementation*: The **Story Mode** is a custom 2D engine built on the HTML5 Canvas API, simulating physics and collision detection to turn a static resume into an explorable world.
 
--   **Next.js 14** (App Router)
--   **TypeScript** (because types save lives)
--   **Tailwind CSS** for styling
--   **Framer Motion** for all the smooth animations
+## Technical Architecture
+Built with intentionality using:
+*   **Next.js 14 (App Router)**: For server-side performance and SEO.
+*   **TypeScript**: Because rigorous definitions prevent runtime chaos (a metaphor for good strategy).
+*   **Tailwind CSS**: For design system consistency and rapid iteration.
+*   **Framer Motion**: For orchestrating fluid user experiences.
+*   **Canvas API**: The backbone of the interaction layer.
 
-## Be Inspired
-
-Feel free to poke around the code and grab inspiration for your own projects. If you see something you like, take it and make it your own! I'd love to see what you build.
-
----
-
-### Running Locally
-
-If you want to spin this up on your machine:
+## Running the Simulation
+To deploy this system locally:
 
 ```bash
 npm install
 npm run dev
 ```
 
-*Designed and built by Pamimo Akinjide.*
+## Status
+**Open to Select Opportunities**.
+*Product Strategy & Engineering.*
+
+---
+*Designed and Engineered by Pamimo Akinjide.*

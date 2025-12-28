@@ -32,7 +32,7 @@ const WorkIndex: React.FC<WorkIndexProps> = ({ onSelectProject }) => {
               { id: 'all', label: 'All Work' },
               { id: 'strategy', label: 'Strategy' },
               { id: 'product', label: 'Product' },
-              { id: 'tech', label: 'Data & Tech' }
+              { id: 'tech', label: 'Data & Engineering' }
             ].map(btn => (
               <button
                 key={btn.id}

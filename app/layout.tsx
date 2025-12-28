@@ -26,7 +26,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://pamimoakinjide.com'),
   title: {
-    default: 'Pamimo Akinjide | Product Strategist, Economist & Systems Builder',
+    default: 'Pamimo Akinjide | Product Strategy & Engineering',
     template: '%s | Pamimo Akinjide'
   },
   description: 'Pamimo Akinjide is a Product Strategist, Economist, and Systems Builder specializing in AI strategy, data analytics, and community development. Award-winning work at RBC, World Food Programme, and more.',
@@ -43,7 +43,10 @@ export const metadata: Metadata = {
     'Systems Builder',
     'Toronto Product Manager',
     'Strategy Consultant',
-    'Community Leadership'
+    'Community Leadership',
+    'Oluwapamimo Akinjide',
+    'Oluwapamimo',
+    'Pamimo'
   ],
   authors: [{ name: 'Pamimo Akinjide', url: 'https://pamimoakinjide.com' }],
   creator: 'Pamimo Akinjide',
@@ -52,7 +55,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://pamimoakinjide.com',
-    title: 'Pamimo Akinjide | Product Strategist, Economist & Systems Builder',
+    title: 'Pamimo Akinjide | Product Strategy & Engineering',
     description: 'Award-winning Product Strategist and Economist specializing in AI strategy, data analytics, and systems design. $20K RBC Amplify winner, WFP researcher, community builder.',
     siteName: 'Pamimo Akinjide Portfolio',
     images: [
@@ -122,6 +125,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Person",
               "name": "Pamimo Akinjide",
+              "alternateName": ["Oluwapamimo Akinjide", "Oluwapamimo"],
               "url": "https://pamimoakinjide.com",
               "image": "https://pamimoakinjide.com/og-image.jpg",
               "sameAs": [

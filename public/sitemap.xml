@@ -8,15 +8,23 @@
   <!-- Homepage -->
   <url>
     <loc>https://pamimoakinjide.com/</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+
+  <!-- Blog / Writing -->
+  <url>
+    <loc>https://pamimoakinjide.com/blog</loc>
+    <lastmod>2025-12-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
 
   <!-- Work Index -->
   <url>
     <loc>https://pamimoakinjide.com/work</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -24,49 +32,70 @@
   <!-- Individual Project Pages -->
   <url>
     <loc>https://pamimoakinjide.com/work/nova</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://pamimoakinjide.com/work/wfp</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://pamimoakinjide.com/work/weg</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://pamimoakinjide.com/work/city</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2025-12-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://pamimoakinjide.com/work/its</loc>
+    <lastmod>2025-12-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://pamimoakinjide.com/work/harvest_link</loc>
+    <lastmod>2025-12-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://pamimoakinjide.com/work/uos_research</loc>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://pamimoakinjide.com/work/sctc</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://pamimoakinjide.com/work/pasa</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://pamimoakinjide.com/work/ess</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2025-12-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
