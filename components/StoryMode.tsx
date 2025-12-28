@@ -95,9 +95,9 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
         };
 
         // 1. Floor Labels (Decorations)
-        worldObjects.push({ id: 'lbl_core', x: -60, y: -450, w: 0, h: 0, type: 'label', label: 'CORE SYSTEM', color: '#333', fontSize: 40 });
-        worldObjects.push({ id: 'lbl_comms', x: -500, y: -100, w: 0, h: 0, type: 'label', label: 'UPLINK', color: '#333', fontSize: 40 });
-        worldObjects.push({ id: 'lbl_archive', x: 400, y: -250, w: 0, h: 0, type: 'label', label: 'PROJECT ARCHIVE', color: '#333', fontSize: 40 });
+        worldObjects.push({ id: 'lbl_core', x: 0, y: -450, w: 0, h: 0, type: 'label', label: 'CORE SYSTEM', color: '#eab308', fontSize: 40 });
+        worldObjects.push({ id: 'lbl_comms', x: -450, y: -100, w: 0, h: 0, type: 'label', label: 'UPLINK', color: '#3b82f6', fontSize: 40 });
+        worldObjects.push({ id: 'lbl_archive', x: 470, y: -250, w: 0, h: 0, type: 'label', label: 'PROJECT ARCHIVE', color: '#a855f7', fontSize: 40 });
 
         // 2. Identity Mainframe (North)
         worldObjects.push({
@@ -428,10 +428,20 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
         // Objects
         objects.current.forEach(obj => {
             if (obj.type === 'label') {
-                ctx.font = `bold ${obj.fontSize}px 'Syne'`;
-                ctx.fillStyle = '#222';
+                // Use computed font family from container to match DOM exactly
+                const computedFont = getComputedStyle(canvas).fontFamily;
+                ctx.font = `bold ${obj.fontSize}px ${computedFont}`;
+
+                // Neon Glow
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = obj.color;
+
+                ctx.fillStyle = obj.color; // Use the assigned neon color
                 ctx.textAlign = 'center';
                 ctx.fillText(obj.label, obj.x, obj.y);
+
+                // Reset shadow
+                ctx.shadowBlur = 0;
                 return;
             }
 

@@ -27,11 +27,16 @@ module.exports = {
       },
       animation: {
         'marquee': 'marquee 60s linear infinite',
+        'scanlines': 'scanlines 2s linear infinite',
       },
       keyframes: {
         marquee: {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-100%)' },
+        },
+        scanlines: {
+          '0%': { backgroundPosition: '0 0' },
+          '100%': { backgroundPosition: '0 100px' },
         }
       }
     }

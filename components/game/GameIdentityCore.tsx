@@ -5,19 +5,48 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface GameIdentityCoreProps {
     onBack: () => void;
+    initialBounds?: { x: number, y: number, w: number, h: number } | null;
 }
 
 type Tab = 'profile' | 'stats' | 'lore';
 
-const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack }) => {
+const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack, initialBounds }) => {
     const [activeTab, setActiveTab] = useState<Tab>('profile');
+
+    const isInitialParamsValid = initialBounds && initialBounds.x !== undefined;
 
     return (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 flex items-center justify-center p-4 pointer-events-auto bg-black/95 backdrop-blur-sm"
+            initial={isInitialParamsValid && initialBounds ? {
+                opacity: 0,
+                left: initialBounds.x,
+                top: initialBounds.y,
+                width: initialBounds.w,
+                height: initialBounds.h,
+                scale: 0.1,
+                borderRadius: 20
+            } : { opacity: 0, scale: 0.98, left: 0, top: 0, width: '100%', height: '100%' }}
+            animate={{
+                opacity: 1,
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                scale: 1,
+                borderRadius: 0,
+                transition: { duration: 0.5, ease: [0.19, 1, 0.22, 1] }
+            }}
+            exit={isInitialParamsValid && initialBounds ? {
+                opacity: 0,
+                left: initialBounds.x,
+                top: initialBounds.y,
+                width: initialBounds.w,
+                height: initialBounds.h,
+                scale: 0.1,
+                borderRadius: 20,
+                transition: { duration: 0.4, ease: "easeInOut" }
+            } : { opacity: 0, scale: 0.98 }}
+            className="fixed z-[200] flex items-center justify-center p-0 pointer-events-auto bg-black/95 backdrop-blur-sm overflow-hidden origin-top-left"
             onClick={(e) => e.stopPropagation()}
         >
             <div className="w-full max-w-4xl bg-black border-2 border-amber-500/50 relative shadow-[0_0_30px_rgba(245,158,11,0.15)] flex flex-col h-[600px] overflow-hidden">
