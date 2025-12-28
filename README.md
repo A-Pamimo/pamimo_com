@@ -15,6 +15,13 @@ I eschewed templates to build this system from scratch, driven by three principl
 3.  **Play**: Complex systems should be intuitive.
     *   *Implementation*: The **Story Mode** is a custom 2D engine built on the HTML5 Canvas API, simulating physics and collision detection to turn a static resume into an explorable world.
 
+## Intentionality (The Fine Details)
+True systems thinking means caring about the edge cases.
+
+*   **Accessibility**: Built with semantic HTML5 and high-contrast tokens. The site respects system preferences for `prefers-reduced-motion` and `prefers-color-scheme`.
+*   **Performance**: Zero-layout-shift font loading (via `next/font`) and strategic hydration to ensure immediate interactivity.
+*   **Resilience**: A static-first architecture ensuring the core content is accessible even if the simulation layer is disabled.
+
 ## Technical Architecture
 Built with intentionality using:
 *   **Next.js 14 (App Router)**: For server-side performance and SEO.
