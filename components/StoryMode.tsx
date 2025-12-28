@@ -459,8 +459,8 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
             }
 
             // --- BASE RECT ---
-            // If touched/highlighted, fill completely with the neon color (High Feedback)
-            ctx.fillStyle = isHighlighted ? obj.color : '#1a1a1a';
+            // If touched/highlighted OR visited, fill with neon color (Persistent "Uncovered" State)
+            ctx.fillStyle = (isHighlighted || isVisited) ? obj.color : '#1a1a1a';
             ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
 
             ctx.strokeStyle = obj.color;
