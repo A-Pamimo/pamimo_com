@@ -9,6 +9,7 @@ interface GameProjectConsoleProps {
     project: Project;
     onBack: () => void;
     onOpenStandard?: () => void; // Optional now, effectively unused but kept for type compat if needed
+    initialBounds?: { x: number, y: number, w: number, h: number } | null;
 }
 
 const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack, initialBounds }) => {
