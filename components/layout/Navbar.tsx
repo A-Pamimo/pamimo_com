@@ -44,6 +44,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
           <div className="hidden md:flex items-center gap-8">
             <a href="#about" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">ABOUT ME</a>
             <a href="#work" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">INDEX</a>
+            <a href="/blog" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">WRITING</a>
           </div>
 
           {/* Gamification Toggle (Renamed to XP.MODE) */}
@@ -119,17 +120,21 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
             </button>
 
             <nav className="flex flex-col">
-              {['About Me', 'Index'].map((item, i) => (
+              {[
+                { label: 'About Me', href: '#about' },
+                { label: 'Index', href: '#work' },
+                { label: 'Writing', href: '/blog' }
+              ].map((item, i) => (
                 <motion.a
-                  key={item}
-                  href={`#${item.toLowerCase() === 'about me' ? 'about' : 'work'}`}
+                  key={item.label}
+                  href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
                   initial={{ x: 50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
                   className="text-cream font-display text-5xl font-bold mb-6 hover:text-pop transition-colors cursor-hoverable"
                 >
-                  {item}
+                  {item.label}
                 </motion.a>
               ))}
               {/* Mobile Game Mode Toggle */}

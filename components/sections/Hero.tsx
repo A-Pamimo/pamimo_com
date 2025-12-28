@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 const Hero: React.FC = () => {
   // Base text repeated to ensure it covers wide screens before looping
-  const baseText = "PRODUCT LEAD // FOUNDER // COMPUTER SCIENTIST // AGENTIC AI // 0-TO-1 // GROWTH STRATEGY // FULL STACK // SYSTEMS THINKING // ";
+  const baseText = "PRODUCT LEAD // FOUNDER // COMPUTER SCIENTIST // AGENTIC AI // 0-TO-1 // PRODUCT STRATEGY // FULL STACK // ECONOMIC SYSTEMS // ";
   const marqueeContent = baseText.repeat(2);
 
   // Grouped for better visual flow
@@ -23,7 +23,7 @@ const Hero: React.FC = () => {
         >
           <span className="w-2 h-2 bg-pop animate-pulse"></span>
           <span className="font-mono text-xs md:text-sm uppercase tracking-widest opacity-60">
-            Available for 2026 // Product & Engineering
+            Ready to Build // Product Strategy & Engineering
           </span>
         </motion.div>
 
