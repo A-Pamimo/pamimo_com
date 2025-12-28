@@ -123,7 +123,7 @@ export const PROJECT_DATA: Record<string, Project> = {
         title: "Intelligent Data Operations",
         subtitle: "Business Intelligence Dev // Interactive Tracking Systems",
         tag: "Data Engineering",
-        context: "The company's data collection was manual and expensive. Brought in to automate pipelines and improve data availability for decision-making.",
+        context: "The company's data collection was manual and expensive. Automated pipelines and improved data availability for decision-making.",
         stack: ["Python", "Flask", "SQL", "Power Automate", "VBA", "Web Scraping", "API Integration"],
         what: "Developed a Python-based web scraping tool and integrated WhatsApp API pipelines for customer communication. Built internal SQL tooling using Flask.",
         how: "Automated Excel reporting with VBA benchmarks and connected marketing flows via Power Automate. By removing manual entry, shifted the focus to analytics.",
