@@ -23,7 +23,7 @@ const Hero: React.FC = () => {
         >
           <span className="w-2 h-2 bg-pop animate-pulse"></span>
           <span className="font-mono text-xs md:text-sm uppercase tracking-widest opacity-60">
-            System Ready // Continuous Learner // 2026
+            Available for 2026 // Product & Engineering
           </span>
         </motion.div>
 
@@ -72,7 +72,7 @@ const Hero: React.FC = () => {
             {/* Identity Specs / Traits */}
             <div className="flex flex-wrap gap-y-2 gap-x-4 mb-6 font-mono text-xs md:text-sm text-pop uppercase tracking-wider font-bold">
               <span>[HIGH_AGENCY]</span>
-              <span>[COMMUNITY_ARCHITECT]</span>
+              <span>[COMMUNITY_BUILDER]</span>
               <span>[0_TO_1_BUILDER]</span>
             </div>
 

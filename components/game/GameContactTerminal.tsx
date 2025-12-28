@@ -78,127 +78,146 @@ const GameContactTerminal: React.FC<GameContactTerminalProps> = ({ onBack, initi
                 className="absolute inset-x-0 top-1/2 h-1 bg-white z-[60] pointer-events-none"
             />
 
-            <div className="w-full max-w-2xl border-2 border-emerald-500/50 bg-black relative shadow-[0_0_30px_rgba(16,185,129,0.15)] flex flex-col overflow-hidden min-h-[400px]">
+            <div className="w-full max-w-2xl border-2 border-emerald-500/50 bg-black relative shadow-[0_0_30px_rgba(16,185,129,0.15)] flex flex-col overflow-hidden min-h-[500px]">
 
                 {/* Header */}
                 <div className="flex justify-between items-center p-4 border-b border-emerald-500/30 bg-emerald-900/10">
                     <div className="flex items-center gap-3">
                         <div className="w-3 h-3 bg-emerald-500 animate-pulse rounded-full" />
-                        <span className="font-mono text-emerald-500 font-bold tracking-widest text-sm">SECURE_UPLINK // V.1.0</span>
+                        <span className="font-mono text-emerald-500 font-bold tracking-widest text-sm">CONTACT TERMINAL</span>
                     </div>
                     <button
                         onClick={onBack}
                         className="text-emerald-700 hover:text-emerald-400 font-mono text-xs uppercase"
                     >
-                        [ABORT_TRANSMISSION]
+                        [CLOSE]
                     </button>
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 p-8 font-mono relative">
-                    <AnimatePresence mode="wait">
-                        {step === 'compose' && (
-                            <motion.div
-                                key="compose"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className="h-full flex flex-col"
-                            >
-                                <p className="text-emerald-600 text-xs mb-4">
-                                    &gt; ESTABLISHING CONNECTION TO: <span className="text-emerald-400 font-bold">PAMIMO_CORE</span>
-                                    <br />
-                                    &gt; ENCRYPTION: <span className="text-emerald-400">ENABLED</span>
-                                </p>
-                                <textarea
-                                    ref={textareaRef}
-                                    value={message}
-                                    onChange={(e) => setMessage(e.target.value)}
-                                    placeholder="ENTER TRANSMISSION DATA..."
-                                    maxLength={5000}
-                                    className="flex-1 bg-transparent border border-emerald-900/50 p-4 text-emerald-500 focus:outline-none focus:border-emerald-500/50 resize-none mb-6 placeholder-emerald-900"
+                <div className="flex-1 p-8 font-mono relative overflow-y-auto">
+
+                    {/* Primary Contact Options */}
+                    <div className="mb-12">
+                        <h2 className="text-emerald-500 mb-6 text-sm tracking-widest border-b border-emerald-900/50 pb-2">DIRECT_CHANNELS</h2>
+
+                        <div className="flex flex-wrap gap-4 mb-8">
+                            <a href="https://linkedin.com/in/pamimo" target="_blank" rel="noopener noreferrer" className="flex-1 bg-emerald-500 text-black hover:bg-white hover:text-black font-bold p-4 text-center transition-all flex flex-col items-center justify-center gap-2 group">
+                                <img
+                                    src="/linkedin_logo.png"
+                                    alt="LinkedIn"
+                                    className="w-8 h-8 object-contain"
+                                    style={{ imageRendering: 'pixelated' }}
                                 />
-                                <div className="flex justify-end">
+                                <span>LINKEDIN</span>
+                            </a>
+                            <a href="https://github.com/A-Pamimo" target="_blank" rel="noopener noreferrer" className="flex-1 border border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-black font-bold p-4 text-center transition-all flex flex-col items-center justify-center gap-2 group">
+                                <img
+                                    src="/github-logo-pixel-art-github-technology_grande.webp"
+                                    alt="GitHub"
+                                    className="w-8 h-8 object-contain"
+                                    style={{ imageRendering: 'pixelated' }}
+                                />
+                                <span>GITHUB</span>
+                            </a>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row gap-4 items-center bg-emerald-900/10 p-6 border border-emerald-500/20">
+                            <div className="flex-1 w-full">
+                                <p className="text-emerald-700 text-xs mb-2">EMAIL FREQUENCY:</p>
+                                <div className="flex items-center gap-2">
+                                    <code className="text-emerald-400 font-bold bg-black px-2 py-1 border border-emerald-900">{CONTACT_EMAIL}</code>
                                     <button
-                                        onClick={handleTransmit}
-                                        disabled={!message.trim()}
-                                        className="bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 px-8 uppercase tracking-widest text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(CONTACT_EMAIL);
+                                            // Optional feedback could go here
+                                        }}
+                                        className="text-emerald-600 hover:text-emerald-400 text-xs bracket-btn"
                                     >
-                                        [INITIATE_UPLOAD]
+                                        [COPY]
                                     </button>
                                 </div>
-                            </motion.div>
-                        )}
+                            </div>
+                            <a href={`mailto:${CONTACT_EMAIL}`} className="w-full md:w-auto bg-emerald-900/20 hover:bg-emerald-500 hover:text-black border border-emerald-500/50 text-emerald-500 px-8 py-3 font-bold transition-all text-center">
+                                CONTACT ME
+                            </a>
+                        </div>
+                    </div>
 
-                        {step === 'sending' && (
-                            <motion.div
-                                key="sending"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className="h-full flex flex-col items-center justify-center text-center"
-                            >
-                                <div className="mb-8 font-bold text-emerald-500 text-xl animate-pulse">
-                                    UPLOADING_PACKET...
-                                </div>
-                                <div className="w-64 h-2 bg-emerald-900/50 rounded-full overflow-hidden">
-                                    <motion.div
-                                        className="h-full bg-emerald-500"
-                                        initial={{ width: 0 }}
-                                        animate={{ width: "100%" }}
-                                        transition={{ duration: 2, ease: "linear" }}
+                    {/* Secure Transmission (Secondary) */}
+                    <div>
+                        <h2 className="text-emerald-800 mb-4 text-xs tracking-widest border-b border-emerald-900/30 pb-2">SECURE_TRANSMISSION // ENCRYPTED_MESSAGE</h2>
+
+                        <AnimatePresence mode="wait">
+                            {step === 'compose' && (
+                                <motion.div
+                                    key="compose"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="flex flex-col"
+                                >
+                                    <textarea
+                                        ref={textareaRef}
+                                        value={message}
+                                        onChange={(e) => setMessage(e.target.value)}
+                                        placeholder="Write your message..."
+                                        maxLength={5000}
+                                        className="w-full bg-black border border-emerald-900/50 p-4 text-emerald-500 focus:outline-none focus:border-emerald-500/50 resize-vertical min-h-[100px] mb-4 placeholder-emerald-900/50 text-sm"
                                     />
-                                </div>
-                                <div className="mt-4 text-xs text-emerald-700 font-mono">
-                                    ROUTING VIA PROXY 192.168.X.X
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {step === 'success' && (
-                            <motion.div
-                                key="success"
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="h-full flex flex-col items-center justify-center text-center"
-                            >
-                                <div className="text-4xl mb-4">✅</div>
-                                <h3 className="text-2xl font-bold text-emerald-400 mb-2">TRANSMISSION SENT</h3>
-                                <p className="text-emerald-700 text-sm mb-8">
-                                    Subject has been notified. Expect response within 24h.
-                                </p>
-
-                                <div className="flex gap-4 mb-8">
-                                    <a href="https://linkedin.com/in/pamimo" target="_blank" rel="noopener noreferrer" className="bg-emerald-900/30 text-emerald-500 hover:bg-emerald-500 hover:text-black px-4 py-2 text-xs uppercase transition-colors">
-                                        LINKEDIN
-                                    </a>
-                                    <a href="https://github.com/hxdxri" target="_blank" rel="noopener noreferrer" className="bg-emerald-900/30 text-emerald-500 hover:bg-emerald-500 hover:text-black px-4 py-2 text-xs uppercase transition-colors">
-                                        GITHUB
-                                    </a>
-                                </div>
-
-                                <div className="w-full border-t border-emerald-900/30 pt-6 mb-6">
-                                    <p className="text-emerald-700 text-xs mb-2">DIRECT LINE:</p>
-                                    <div className="flex justify-center items-center gap-2">
-                                        <code className="bg-emerald-900/20 text-emerald-500 px-2 py-1">{CONTACT_EMAIL}</code>
+                                    <div className="flex justify-end">
                                         <button
-                                            onClick={() => navigator.clipboard.writeText(CONTACT_EMAIL)}
-                                            className="text-emerald-700 hover:text-emerald-500 text-xs uppercase"
+                                            onClick={handleTransmit}
+                                            disabled={!message.trim()}
+                                            className="text-emerald-500 hover:text-emerald-400 border border-emerald-900 hover:border-emerald-500 px-6 py-2 text-xs uppercase transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                            [COPY]
+                                            [DRAFT EMAIL]
                                         </button>
                                     </div>
-                                </div>
+                                </motion.div>
+                            )}
 
-                                <button
-                                    onClick={onBack}
-                                    className="border border-emerald-500/50 text-emerald-500 hover:bg-emerald-500 hover:text-black px-6 py-2 text-sm uppercase transition-colors"
+                            {step === 'sending' && (
+                                <motion.div
+                                    key="sending"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="py-12 flex flex-col items-center justify-center text-center bg-black/50 border border-emerald-900/30"
                                 >
-                                    [CLOSE_TERMINAL]
-                                </button>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                                    <div className="mb-4 font-bold text-emerald-500 text-sm animate-pulse">
+                                        ENCRYPTING...
+                                    </div>
+                                    <div className="w-48 h-1 bg-emerald-900/50 rounded-full overflow-hidden">
+                                        <motion.div
+                                            className="h-full bg-emerald-500"
+                                            initial={{ width: 0 }}
+                                            animate={{ width: "100%" }}
+                                            transition={{ duration: 2, ease: "linear" }}
+                                        />
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {step === 'success' && (
+                                <motion.div
+                                    key="success"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="py-8 text-center"
+                                >
+                                    <h3 className="text-emerald-400 font-bold mb-1">Message ready to send.</h3>
+                                    <p className="text-emerald-700 text-xs">Opening mail client...</p>
+                                    <button
+                                        onClick={() => setStep('compose')}
+                                        className="mt-4 text-emerald-800 hover:text-emerald-500 text-xs underline"
+                                    >
+                                        [RESET]
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
 
                     {/* Scanlines inside simulation */}
                     <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />

@@ -7,6 +7,7 @@ import GameProjectConsole from './GameProjectConsole';
 import GameIdentityCore from './GameIdentityCore';
 import GameCommsRelay from './GameCommsRelay';
 import GameContactTerminal from './GameContactTerminal';
+import GameBlogPlaceholder from './GameBlogPlaceholder';
 
 import GameA11yOverlay from './GameA11yOverlay';
 import { IconArrow } from '../ui/Icons';
@@ -30,6 +31,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
     const [projectModal, setProjectModal] = useState<Project | null>(null);
     const [identityModal, setIdentityModal] = useState(false);
     const [contactModal, setContactModal] = useState(false);
+    const [blogModal, setBlogModal] = useState(false);
     const [modalOriginRect, setModalOriginRect] = useState<{ x: number, y: number, w: number, h: number } | null>(null);
 
     // Gameplay State
@@ -61,6 +63,8 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
             setContactModal(true);
         } else if (target.id === 'about') {
             setIdentityModal(true);
+        } else if (target.id === 'blog') {
+            setBlogModal(true);
         }
     }, [onSelectProject]); // Dependencies
 
@@ -81,6 +85,10 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
         }
         if (contactModal) {
             setContactModal(false);
+            return;
+        }
+        if (blogModal) {
+            setBlogModal(false);
             return;
         }
 
@@ -107,18 +115,41 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
     const draw = useCallback((ctx: CanvasRenderingContext2D, state: GamePhysicsState) => {
         const { camera, objects, bounds, interactionTarget, hoveredObject, player } = state;
         const canvas = ctx.canvas;
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
 
-        if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        const width = rect.width;
+        const height = rect.height;
+        const cx = width / 2;
+        const cy = height / 2;
+        const propsOpacity = 1; // Opacity for non-highlighted labels
+
+        // Ensure accurate sizing
+        if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            // Scale context to match DPR
+            // ctx.scale(dpr, dpr); // We will manually handle scaling or use transforms
         }
 
-        const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
+        // However, if we scale the context globally, we need to be careful with existing coordinate logic.
+        // The existing logic assumes 1 unit = 1 pixel.
+        // If we set canvas.width = window.innerWidth * 2, then we are drawing on a 2x larger canvas.
+        // We should scale the context so our logic remains "virtual pixels".
+
+        ctx.resetTransform(); // Clear previous
+        ctx.scale(dpr, dpr); // Apply DPR scale
+
+        // width/height are already defined above
+
+
+        // const cx = canvas.width / 2;
+        // const cy = canvas.height / 2; 
+        // We use virtual center now defined above
 
         // Background
         ctx.fillStyle = '#0a0a0a';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, width, height);
 
         ctx.save();
         ctx.translate(cx - camera.x, cy - camera.y);
@@ -135,13 +166,13 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
         ctx.strokeStyle = '#1a1a1a';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        for (let x = startGridX - gridSize * 2; x < startGridX + canvas.width + gridSize * 2; x += gridSize) {
+        for (let x = startGridX - gridSize * 2; x < startGridX + width + gridSize * 2; x += gridSize) {
             ctx.moveTo(x, startGridY - gridSize * 10);
-            ctx.lineTo(x, startGridY + canvas.height + gridSize * 10);
+            ctx.lineTo(x, startGridY + height + gridSize * 10);
         }
-        for (let y = startGridY - gridSize * 2; y < startGridY + canvas.height + gridSize * 2; y += gridSize) {
+        for (let y = startGridY - gridSize * 2; y < startGridY + height + gridSize * 2; y += gridSize) {
             ctx.moveTo(startGridX - gridSize * 10, y);
-            ctx.lineTo(startGridX + canvas.width + gridSize * 10, y);
+            ctx.lineTo(startGridX + width + gridSize * 10, y);
         }
         ctx.stroke();
 
@@ -270,7 +301,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
                 ctx.font = "bold 13px 'JetBrains Mono'";
                 ctx.textAlign = 'center';
                 // Only show if close enough or it's a main label
-                ctx.fillText(obj.label.length > 15 ? obj.label.substring(0, 12) + '...' : obj.label, obj.x + obj.w / 2, obj.y - 15);
+                ctx.fillText(obj.label, obj.x + obj.w / 2, obj.y - 15);
             }
 
             // Subtitle
@@ -280,9 +311,6 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
 
             ctx.shadowBlur = 0;
         });
-
-        // Add propsOpacity hack to silence linter if needed, but logic is:
-        const propsOpacity = 1;
 
         // Player
         const px = player.pos.x;
@@ -345,7 +373,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
 
     // Effect to Capture Bounds on Modal Open
     useEffect(() => {
-        if (projectModal || identityModal || contactModal) {
+        if (projectModal || identityModal || contactModal || blogModal) {
             const cam = physics.cameraRef.current;
             const cvs = physics.canvasRef.current;
             // We need the target object.
@@ -363,7 +391,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
                 });
             }
         }
-    }, [projectModal, identityModal, contactModal]);
+    }, [projectModal, identityModal, contactModal, blogModal]);
 
     // Helpers
     const MobileBtn = ({ dir }: { dir: string }) => (
@@ -418,22 +446,54 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
                         <button onClick={onExit} className="pointer-events-auto bg-red-500/10 hover:bg-red-500 hover:text-white border border-red-500/50 text-red-500 px-4 py-2 text-xs font-bold tracking-widest transition-colors">[DISCONNECT]</button>
                     </div>
 
-                    {/* Interaction Prompt - Only if near target AND not modal open */}
+                    {/* Interaction Prompt - Always show if near target, regardless of hover */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
                         <AnimatePresence>
-                            {physics.interactionTarget && !physics.hoveredObject && (
-                                <motion.button
-                                    onClick={() => onInteract(physics.interactionTarget!)}
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    exit={{ y: 20, opacity: 0 }}
-                                    className="bg-white text-black px-6 py-3 font-bold shadow-[0_0_20px_rgba(255,255,255,0.3)] flex items-center gap-3 border-2 border-white cursor-pointer"
-                                    onPointerDown={(e) => e.stopPropagation()}
+                            {physics.interactionTarget && (
+                                <motion.div
+                                    initial={{ y: 20, opacity: 0, scale: 0.9 }}
+                                    animate={{
+                                        y: [0, -5, 0],
+                                        opacity: 1,
+                                        scale: 1,
+                                    }}
+                                    exit={{ y: 20, opacity: 0, scale: 0.9 }}
+                                    transition={{
+                                        y: {
+                                            repeat: Infinity,
+                                            duration: 1.5,
+                                            ease: "easeInOut"
+                                        },
+                                        opacity: { duration: 0.2 },
+                                        scale: { duration: 0.2 }
+                                    }}
+                                    className="flex flex-col items-center gap-2"
                                 >
-                                    <span className="text-xs tracking-widest">ACCESS: {physics.interactionTarget.label}</span>
-                                    <span className="bg-black text-white text-[10px] px-2 py-1 hidden md:inline">SPACE</span>
-                                    <span className="bg-black text-white text-[10px] px-2 py-1 md:hidden">TAP</span>
-                                </motion.button>
+                                    <motion.button
+                                        onClick={() => onInteract(physics.interactionTarget!)}
+                                        className="bg-white text-black px-8 py-4 font-bold shadow-[0_0_30px_rgba(255,255,255,0.5)] flex flex-col items-center gap-2 border-4 border-white cursor-pointer hover:bg-black hover:text-white transition-colors"
+                                        onPointerDown={(e) => e.stopPropagation()}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <span className="text-sm tracking-widest">PRESS SPACE TO ENTER</span>
+                                        <span className="text-xs tracking-wider opacity-80">{physics.interactionTarget.label}</span>
+                                    </motion.button>
+                                    <motion.div
+                                        animate={{ opacity: [0.5, 1, 0.5] }}
+                                        transition={{ repeat: Infinity, duration: 1.5 }}
+                                        className="bg-black/80 backdrop-blur border border-white/40 px-4 py-2 text-[10px] tracking-widest text-white/90 hidden md:block"
+                                    >
+                                        [ SPACEBAR ] OR CLICK
+                                    </motion.div>
+                                    <motion.div
+                                        animate={{ opacity: [0.5, 1, 0.5] }}
+                                        transition={{ repeat: Infinity, duration: 1.5 }}
+                                        className="bg-black/80 backdrop-blur border border-white/40 px-4 py-2 text-[10px] tracking-widest text-white/90 md:hidden"
+                                    >
+                                        TAP TO ENTER
+                                    </motion.div>
+                                </motion.div>
                             )}
                         </AnimatePresence>
                     </div>
@@ -464,6 +524,12 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
                 {contactModal && (
                     <GameContactTerminal
                         onBack={() => setContactModal(false)}
+                        initialBounds={modalOriginRect}
+                    />
+                )}
+                {blogModal && (
+                    <GameBlogPlaceholder
+                        onBack={() => setBlogModal(false)}
                         initialBounds={modalOriginRect}
                     />
                 )}

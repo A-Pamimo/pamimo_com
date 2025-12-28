@@ -49,6 +49,21 @@ export const IconCheck: React.FC<IconProps> = (props) => (
   <svg viewBox="0 0 24 24" {...props}><path d="M18 6h2v2h-2v2h-2v2h-2v2h-2v2h-2v2h-2v-2H8v-2H6v-2h2v2h2v2h2v-2h2v-2h2V8h2V6z" /></svg>
 );
 
+
 export const IconMail: React.FC<IconProps> = (props) => (
   <svg viewBox="0 0 24 24" {...props}><path d="M2 4h20v16H2V4zm2 2v2l8 4 8-4V6H4zm0 12V10l8 4 8-4v8H4z" /></svg>
+);
+
+export const IconLinkedin: React.FC<IconProps> = (props) => (
+  <svg viewBox="0 0 24 24" {...props}>
+    {/* Box */}
+    <path d="M2 2h20v20H2V2zm4 4h4v4H6V6zm0 6h4v8H6v-8zm6 0h4v8h-4v-8zm4 0h4v4h-4v-4z M16 12h4v8h-4v-8" />
+  </svg>
+);
+
+export const IconGithub: React.FC<IconProps> = (props) => (
+  <svg viewBox="0 0 24 24" {...props}>
+    {/* Pixel Octocat Face */}
+    <path d="M6 8h12v10H6V8zm-2-2h4v2H4V6zm14 0h2v2h-2V6zM8 10h2v2H8v-2zm6 0h2v2h-2v-2zm-4 4h4v2h-4v-2z" />
+  </svg>
 );

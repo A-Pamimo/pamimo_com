@@ -38,15 +38,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
               </div>
               <h3 className="font-display font-bold text-3xl mb-2">{project.title}</h3>
               <p className="text-sm font-mono text-pop mb-4">{project.subtitle}</p>
-              <p className="opacity-70 max-w-md">Creator of a first-of-its-kind agentic AI concept for RBC’s Advice Centre. Patent-adjacent thinking.</p>
+              <p className="opacity-70 max-w-md">{project.context}</p>
             </div>
             <div className="mt-8">
               <span className="bg-gold text-ink text-xs font-bold px-3 py-1 inline-flex items-center gap-2 mb-2 shadow-sm w-fit uppercase tracking-wider">
                 <IconTrophy className="w-4 h-4 pixel-icon" /> <span className="text-pop font-black">$20K</span> BEST BUSINESS VALUE PRIZE
               </span>
               <div className="flex gap-2">
-                <span className="border border-current opacity-30 px-2 py-1 text-xs font-mono">GenAI</span>
-                <span className="border border-current opacity-30 px-2 py-1 text-xs font-mono">Product Strategy</span>
+                {project.stack.slice(0, 3).map(s => (
+                  <span key={s} className="border border-current opacity-30 px-2 py-1 text-xs font-mono">{s}</span>
+                ))}
               </div>
             </div>
           </div>
@@ -71,7 +72,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
               </div>
               <h3 className="font-display font-bold text-3xl mb-2 break-words">{project.title}</h3>
               <p className="text-sm font-mono opacity-50 mb-4">{project.subtitle}</p>
-              <p className="opacity-70 max-w-lg">Founded an independent economic advisory platform. Designed the operating infrastructure, pricing models, and evaluation frameworks from scratch.</p>
+              <p className="opacity-70 max-w-lg">{project.context}</p>
             </div>
             <div className="mt-6 flex gap-2 flex-wrap">
               {project.stack.map(s => (

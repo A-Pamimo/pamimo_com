@@ -8,7 +8,7 @@ interface GameIdentityCoreProps {
     initialBounds?: { x: number, y: number, w: number, h: number } | null;
 }
 
-type Tab = 'profile' | 'stats' | 'lore';
+type Tab = 'profile' | 'stats' | 'history';
 
 const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack, initialBounds }) => {
     const [activeTab, setActiveTab] = useState<Tab>('profile');
@@ -53,7 +53,7 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack, initialBoun
 
                 {/* Navigation Tabs */}
                 <div className="flex border-b border-amber-500/30">
-                    {['profile', 'stats', 'lore'].map((tab) => (
+                    {['profile', 'stats', 'history'].map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab as Tab)}
@@ -93,7 +93,7 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack, initialBoun
                                     />
                                 </div>
                                 <div className="md:col-span-2 space-y-6">
-                                    <h2 className="text-3xl font-bold border-b border-amber-500/30 pb-2">SUBJECT: PAMIMO AKINJIDE</h2>
+                                    <h2 className="text-3xl font-bold border-b border-amber-500/30 pb-2">PROFILE: PAMIMO AKINJIDE</h2>
                                     <div className="grid grid-cols-2 gap-4 text-sm">
                                         <div className="opacity-70">CLASS:</div><div>BUILDER</div>
                                         <div className="opacity-70">BASE:</div><div>TORONTO, CA</div>
@@ -101,7 +101,7 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack, initialBoun
                                     </div>
                                     <div className="bg-amber-500/10 p-4 border border-amber-500/30 mt-4">
                                         <p className="leading-relaxed text-sm opacity-90">
-                                            "Primary Directive: To bridge the gap between technical rigor and human-centric strategy. Operates with high agency in complex systems."
+                                            "Mission: Bridging the gap between technical rigor and human-centric strategy. Operating with high agency in complex systems."
                                         </p>
                                     </div>
                                 </div>
@@ -156,15 +156,15 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack, initialBoun
                             </motion.div>
                         )}
 
-                        {activeTab === 'lore' && (
+                        {activeTab === 'history' && ( // Changed lore to history
                             <motion.div
-                                key="lore"
+                                key="history"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
                                 className="space-y-6 overflow-y-auto h-full pr-4"
                             >
-                                <h2 className="text-2xl font-bold mb-4">&gt; SYSTEM_LOGS</h2>
+                                <h2 className="text-2xl font-bold mb-4">&gt; HISTORY_LOGS</h2>
 
                                 <div className="space-y-6 text-sm">
                                     <div className="border-l-2 border-amber-500 pl-4 py-1">

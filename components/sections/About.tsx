@@ -28,13 +28,13 @@ const About: React.FC = () => {
         <div>
           <h2 className="font-display font-bold text-4xl md:text-6xl mb-8 leading-none">THE<br /><span className="text-pop">THROUGH-LINE.</span></h2>
           <div className="prose prose-lg dark:prose-invert opacity-80 font-sans space-y-6">
-            <p>My narrative isn't just about where I'm from; it's about what I've built. Across every role, three things recur:</p>
+            <p>I see the world in systems. Whether I'm designing a product roadmap or building a community from scratch, I'm driven by the same question: <em>How can we make this last?</em></p>
 
             <div className="space-y-6 mt-8">
               {[
-                { title: 'Building Scalable Systems', desc: 'I don\'t just participate; I build structures that last. From founding student associations to scaling advisory ventures.' },
+                { title: 'Building Scalable Systems', desc: 'I build structures that last. From founding student associations to scaling advisory ventures.' },
                 { title: 'Translating Complexity', desc: 'Whether it\'s econometric models for the WFP or AI strategy for RBC, I bridge the gap between technical rigor and executive decision-making.' },
-                { title: 'Operational Resilience', desc: 'Resilience is not cosmetic. It is the ability to operate calmly under pressure and deliver clarity when conditions are not ideal.' }
+                { title: 'Operational Resilience', desc: 'Resilience means operating calmly under pressure and delivering clarity when conditions are not ideal.' }
               ].map((item, idx) => (
                 <div key={idx} className="flex items-start gap-4">
                   <IconCheck className="w-6 h-6 text-pop mt-1 shrink-0 pixel-icon" />

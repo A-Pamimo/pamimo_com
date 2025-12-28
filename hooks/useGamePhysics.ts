@@ -106,22 +106,36 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
             ess: '#84CC16'            // Lime
         };
 
-        // 1. Deco
-        worldObjects.push({ id: 'lbl_core', x: 0, y: -450, w: 0, h: 0, type: 'label', label: 'CORE SYSTEM', color: '#eab308', fontSize: 40 });
-        worldObjects.push({ id: 'lbl_comms', x: -450, y: -100, w: 0, h: 0, type: 'label', label: 'UPLINK', color: '#3b82f6', fontSize: 40 });
-        worldObjects.push({ id: 'lbl_archive', x: 470, y: -250, w: 0, h: 0, type: 'label', label: 'PROJECT ARCHIVE', color: '#a855f7', fontSize: 40 });
+        // 1. Deco (Labels)
+        // Center alignment
+        worldObjects.push({ id: 'lbl_core', x: 0, y: -400, w: 0, h: 0, type: 'label', label: 'PROFILE', color: '#eab308', fontSize: 32 }); // Above Identity
+        worldObjects.push({ id: 'lbl_work', x: 0, y: 100, w: 0, h: 0, type: 'label', label: 'SELECTED_WORK', color: '#4ade80', fontSize: 32 }); // Above Grid
 
-        // 2. Portals
+        // 2. Portals (Symmetrical Flanks)
+        // Center: Identity
         worldObjects.push({ id: 'about', x: -80, y: -350, w: 160, h: 100, type: 'portal', label: 'IDENTITY_CORE', color: '#eab308', isSolid: true });
-        worldObjects.push({ id: 'contact', x: -500, y: -40, w: 100, h: 100, type: 'portal', label: 'COMMS_RELAY', color: '#3b82f6', isSolid: true });
 
-        // 3. Projects
+        // Left Flank: Contact
+        worldObjects.push({ id: 'contact', x: -400, y: -50, w: 120, h: 100, type: 'portal', label: 'CONTACT', color: '#3b82f6', isSolid: true });
+        worldObjects.push({ id: 'lbl_comms', x: -340, y: -100, w: 0, h: 0, type: 'label', label: 'UPLINK', color: '#3b82f6', fontSize: 24 });
+
+        // Right Flank: Blog
+        worldObjects.push({ id: 'blog', x: 280, y: -50, w: 120, h: 100, type: 'portal', label: 'WRITING', color: '#a855f7', isSolid: true });
+        worldObjects.push({ id: 'lbl_archive', x: 340, y: -100, w: 0, h: 0, type: 'label', label: 'ARCHIVE', color: '#a855f7', fontSize: 24 });
+
+        // 3. Projects (Bottom Center Grid)
         let row = 0; let col = 0;
-        const startX = 300; const startY = -150;
-        const gapX = 220; const gapY = 280;
+        // Center grid: 3 columns. Width of item ~120. Gap ~80?
+        // Let's use 220 spacing.
+        // Mid col center = 0. mid col x = -60.
+        // Left col x = -280. Right col x = 160.
+        const startX = -280;
+        const startY = 150;
+        const gapX = 220;
+        const gapY = 280;
 
         projectList.forEach((p, i) => {
-            if (i > 0 && i % 2 === 0) { row++; col = 0; }
+            if (i > 0 && i % 3 === 0) { row++; col = 0; } // 3 columns
             worldObjects.push({
                 id: p.id, x: startX + (col * gapX), y: startY + (row * gapY),
                 w: 120, h: 160, type: 'project', label: p.title, data: p,
@@ -132,7 +146,7 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
 
         objects.current = worldObjects;
 
-        // Bounds
+        // Bounds (Recalculate for new layout)
         if (worldObjects.length > 0) {
             let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
             worldObjects.forEach(obj => {
@@ -140,9 +154,12 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
                 minX = Math.min(minX, obj.x); maxX = Math.max(maxX, obj.x + obj.w);
                 minY = Math.min(minY, obj.y); maxY = Math.max(maxY, obj.y + obj.h);
             });
+            // Ensure bounds are large enough to feel open but bounded
             bounds.current = {
-                minX: minX - WORLD_PADDING, maxX: maxX + WORLD_PADDING,
-                minY: minY - WORLD_PADDING, maxY: maxY + WORLD_PADDING
+                minX: Math.min(minX - WORLD_PADDING, -600),
+                maxX: Math.max(maxX + WORLD_PADDING, 600),
+                minY: Math.min(minY - WORLD_PADDING, -600),
+                maxY: Math.max(maxY + WORLD_PADDING, row * gapY + 400)
             };
         }
 
@@ -248,7 +265,7 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
         // Interaction Check
         let target: GameObject | null = null;
         let closestDist = Infinity;
-        const touchBuffer = 10;
+        const touchBuffer = 30; // Increased to ensure interaction triggers even if collision stops player early
         const pRect = {
             x: player.current.pos.x - PLAYER_SIZE / 2 - touchBuffer,
             y: player.current.pos.y - PLAYER_SIZE / 2 - touchBuffer,
@@ -286,8 +303,8 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
         const rect = canvas.getBoundingClientRect();
         const x = clientX - rect.left;
         const y = clientY - rect.top;
-        const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
         const wx = x - cx + camera.current.x;
         const wy = y - cy + camera.current.y;
 
