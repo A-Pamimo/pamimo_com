@@ -1,6 +1,6 @@
 import React from 'react';
-import { Project } from '../types';
-import { IconArrow, IconBrain, IconGlobe, IconGov, IconUsers, IconChart, IconTrophy } from './Icons';
+import { Project } from '../../types';
+import { IconArrow, IconBrain, IconGlobe, IconGov, IconUsers, IconChart, IconTrophy } from '../ui/Icons';
 
 interface ProjectCardProps {
   project: Project;
@@ -41,8 +41,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
               <p className="opacity-70 max-w-md">Creator of a first-of-its-kind agentic AI concept for RBC’s Advice Centre. Patent-adjacent thinking.</p>
             </div>
             <div className="mt-8">
-              <span className="bg-gold text-ink text-xs font-bold px-3 py-1 inline-flex items-center gap-2 mb-2 shadow-sm w-fit">
-                <IconTrophy className="w-4 h-4 pixel-icon" /> $20K BEST BUSINESS VALUE PRIZE
+              <span className="bg-gold text-ink text-xs font-bold px-3 py-1 inline-flex items-center gap-2 mb-2 shadow-sm w-fit uppercase tracking-wider">
+                <IconTrophy className="w-4 h-4 pixel-icon" /> <span className="text-pop font-black">$20K</span> BEST BUSINESS VALUE PRIZE
               </span>
               <div className="flex gap-2">
                 <span className="border border-current opacity-30 px-2 py-1 text-xs font-mono">GenAI</span>
@@ -107,11 +107,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
           {(project.id !== 'pasa' && project.id !== 'ess') && <p className="text-sm font-mono opacity-50 mb-4">{project.subtitle}</p>}
 
           <p className="text-sm opacity-70">
-            {project.id === 'wfp' ? 'Evaluated data quality tradeoffs in fragile contexts (Myanmar, Ecuador, CAR).' :
-              project.id === 'city' ? 'Serving 300,000+ Citizens. Translated policy goals into actionable dashboards.' :
-                project.id === 'pasa' ? 'Orchestrated growth (2 to 10 events) and built a durable community.' :
-                  project.id === 'ess' ? 'Scaled to 40+ members from zero. Built partnerships with faculty & industry.' :
-                    'Applied regional economic modeling to quantify the invisible ripple effect of community theatre.'}
+            {project.context}
           </p>
         </div>
 

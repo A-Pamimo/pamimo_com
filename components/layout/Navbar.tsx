@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { IconMenu, IconClose, IconMoon, IconSun } from './Icons';
-import { useTheme } from '../hooks/useTheme';
+import { IconMenu, IconClose, IconMoon, IconSun } from '../ui/Icons';
+import { useTheme } from '../../hooks/useTheme';
 import { AnimatePresence, motion } from 'framer-motion';
-import Logo from './Logo';
+import Logo from '../ui/Logo';
+import { CONTACT_EMAIL } from '../../constants';
 
 interface NavbarProps {
   simulationMode?: boolean;
@@ -79,7 +80,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
 
           {/* Hire Me (Desktop) */}
           <a
-            href="mailto:oluwapamimoakinjide@gmail.com"
+            href={`mailto:${CONTACT_EMAIL}`}
             className="hidden md:flex text-sm font-bold bg-ink text-cream dark:bg-cream dark:text-ink px-4 py-2 hover:bg-pop hover:text-white dark:hover:bg-pop dark:hover:text-white transition-colors items-center gap-2 shadow-hard hover:shadow-hard-hover cursor-hoverable"
           >
             <span className="w-2 h-2 bg-green-500 animate-pulse"></span>
@@ -147,13 +148,13 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
 
               <div className="h-px bg-white/20 w-full mb-8" />
               <motion.a
-                href="mailto:oluwapamimoakinjide@gmail.com"
+                href={`mailto:${CONTACT_EMAIL}`}
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.3 }}
                 className="text-pop text-xl font-mono cursor-hoverable"
               >
-                oluwapamimoakinjide@gmail.com
+                {CONTACT_EMAIL}
               </motion.a>
             </nav>
           </motion.div>

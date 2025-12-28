@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconCheck } from './Icons';
+import { IconCheck } from '../ui/Icons';
 
 const About: React.FC = () => {
   return (
@@ -32,9 +32,9 @@ const About: React.FC = () => {
 
             <div className="space-y-6 mt-8">
               {[
-                { title: 'Building Institutions', desc: 'I don\'t just participate; I build structures that last. From founding student associations to scaling advisory ventures.' },
+                { title: 'Building Scalable Systems', desc: 'I don\'t just participate; I build structures that last. From founding student associations to scaling advisory ventures.' },
                 { title: 'Translating Complexity', desc: 'Whether it\'s econometric models for the WFP or AI strategy for RBC, I bridge the gap between technical rigor and executive decision-making.' },
-                { title: 'Leaving Systems Stronger', desc: 'Resilience is not cosmetic. It is the ability to operate calmly under pressure and deliver clarity when conditions are not ideal.' }
+                { title: 'Operational Resilience', desc: 'Resilience is not cosmetic. It is the ability to operate calmly under pressure and deliver clarity when conditions are not ideal.' }
               ].map((item, idx) => (
                 <div key={idx} className="flex items-start gap-4">
                   <IconCheck className="w-6 h-6 text-pop mt-1 shrink-0 pixel-icon" />

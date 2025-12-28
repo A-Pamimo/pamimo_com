@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Project } from '../../types';
-import { IconCheck, IconTrophy } from '../Icons';
+import { IconCheck, IconTrophy } from '../ui/Icons';
 
 interface GameProjectConsoleProps {
     project: Project;
@@ -161,6 +161,11 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                         <button onClick={onBack} className="bg-[#33ff00] text-black px-4 py-2 font-bold hover:bg-white transition-colors uppercase">
                             [CLOSE_FILE]
                         </button>
+                        {project.link && (
+                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="border border-[#33ff00] text-[#33ff00] px-4 py-2 font-bold hover:bg-[#33ff00] hover:text-black transition-colors uppercase">
+                                [ACCESS_SOURCE_CODE]
+                            </a>
+                        )}
                     </div>
                 </div>
             </div>

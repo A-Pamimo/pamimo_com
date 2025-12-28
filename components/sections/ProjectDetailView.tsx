@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Project } from '../types';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import CustomCursor from './CustomCursor';
-import BackgroundCanvas from './BackgroundCanvas';
-import { IconTrophy, IconCheck, IconArrow } from './Icons';
+import { Project } from '../../types';
+import Navbar from '../layout/Navbar';
+import Footer from '../layout/Footer';
+import CustomCursor from '../ui/CustomCursor';
+import BackgroundCanvas from '../ui/BackgroundCanvas';
+import { IconTrophy, IconCheck, IconArrow } from '../ui/Icons';
 
 interface ProjectDetailViewProps {
     project: Project;
@@ -84,10 +84,10 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
                                     STATS
                                 </h3>
                                 <div className="space-y-3 font-mono text-sm">
-                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Strategy</span><span>{project.stats.strategy}%</span></div>
-                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Tech</span><span>{project.stats.tech}%</span></div>
-                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Product</span><span>{project.stats.product}%</span></div>
-                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Leadership</span><span>{project.stats.leadership}%</span></div>
+                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Strategy</span><span>{project.stats?.strategy}%</span></div>
+                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Tech</span><span>{project.stats?.tech}%</span></div>
+                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Product</span><span>{project.stats?.product}%</span></div>
+                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Leadership</span><span>{project.stats?.leadership}%</span></div>
                                 </div>
                             </div>
                         </div>

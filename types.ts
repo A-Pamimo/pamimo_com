@@ -27,6 +27,9 @@ export interface Project {
   imageCaption?: string;
   testimonial?: string;
   testimonialAuthor?: string;
+  link?: string;
+  archived?: boolean;
+  video?: string;
 }
 
 export type Theme = 'light' | 'dark';

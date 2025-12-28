@@ -1,5 +1,7 @@
-
 import { Project } from './types';
+import { PROJECT_CONTENT } from './data/projects';
+
+export const CONTACT_EMAIL = 'oluwapamimoakinjide@gmail.com';
 
 export const PROJECT_DATA: Record<string, Project> = {
     nova: {
@@ -17,7 +19,8 @@ export const PROJECT_DATA: Record<string, Project> = {
         stats: { strategy: 90, tech: 85, product: 100, leadership: 80 },
         image: "/images/rbc-amplify-team.jpg",
         imageCaption: "Our team celebrating the $20,000 Best Business Value prize at RBC Amplify",
-        blog: `So picture this: you get selected for one of Canada's most competitive innovation programs at RBC (that's Royal Bank of Canada, for the uninitiated). No pressure, right? Just casually competing against some of the brightest minds in fintech while trying not to embarrass yourself.\n\nThe challenge was real. Banking advisors were drowning in administrative work. You know that feeling when you spend more time doing paperwork than actually helping people? Yeah, that was the vibe. So I thought, "What if AI could handle all the boring stuff so humans could focus on being, well, human?"\n\nEnter NOVA. Not the fish (though that would be cool), but an agentic AI system designed to be like the ultimate personal assistant for banking advisors. Think of it as giving each advisor their own super-smart intern who never sleeps, never complains, and always remembers where you left that one document from three months ago.\n\nThe tricky part wasn't just building something cool. It was building something that actually worked in the real world. Banks aren't exactly known for moving fast and breaking things (thank goodness), so I had to make the case that this wasn't just tech for tech's sake. This was about making people's jobs better, serving clients faster, and proving that AI and humans work better together than either does alone.\n\nI spent weeks mapping out how advisors actually worked, identifying the pain points that made them want to flip their desks, and translating all of that into a roadmap that went from "cool idea" to "this could actually ship." Along the way, I learned that product strategy is less about having all the answers and more about asking really good questions.\n\nThe result? We won the $20,000 prize for Best Business Value. But honestly, the real win was showing that you don't need to choose between innovation and practicality. You can have both. You just need to do your homework, build the right case, and maybe have a little fun along the way.\n\nOh, and I got to work with some incredible people who taught me that leadership isn't about being the smartest person in the room. It's about making everyone else feel smart enough to build something amazing together.`
+        video: "/NOVA_Cheque.mov",
+        blog: PROJECT_CONTENT.nova.blog
     },
     wfp: {
         id: "wfp",
@@ -32,7 +35,7 @@ export const PROJECT_DATA: Record<string, Project> = {
         category: ['strategy', 'tech'],
         year: 2025,
         stats: { strategy: 95, tech: 90, product: 40, leadership: 30 },
-        blog: `Okay, so working with the World Food Programme is probably one of the most "am I really qualified for this?" moments you can have. Like, one day you're analyzing datasets, and the next day you realize those datasets represent actual people in Myanmar, Ecuador, and the Central African Republic who need food. No pressure at all.\n\nThe question we were trying to answer was deceptively simple: how do you collect good data when you don't have a lot of money and you're working in some of the most challenging environments on Earth? Turns out, "just do your best" isn't a great research methodology (who knew?).\n\nSo I dove into 150,000+ records. And when I say "dove," I mean I spent weeks staring at Stata outputs, building predictive models in Python and R, and trying to figure out why non-random selection bias is both a mouthful and a massive headache. The goal was to understand the tradeoffs between data quality and cost efficiency. Because in humanitarian work, every dollar spent on better surveys is a dollar not spent on actual food. The stakes are real.\n\nThe fun part (and by fun I mean "existentially challenging") was dealing with fragile contexts. These aren't your typical research settings where you can assume everything works normally. You're dealing with crisis situations where the rules are different, the constraints are tighter, and the margin for error is basically zero.\n\nI ended up building econometric models that could forecast program demand, which sounds fancy but really just means "trying to predict who needs help and where." The rCARI indicators (that's remote food security monitoring, for the non-nerds) became my best friends. Well, as much as statistical indicators can be your friends.\n\nWhat I learned: research isn't just about being right. It's about being useful. My work now helps the WFP decide where to allocate resources and how to measure food security in crisis settings. And honestly, knowing that something I built with code and coffee is helping real people? That's the kind of impact that makes all those late nights worth it.\n\nAlso, shoutout to my co-authors who taught me that good research is a team sport and that sometimes the best methodology is the one that actually gets used.`
+        blog: PROJECT_CONTENT.wfp.blog
     },
     weg: {
         id: "weg",
@@ -46,10 +49,11 @@ export const PROJECT_DATA: Record<string, Project> = {
         impact: "I established standing evidence of market trust, delivering high-quality impact reports and strategic briefs that rival top-tier consultancies.",
         category: ['strategy', 'tech'],
         year: 2025,
+        link: "https://worldsedgegroup.com/",
         stats: { strategy: 100, tech: 60, product: 70, leadership: 100 },
         testimonial: "The final report met our expectations. We really appreciated how detailed it was in direct connection to our goals. It was very clear and efficient. I really appreciated the time taken to explain, in detail, how to present the report to stakeholders.",
         testimonialAuthor: "Executive Director // Regional Arts Organization",
-        blog: `You know that moment when you realize you could either wait for someone to give you a job or just... make one yourself? Yeah, that's how World's Edge Group started. Spoiler: it was way harder than I thought, but also way more rewarding.\n\nThe idea was simple (famous last words): create an advisory platform that delivers the same quality as big-name consultancies, but without the corporate overhead and the $50,000 price tags. Because let's be real, not every organization can afford McKinsey, but that doesn't mean they don't deserve great strategy.\n\nSo I built it from scratch. And when I say "from scratch," I mean everything. Pricing models? Made 'em. Evaluation frameworks? Built 'em. Brand identity? Designed it while questioning all my life choices at 2 AM. Entrepreneurship is glamorous like that.\n\nThe breakthrough was creating the "Impact 100" methodology for the Western Canada Economic Forum. Basically, it's a framework for measuring impact that actually makes sense to normal humans (revolutionary, I know). The goal was to show that you could quantify impact without losing the human story behind the numbers.\n\nWorking with clients like Project HAIRitage taught me something crucial: people don't want jargon. They want clarity. They want someone who can take complex economic data and turn it into a story that boards can actually use to make decisions. That became my superpower.\n\nThe best part? Competing with the big firms and holding my own. When your work gets compared to top-tier consultancies and people can't tell the difference, that's when you know you're onto something. It's not about being the biggest. It's about being the best at what you do.\n\nAlso, being a founder means you learn really fast that "wearing multiple hats" is code for "you're the CEO, the analyst, the designer, the salesperson, and occasionally the IT department." But hey, at least the company culture is exactly what I want it to be.`
+        blog: PROJECT_CONTENT.weg.blog
     },
     city: {
         id: "city",
@@ -79,7 +83,8 @@ export const PROJECT_DATA: Record<string, Project> = {
         category: ['tech', 'strategy'],
         year: 2025,
         stats: { strategy: 90, tech: 60, product: 20, leadership: 50 },
-        blog: `Here's a frustrating truth: arts organizations do incredible work, but when it comes to fundraising, they're often told "show us the numbers." As if art's value can only be measured in dollars and cents. (Spoiler: it can't. But also, it can. It's complicated.)\n\nThe Saskatoon Summer Players needed to raise serious capital, but donors wanted economic impact numbers. Not "this enriches our community" vibes, but actual ROI. Cold, hard data. So I had to figure out how to put a number on something that's inherently priceless without losing what makes it valuable in the first place.\n\nI authored a comprehensive economic valuation report that became part of an $11 million fundraising strategy. Eleven. Million. Dollars. For a local arts organization. Let that sink in.\n\nThe trick was quantifying community impact in a way that resonated with both the "art for art's sake" crowd and the "show me the spreadsheet" people. I had to prove that cultural infrastructure IS economic infrastructure. That theaters create jobs, drive tourism, and build community value that ripples way beyond ticket sales.\n\nTranslating technical findings into clear language for funders and policymakers was like being a translator between two worlds. On one side, you have artists who (rightfully) think their work shouldn't need justification. On the other, you have business-minded donors who need to see measurable impact. My job was to make both sides happy without selling out either one.\n\nThe result? Arts organizations now have credible, quantitative evidence to defend their funding requests. They don't have to choose between artistic integrity and financial sustainability anymore. They can have both.\n\nWhat I learned: sometimes the most important work is building the bridge between two perspectives that seem incompatible. Numbers and narratives. Art and analytics. They're not opposites. They're partners.`
+        blog: PROJECT_CONTENT.sctc.blog,
+        archived: true
     },
     pasa: {
         id: "pasa",
@@ -94,7 +99,8 @@ export const PROJECT_DATA: Record<string, Project> = {
         category: ['strategy'],
         year: 2023,
         stats: { strategy: 80, tech: 10, product: 60, leadership: 95 },
-        blog: `When I became President of PASA, the Pan-African Students Association was... well, let's just say it had potential. Students were scattered, events were sparse (like two per year sparse), and there was no real sense of community. It felt less like an association and more like a group chat that occasionally remembered to exist.\n\nSo I did what any reasonable person would do when handed a struggling organization: I decided to completely transform it. (Looking back, I may have been overly ambitious. But also, it worked, so...)\n\nThe vision was simple: turn PASA into a real community. Not just a place to hang out (though that's important), but a legitimate professional network that could open doors and create opportunities. Because Pan-African students deserve more than just cultural events. They deserve access, connections, and a support system that actually supports.\n\nI orchestrated a growth strategy that took us from 2 annual events to 10. That's a 400% increase, for those keeping score at home. We went from "oh yeah, PASA exists" to "wait, PASA is doing WHAT this week?" It was exhausting and exhilarating in equal measure.\n\nSecuring $10K in external funding was probably my proudest moment. Not because of the money (though that helped), but because it meant we'd positioned PASA as a legitimate stakeholder in the university ecosystem. We weren't just asking for handouts. We were making a case for why investing in our community was investing in the university's future.\n\nThe result? 40% year-over-year membership growth. More events. Better programming. Actual professional development opportunities. And most importantly, a community that felt like home for students who needed one.\n\nBut here's the thing that matters most: PASA outlived my tenure. It's still thriving. Still growing. Still creating opportunities. That's the real marker of leadership. Not what you build, but whether it lasts after you're gone. And PASA? It's built to last.`
+        blog: PROJECT_CONTENT.pasa.blog,
+        archived: true
     },
     ess: {
         id: "ess",
@@ -109,6 +115,53 @@ export const PROJECT_DATA: Record<string, Project> = {
         category: ['strategy'],
         year: 2023,
         stats: { strategy: 70, tech: 10, product: 50, leadership: 90 },
-        blog: `You know what's wild? Economics students at my university didn't have their own society. Business students had one. Engineering students had one. Even the Philosophy majors had their own crew. But Econ? Nothing. Nada. Zilch.\n\nSo naturally, I thought, "How hard could it be to start one?" (Narrator: It was, in fact, quite hard.)\n\nBut here's the thing: it needed to exist. Economics students were navigating career paths, internships, and grad school applications with basically zero institutional support beyond "go to office hours." That's not a support system. That's a suggestion.\n\nI co-founded the Economics Students Society from absolute scratch. No budget, no members, no structure. Just vibes and determination. (Mostly determination. The vibes came later.)\n\nScaling to 40+ members from ground zero was like trying to convince people to join a party that didn't exist yet. "Hey, want to be part of this thing we're building? It's gonna be great! No, I don't have proof. Just trust me." Surprisingly, people did.\n\nThe real game-changer was building relationships with faculty and industry partners. Because here's the secret: people want to help students. They just need someone to actually organize it. So I became that person. I set up mentorship programs, career panels, and networking events that gave students real access to real opportunities.\n\nWhat I'm most proud of isn't the member count or the event attendance. It's the fact that Economics students now have a place where they belong. A community that gets their struggles, celebrates their wins, and connects them to opportunities they wouldn't have found on their own.\n\nBuilding the ESS taught me that leadership isn't about having all the answers. It's about caring enough to figure them out. And sometimes, the best institutions are the ones that didn't exist until someone decided they should.`
+        blog: PROJECT_CONTENT.ess.blog,
+        archived: true
+    },
+    its: {
+        id: "its",
+        title: "Intelligent Data Operations",
+        subtitle: "Business Intelligence Dev // Interactive Tracking Systems",
+        tag: "Data Engineering",
+        context: "The company's data collection was manual and expensive. I was brought in to automate pipelines and improve data availability for decision-making.",
+        stack: ["Python", "Flask", "SQL", "Power Automate", "VBA", "Web Scraping", "API Integration"],
+        what: "I developed a Python-based web scraping tool and integrated WhatsApp API pipelines for customer communication. I also built internal SQL tooling using Flask.",
+        how: "I automated Excel reporting with VBA benchmarks and connected marketing flows via Power Automate. By removing manual entry, I shifted the focus to analytics.",
+        impact: "Reduced manual data collection time by 30% and reporting hours by 50%. Marketing automation engaged 200+ customers, boosting engagement by 40%.",
+        category: ['tech', 'product'],
+        year: 2024,
+        stats: { strategy: 60, tech: 95, product: 70, leadership: 40 },
+        blog: PROJECT_CONTENT.its.blog
+    },
+    uos_research: {
+        id: "uos_research",
+        title: "Climate Resilience Data",
+        subtitle: "Research Assistant // University of Saskatchewan",
+        tag: "Research & Data",
+        context: "Understanding climate resilience in sub-Saharan Africa requires precise data. I was tasked with cleaning and analyzing massive geo-coded weather datasets.",
+        stack: ["Python", "R", "Geo-coding", "Data Visualization", "Resilience Databases", "Government Liaison"],
+        what: "I analyzed geo-coded weather data for 3 sub-Saharan African countries and creating visual reports from 150K+ data points. I coordinated with government bodies to build 5 new resilience databases.",
+        how: "I used R and Python to script reproducible data cleaning pipelines. I translated raw meteorological data into actionable resilience KPI metrics.",
+        impact: "My analysis provided critical evidence on regional climate variations, directly supporting water resource management strategies for vulnerable communities.",
+        category: ['tech', 'strategy'],
+        year: 2024,
+        stats: { strategy: 50, tech: 90, product: 30, leadership: 20 },
+        blog: PROJECT_CONTENT.uos_research.blog
+    },
+    harvest_link: {
+        id: "harvest_link",
+        title: "HarvestLink Marketplace",
+        subtitle: "Product Lead // CoHack Silver Medalist",
+        tag: "Full Stack",
+        context: "A hackathon project addressing the supply chain disconnect between local farmers and consumers. Built in 48 hours under high pressure.",
+        stack: ["React", "Node.js", "TypeScript", "Tailwind", "Product Management", "Express", "Zustand"],
+        what: "I led product direction and contributed to the full-stack development of a two-sided marketplace with secure PIN verification and real-time order tracking.",
+        how: "I managed scope to ensure MVP delivery, architecting the farmer/customer separation and implementing the secure pickup workflow.",
+        impact: "Won 2nd Place at CoHack. Delivered a functional full-stack application with Auth, Dashboard, and Order Management systems in a single weekend.",
+        link: "https://github.com/hxdxri/CoHack",
+        category: ['tech', 'product'],
+        year: 2025,
+        stats: { strategy: 80, tech: 85, product: 90, leadership: 85 },
+        blog: PROJECT_CONTENT.harvest_link.blog
     }
 };

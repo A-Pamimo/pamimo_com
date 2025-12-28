@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { IconMail } from './Icons';
+import { IconMail } from '../ui/Icons';
 
 const Footer: React.FC = () => {
   return (

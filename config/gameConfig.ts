@@ -1,0 +1,13 @@
+export const GAME_CONFIG = {
+    PLAYER_SIZE: 24,
+    ACCELERATION: 0.8,
+    FRICTION: 0.82,
+    MAX_SPEED: 8,
+    WORLD_PADDING: 250,
+    MAX_SCROLL_LIMIT: 5000, // Safety limit
+};
+
+export const PHYSICS_CONSTANTS = {
+    TOUCH_BUFFER: 10,
+    INTERACTION_RADIUS: 40,
+};

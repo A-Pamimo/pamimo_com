@@ -1,12 +1,12 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { PROJECT_DATA } from '../../../constants';
-import ProjectDetailView from '../../../components/ProjectDetailView';
+import ProjectDetailView from '../../../components/sections/ProjectDetailView';
 
 export async function generateStaticParams() {
-    return Object.keys(PROJECT_DATA).map((slug) => ({
-      slug,
-    }));
+  return Object.keys(PROJECT_DATA).map((slug) => ({
+    slug,
+  }));
 }
 
 export default function ProjectPage({ params }: { params: { slug: string } }) {

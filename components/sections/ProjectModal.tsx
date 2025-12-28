@@ -1,14 +1,28 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { Project } from '../types';
-import { IconClose, IconTrophy, IconCheck } from './Icons';
+import { Project } from '../../types';
+import { IconClose, IconTrophy, IconCheck } from '../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProjectModalProps {
     project: Project | null;
     onClose: () => void;
 }
+
+// Helper to highlight "$20,000" or other currency amounts
+const highlightText = (text: string) => {
+    const parts = text.split(/(\$20,000)/g);
+    return parts.map((part, i) =>
+        part === '$20,000' ? (
+            <span key={i} className="text-pop font-bold inline-block transform hover:scale-110 transition-transform cursor-default">
+                {part}
+            </span>
+        ) : (
+            part
+        )
+    );
+};
 
 const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
     useEffect(() => {
@@ -98,10 +112,49 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                                 </div>
                             </div>
 
+
+
                             {/* Content Grid */}
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
                                 {/* Sidebar Stats */}
                                 <div className="space-y-12">
+                                    {/* Project Media (Sidebar) */}
+                                    {(project.video || project.image) && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: 0.35 }}
+                                        >
+                                            <div className="relative rounded-none overflow-hidden shadow-2xl border border-ink/10 dark:border-white/10 aspect-video bg-ink/5 dark:bg-white/5 group">
+                                                {project.video ? (
+                                                    <video
+                                                        src={project.video}
+                                                        autoPlay
+                                                        loop
+                                                        muted
+                                                        playsInline
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        src={project.image}
+                                                        alt={project.title}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                )}
+
+                                                {/* Caption Overlay */}
+                                                {project.imageCaption && (
+                                                    <div className="absolute bottom-0 left-0 w-full bg-ink/90 text-cream p-4 backdrop-blur-sm transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                                        <p className="font-mono text-xs uppercase tracking-widest text-center">
+                                                            {highlightText(project.imageCaption)}
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </motion.div>
+                                    )}
+
                                     <motion.div
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
@@ -164,7 +217,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                                             <h3 className="font-mono text-xs text-pop font-bold mb-4 uppercase flex items-center gap-2">
                                                 <IconCheck className="w-4 h-4" /> The Outcome
                                             </h3>
-                                            <p className="font-display text-2xl md:text-3xl font-bold">{project.impact}</p>
+                                            <p className="font-display text-2xl md:text-3xl font-bold">{highlightText(project.impact)}</p>
                                         </div>
                                     </motion.div>
                                 </div>
@@ -172,8 +225,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                         </div>
                     </div>
                 </motion.div>
-            </div>
-        </AnimatePresence>
+            </div >
+        </AnimatePresence >
     );
 };
 

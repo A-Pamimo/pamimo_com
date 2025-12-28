@@ -93,7 +93,7 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack, initialBoun
                                     />
                                 </div>
                                 <div className="md:col-span-2 space-y-6">
-                                    <h2 className="text-3xl font-bold border-b border-amber-500/30 pb-2">SUBJECT: PAMIMO</h2>
+                                    <h2 className="text-3xl font-bold border-b border-amber-500/30 pb-2">SUBJECT: PAMIMO AKINJIDE</h2>
                                     <div className="grid grid-cols-2 gap-4 text-sm">
                                         <div className="opacity-70">CLASS:</div><div>BUILDER</div>
                                         <div className="opacity-70">BASE:</div><div>TORONTO, CA</div>
@@ -183,8 +183,23 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack, initialBoun
                                     </div>
 
                                     <div className="border-l-2 border-amber-500 pl-4 py-1">
+                                        <span className="text-xs opacity-50 block mb-1">LOG_2023.10 - 2024.08</span>
+                                        <p className="opacity-90">Business Intelligence (ITS). Automated core data pipelines. Python/SQL/VBA stack. Drastically reduced operational overhead.</p>
+                                    </div>
+
+                                    <div className="border-l-2 border-amber-500 pl-4 py-1">
                                         <span className="text-xs opacity-50 block mb-1">LOG_2023.08</span>
                                         <p className="opacity-90">Founded ESS node. Community fragmentation detected. Executed unification protocol. Status: Thriving.</p>
+                                    </div>
+
+                                    <div className="border-l-2 border-amber-500 pl-4 py-1">
+                                        <span className="text-xs opacity-50 block mb-1">LOG_2022.01 - 2022.07</span>
+                                        <p className="opacity-90">Software Engineering Intern (Liviasoft). Deployed low-level C and Z80 Assembly. Bare metal optimization. 8086 architecture.</p>
+                                    </div>
+
+                                    <div className="border-l-2 border-amber-500 pl-4 py-1">
+                                        <span className="text-xs opacity-50 block mb-1">LOG_2020.01 - 2022.11</span>
+                                        <p className="opacity-90">Community Lead (Lead Nigeria). Orchestrated educational resource centers. IDP Camp outreach. Direct human impact.</p>
                                     </div>
                                 </div>
                             </motion.div>

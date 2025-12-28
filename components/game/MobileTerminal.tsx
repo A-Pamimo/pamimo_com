@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Project } from '../types';
-import { PROJECT_DATA } from '../constants';
-import { IconCheck, IconTrophy } from './Icons';
+import { Project } from '../../types';
+import { useProjectData } from '../../hooks/useProjectData';
+import { IconCheck, IconTrophy } from '../ui/Icons';
 
 interface MobileTerminalProps {
     onExit: () => void;
@@ -12,14 +12,8 @@ interface MobileTerminalProps {
 }
 
 const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
-    // Sort projects: NOVA -> WEG -> Chronological
-    const projects = Object.values(PROJECT_DATA).sort((a, b) => {
-        if (a.id === 'nova') return -1;
-        if (b.id === 'nova') return 1;
-        if (a.id === 'weg') return -1;
-        if (b.id === 'weg') return 1;
-        return b.year - a.year;
-    });
+    // Sort projects using shared hook
+    const { projects } = useProjectData();
 
     const [bootSequence, setBootSequence] = useState(true);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);

@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { CONTACT_EMAIL } from '../../constants';
+
 interface GameContactTerminalProps {
     onBack: () => void;
     initialBounds?: { x: number, y: number, w: number, h: number } | null;
@@ -27,7 +29,8 @@ const GameContactTerminal: React.FC<GameContactTerminalProps> = ({ onBack, initi
         setTimeout(() => {
             setStep('success');
             // Fallback: actually open mailto after "transmission" so it's functional
-            window.location.href = `mailto:oluwaseyi.oxo@gmail.com?body=${encodeURIComponent(message)}`;
+            const truncatedBody = message.length > 1500 ? message.substring(0, 1500) + '...' : message;
+            window.location.href = `mailto:${CONTACT_EMAIL}?body=${encodeURIComponent(truncatedBody)}`;
         }, 2500);
     };
 
@@ -112,6 +115,7 @@ const GameContactTerminal: React.FC<GameContactTerminalProps> = ({ onBack, initi
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
                                     placeholder="ENTER TRANSMISSION DATA..."
+                                    maxLength={5000}
                                     className="flex-1 bg-transparent border border-emerald-900/50 p-4 text-emerald-500 focus:outline-none focus:border-emerald-500/50 resize-none mb-6 placeholder-emerald-900"
                                 />
                                 <div className="flex justify-end">
@@ -163,6 +167,29 @@ const GameContactTerminal: React.FC<GameContactTerminalProps> = ({ onBack, initi
                                 <p className="text-emerald-700 text-sm mb-8">
                                     Subject has been notified. Expect response within 24h.
                                 </p>
+
+                                <div className="flex gap-4 mb-8">
+                                    <a href="https://linkedin.com/in/pamimo" target="_blank" rel="noopener noreferrer" className="bg-emerald-900/30 text-emerald-500 hover:bg-emerald-500 hover:text-black px-4 py-2 text-xs uppercase transition-colors">
+                                        LINKEDIN
+                                    </a>
+                                    <a href="https://github.com/hxdxri" target="_blank" rel="noopener noreferrer" className="bg-emerald-900/30 text-emerald-500 hover:bg-emerald-500 hover:text-black px-4 py-2 text-xs uppercase transition-colors">
+                                        GITHUB
+                                    </a>
+                                </div>
+
+                                <div className="w-full border-t border-emerald-900/30 pt-6 mb-6">
+                                    <p className="text-emerald-700 text-xs mb-2">DIRECT LINE:</p>
+                                    <div className="flex justify-center items-center gap-2">
+                                        <code className="bg-emerald-900/20 text-emerald-500 px-2 py-1">{CONTACT_EMAIL}</code>
+                                        <button
+                                            onClick={() => navigator.clipboard.writeText(CONTACT_EMAIL)}
+                                            className="text-emerald-700 hover:text-emerald-500 text-xs uppercase"
+                                        >
+                                            [COPY]
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <button
                                     onClick={onBack}
                                     className="border border-emerald-500/50 text-emerald-500 hover:bg-emerald-500 hover:text-black px-6 py-2 text-sm uppercase transition-colors"
