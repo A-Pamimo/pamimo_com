@@ -16,6 +16,20 @@ Unlike standard static sites, this project is a digital playground designed to d
 *   **Design**: Tailwind CSS & Framer Motion
 *   **Engine**: Custom HTML5 Canvas Physics Engine (`StoryMode.tsx`)
 
+### Architecture
+I organized the repository to separate strategic content from engineering logic:
+
+```bash
+pamimo_com/
+├── app/                  # Next.js App Router (Pages & Layouts)
+├── components/
+│   ├── game/             # The Physics Engine (Canvas API logic)
+│   ├── sections/         # Portfolio Sections (Hero, Work, About)
+│   └── ui/               # Reusable Design Tokens
+├── constants.ts          # "CMS-lite": All content/copy lives here
+└── public/               # Static assets
+```
+
 ## Running Locally
 If you're curious about how the physics engine works or want to poke around the code:
 
