@@ -30,7 +30,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
           <div className="p-8 flex-1 flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-center mb-4">
-                <span className="font-mono text-xs bg-ink text-cream dark:bg-white dark:text-ink px-2 py-1">AGENTIC AI</span>
+                <span className="font-mono text-xs bg-ink text-cream dark:bg-white dark:text-ink px-2 py-1">{project.tag.toUpperCase()}</span>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs text-pop font-bold animate-pulse">● LIVE</span>
                   <IconArrow className="w-6 h-6 text-pop group-hover:translate-x-1 transition-transform pixel-icon" />

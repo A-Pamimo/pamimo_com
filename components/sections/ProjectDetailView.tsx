@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { Project } from '../../types';
 import Navbar from '../layout/Navbar';
 import Footer from '../layout/Footer';
@@ -23,9 +25,10 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
                 <div className="max-w-7xl mx-auto px-6 md:px-12">
 
                     {/* Back Link */}
-                    <a href="/work" className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest opacity-50 hover:opacity-100 hover:text-pop transition-all mb-12">
+
+                    <Link href="/work" className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest opacity-50 hover:opacity-100 hover:text-pop transition-all mb-12">
                         <IconArrow className="w-4 h-4 rotate-180" /> Back to Index
-                    </a>
+                    </Link>
 
                     {/* Header */}
                     <div className="mb-16 border-b border-ink/10 dark:border-white/10 pb-10">
@@ -130,10 +133,14 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
                             {project.image && (
                                 <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:750ms]">
                                     <div className="relative group overflow-hidden rounded-none border-2 border-ink dark:border-white">
-                                        <img
-                                            src={project.image}
+                                        <Image
+                                            src={project.image!}
                                             alt={project.imageCaption || project.title}
+                                            width={0}
+                                            height={0}
+                                            sizes="100vw"
                                             className="w-full h-auto object-cover"
+                                            style={{ width: '100%', height: 'auto' }}
                                         />
                                         {project.imageCaption && (
                                             <div className="absolute bottom-0 left-0 right-0 bg-ink/90 text-cream p-4 backdrop-blur-sm">

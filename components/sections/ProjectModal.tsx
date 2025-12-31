@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import Image from 'next/image';
 import { Project } from '../../types';
 import { IconClose, IconTrophy, IconCheck } from '../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -146,10 +147,11 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                                                         className="w-full h-full object-cover"
                                                     />
                                                 ) : (
-                                                    <img
-                                                        src={project.image}
+                                                    <Image
+                                                        src={project.image!}
                                                         alt={project.title}
-                                                        className="w-full h-full object-cover"
+                                                        fill
+                                                        className="object-cover"
                                                     />
                                                 )}
 

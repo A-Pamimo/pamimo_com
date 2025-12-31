@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { IconMenu, IconClose, IconMoon, IconSun } from '../ui/Icons';
 import { useTheme } from '../../hooks/useTheme';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -35,16 +36,16 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
   return (
     <>
       <nav className={`fixed top-0 w-full z-50 px-6 flex justify-between items-center transition-all duration-300 ${navClasses}`}>
-        <a href="#" className={`flex items-center hover:opacity-80 transition-opacity text-ink dark:text-cream ${linkClasses}`}>
+        <Link href="#" className={`flex items-center hover:opacity-80 transition-opacity text-ink dark:text-cream ${linkClasses}`}>
           <Logo className="h-10 w-auto" variant="full" />
-        </a>
+        </Link>
 
         <div className={`flex items-center gap-6 ${linkClasses}`}>
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#about" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">ABOUT ME</a>
-            <a href="#work" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">INDEX</a>
-            <a href="/blog" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">WRITING</a>
+            <Link href="#about" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">ABOUT ME</Link>
+            <Link href="#work" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">INDEX</Link>
+            <Link href="/blog" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">WRITING</Link>
           </div>
 
           {/* Gamification Toggle (Renamed to XP.MODE) */}

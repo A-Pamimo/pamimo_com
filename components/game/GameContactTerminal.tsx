@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 import { CONTACT_EMAIL } from '../../constants';
 
@@ -103,18 +104,22 @@ const GameContactTerminal: React.FC<GameContactTerminalProps> = ({ onBack, initi
 
                         <div className="flex flex-wrap gap-4 mb-8">
                             <a href="https://linkedin.com/in/pamimo" target="_blank" rel="noopener noreferrer" className="flex-1 bg-emerald-500 text-black hover:bg-white hover:text-black font-bold p-4 text-center transition-all flex flex-col items-center justify-center gap-2 group">
-                                <img
+                                <Image
                                     src="/linkedin_logo.png"
                                     alt="LinkedIn"
+                                    width={32}
+                                    height={32}
                                     className="w-8 h-8 object-contain"
                                     style={{ imageRendering: 'pixelated' }}
                                 />
                                 <span>LINKEDIN</span>
                             </a>
                             <a href="https://github.com/A-Pamimo" target="_blank" rel="noopener noreferrer" className="flex-1 border border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-black font-bold p-4 text-center transition-all flex flex-col items-center justify-center gap-2 group">
-                                <img
+                                <Image
                                     src="/github-logo-pixel-art-github-technology_grande.webp"
                                     alt="GitHub"
+                                    width={32}
+                                    height={32}
                                     className="w-8 h-8 object-contain"
                                     style={{ imageRendering: 'pixelated' }}
                                 />
