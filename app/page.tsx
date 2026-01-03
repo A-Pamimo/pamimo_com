@@ -1,19 +1,29 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import Hero from '../components/sections/Hero';
 import About from '../components/sections/About';
 import WorkIndex from '../components/sections/WorkIndex';
 import Footer from '../components/layout/Footer';
-import CustomCursor from '../components/ui/CustomCursor';
 import BackgroundCanvas from '../components/ui/BackgroundCanvas';
-import StoryMode from '../components/game/StoryMode';
-import MobileTerminal from '../components/game/MobileTerminal';
 import ProjectModal from '../components/sections/ProjectModal';
 import Preloader from '../components/ui/Preloader';
+import ErrorBoundary from '../components/ui/ErrorBoundary';
 import { Project } from '../types';
+
+// Lazy load heavy game components - only loaded when user enters game mode
+const StoryMode = dynamic(() => import('../components/game/StoryMode'), {
+  ssr: false,
+  loading: () => <div className="fixed inset-0 bg-black flex items-center justify-center text-green-500 font-mono">LOADING SIMULATION...</div>
+});
+
+const MobileTerminal = dynamic(() => import('../components/game/MobileTerminal'), {
+  ssr: false,
+  loading: () => <div className="fixed inset-0 bg-black flex items-center justify-center text-green-500 font-mono">LOADING TERMINAL...</div>
+});
 
 export default function Home() {
   const [simulationMode, setSimulationMode] = useState(false);
@@ -47,7 +57,6 @@ export default function Home() {
         {/* Base Background Layer - Moved here to respect local dark mode & z-indexing */}
         <div className="fixed inset-0 z-[-50] bg-cream dark:bg-charcoal transition-colors duration-500 pointer-events-none" />
 
-        <CustomCursor />
         <BackgroundCanvas simulationMode={simulationMode} simulationPreview={simulationPreview} />
 
         <Navbar
@@ -56,7 +65,8 @@ export default function Home() {
           setSimulationPreview={setSimulationPreview}
         />
 
-        <main className={`transition-all duration-500 ${simulationMode ? 'blur-md opacity-20 pointer-events-none' : 'opacity-100'}`}>
+        {/* Performance: blur only on desktop (md:), opacity-only on mobile */}
+        <main className={`transition-all duration-500 ${simulationMode ? 'md:blur-md opacity-20 pointer-events-none' : 'opacity-100'}`}>
           <Hero />
           <About />
           <WorkIndex onSelectProject={setSelectedProject} />
@@ -66,18 +76,22 @@ export default function Home() {
         <AnimatePresence>
           {simulationMode && (
             isMobile ? (
-              <MobileTerminal
-                key="mobile-terminal"
-                onExit={() => setSimulationMode(false)}
-                onSelectProject={handleProjectSelect}
-              />
+              <ErrorBoundary name="Mobile Terminal">
+                <MobileTerminal
+                  key="mobile-terminal"
+                  onExit={() => setSimulationMode(false)}
+                  onSelectProject={handleProjectSelect}
+                />
+              </ErrorBoundary>
             ) : (
-              <StoryMode
-                key="desktop-story-mode"
-                active={simulationMode}
-                onExit={() => setSimulationMode(false)}
-                onSelectProject={handleProjectSelect}
-              />
+              <ErrorBoundary name="Story Mode Engine">
+                <StoryMode
+                  key="desktop-story-mode"
+                  active={simulationMode}
+                  onExit={() => setSimulationMode(false)}
+                  onSelectProject={handleProjectSelect}
+                />
+              </ErrorBoundary>
             )
           )}
         </AnimatePresence>

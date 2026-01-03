@@ -116,7 +116,7 @@ const provincesCA: StateOption[] = [
     { abbr: 'AB', name: 'Alberta', overallRpp: 111.3, housingRpp: 105.4 },
     { abbr: 'QC', name: 'Quebec', overallRpp: 93.1, housingRpp: 85.2 },
     { abbr: 'NS', name: 'Nova Scotia', overallRpp: 101.8, housingRpp: 95.1 },
-    { abbr: 'MB', name: 'Manitoba', mbmIndex: 94.2, housingRpp: 86.5 } as any, // Fix type mismatch manually if needed, or stick to interface
+    { abbr: 'MB', name: 'Manitoba', overallRpp: 94.2, housingRpp: 86.5 },
     { abbr: 'SK', name: 'Saskatchewan', overallRpp: 95.4, housingRpp: 84.1 },
     { abbr: 'NB', name: 'New Brunswick', overallRpp: 92.5, housingRpp: 78.4 },
     { abbr: 'NL', name: 'Newfoundland & Lab.', overallRpp: 100.5, housingRpp: 86.2 },
@@ -316,8 +316,9 @@ export default function Calculator() {
                         <div className={styles.frequencyGrid}>
                             {frequencyItems.map(item => (
                                 <div key={item.id} className={styles.frequencyItem}>
-                                    <span className={styles.frequencyLabel}>{item.label}</span>
+                                    <label htmlFor={item.id} className={styles.frequencyLabel}>{item.label}</label>
                                     <input
+                                        id={item.id}
                                         type="range"
                                         min="1"
                                         max="5"
@@ -498,6 +499,7 @@ export default function Calculator() {
                                         placeholder="email@example.com"
                                         className="flex-1 bg-white dark:bg-black border border-ink/20 px-3 py-2 text-sm font-mono"
                                         required
+                                        aria-label="Email address for newsletter"
                                     />
                                     <button type="submit" className="bg-ink text-white dark:bg-white dark:text-ink px-4 py-2 text-xs font-bold uppercase tracking-widest hover:opacity-80">
                                         Join

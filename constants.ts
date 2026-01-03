@@ -1,5 +1,4 @@
 import { Project } from './types';
-import { PROJECT_CONTENT } from './data/projects';
 
 export const CONTACT_EMAIL = 'oluwapamimoakinjide@gmail.com';
 
@@ -19,8 +18,7 @@ export const PROJECT_DATA: Record<string, Project> = {
         stats: { strategy: 90, tech: 85, product: 100, leadership: 80 },
         image: "/images/rbc-amplify-team.jpg",
         imageCaption: "Our team celebrating the $20,000 Best Business Value prize at RBC Amplify",
-        video: "/NOVA_Cheque.mov",
-        blog: PROJECT_CONTENT.nova.blog
+        video: "/NOVA_Cheque.mov"
     },
     wfp: {
         id: "wfp",
@@ -34,8 +32,7 @@ export const PROJECT_DATA: Record<string, Project> = {
         impact: "Established new methodological standards for food security measurement in crisis settings, directly influencing program targeting and funding allocation.",
         category: ['strategy', 'tech'],
         year: 2025,
-        stats: { strategy: 95, tech: 90, product: 40, leadership: 30 },
-        blog: PROJECT_CONTENT.wfp.blog
+        stats: { strategy: 95, tech: 90, product: 40, leadership: 30 }
     },
     weg: {
         id: "weg",
@@ -52,8 +49,7 @@ export const PROJECT_DATA: Record<string, Project> = {
         link: "https://worldsedgegroup.com/",
         stats: { strategy: 100, tech: 60, product: 70, leadership: 100 },
         testimonial: "The final report met our expectations. We really appreciated how detailed it was in direct connection to our goals. It was very clear and efficient. I really appreciated the time taken to explain, in detail, how to present the report to stakeholders.",
-        testimonialAuthor: "Executive Director // Regional Arts Organization",
-        blog: PROJECT_CONTENT.weg.blog
+        testimonialAuthor: "Executive Director // Regional Arts Organization"
     },
     city: {
         id: "city",
@@ -67,8 +63,7 @@ export const PROJECT_DATA: Record<string, Project> = {
         impact: "City leadership gained real-time visibility into strategic priorities. Decisions affecting nearly 300,000 residents were grounded in measurable progress rather than static reports.",
         category: ['strategy', 'tech'],
         year: 2025,
-        stats: { strategy: 85, tech: 75, product: 50, leadership: 40 },
-        blog: `Working for a city government is wild because you're literally helping make decisions that affect 300,000 people's daily lives. Like, no big deal, just casual citywide impact. Totally not intimidating at all.\n\nThe challenge was turning high-level policy goals (you know, the kind that sound great in speeches but are vague as heck) into actual, executable plans with real metrics. Because "make the city better" isn't exactly something you can track in a spreadsheet. Or is it?\n\nSpoiler: it is. But it requires building an entirely new performance system from scratch. So I dove into Power BI and SQL, wrangling over a billion dollars in budget data. Yes, billion with a B. No, I did not have imposter syndrome at all. (I absolutely did.)\n\nI built six financial dashboards that turned this massive ocean of numbers into something city leaders could actually understand and use. The goal was simple: give decision-makers real-time visibility into what's working, what's not, and where the money's going. Revolutionary concept, I know.\n\nThe fun part was doing variance analysis and discovering over a million dollars in budget optimizations. That's the kind of treasure hunt where instead of gold, you find inefficiencies, and instead of a map, you have Excel formulas that would make your high school math teacher proud (or concerned).\n\nBut here's what really mattered: automating the monthly reporting process cut cycle time by 30%. That's 30% more time for people to do actual strategic work instead of manually updating spreadsheets. Small wins that add up to big impact.\n\nWhat I learned: government work isn't slow because people don't care. It's slow because the stakes are huge and the systems are complex. My job was to make the complex simple, the ambiguous clear, and the data useful. And honestly? Knowing that my dashboards helped make better decisions for 300,000 real people? That hits different.`
+        stats: { strategy: 85, tech: 75, product: 50, leadership: 40 }
     },
     sctc: {
         id: "sctc",
@@ -83,7 +78,6 @@ export const PROJECT_DATA: Record<string, Project> = {
         category: ['tech', 'strategy'],
         year: 2025,
         stats: { strategy: 90, tech: 60, product: 20, leadership: 50 },
-        blog: PROJECT_CONTENT.sctc.blog,
         archived: true
     },
     pasa: {
@@ -99,7 +93,6 @@ export const PROJECT_DATA: Record<string, Project> = {
         category: ['strategy'],
         year: 2023,
         stats: { strategy: 80, tech: 10, product: 60, leadership: 95 },
-        blog: PROJECT_CONTENT.pasa.blog,
         archived: true
     },
     ess: {
@@ -115,7 +108,6 @@ export const PROJECT_DATA: Record<string, Project> = {
         category: ['strategy'],
         year: 2023,
         stats: { strategy: 70, tech: 10, product: 50, leadership: 90 },
-        blog: PROJECT_CONTENT.ess.blog,
         archived: true
     },
     its: {
@@ -130,8 +122,7 @@ export const PROJECT_DATA: Record<string, Project> = {
         impact: "Reduced manual data collection time by 30% and reporting hours by 50%. Marketing automation engaged 200+ customers, boosting engagement by 40%.",
         category: ['tech', 'product'],
         year: 2024,
-        stats: { strategy: 60, tech: 95, product: 70, leadership: 40 },
-        blog: PROJECT_CONTENT.its.blog
+        stats: { strategy: 60, tech: 95, product: 70, leadership: 40 }
     },
     uos_research: {
         id: "uos_research",
@@ -145,8 +136,7 @@ export const PROJECT_DATA: Record<string, Project> = {
         impact: "Provided critical evidence on regional climate variations, directly supporting water resource management strategies for vulnerable communities.",
         category: ['tech', 'strategy'],
         year: 2024,
-        stats: { strategy: 50, tech: 90, product: 30, leadership: 20 },
-        blog: PROJECT_CONTENT.uos_research.blog
+        stats: { strategy: 50, tech: 90, product: 30, leadership: 20 }
     },
     harvest_link: {
         id: "harvest_link",
@@ -161,7 +151,6 @@ export const PROJECT_DATA: Record<string, Project> = {
         link: "https://github.com/hxdxri/CoHack",
         category: ['tech', 'product'],
         year: 2025,
-        stats: { strategy: 80, tech: 85, product: 90, leadership: 85 },
-        blog: PROJECT_CONTENT.harvest_link.blog
+        stats: { strategy: 80, tech: 85, product: 90, leadership: 85 }
     }
 };

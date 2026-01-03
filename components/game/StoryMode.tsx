@@ -18,6 +18,7 @@ import { useGamePhysics, GamePhysicsState, GameObject } from '../../hooks/useGam
 import { useGameInput } from '../../hooks/useGameInput';
 import { CONTACT_EMAIL } from '../../constants';
 import { useStoryModals } from '../../hooks/useStoryModals';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 interface StoryModeProps {
     active: boolean;
@@ -52,11 +53,23 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
     } = modals.actions;
 
     // Gameplay State
-    const [visitedNodes, setVisitedNodes] = useState<Set<string>>(new Set());
+    const [visitedList, setVisitedList] = useLocalStorage<string[]>('pamimo_visited_nodes', []);
+    const visitedNodes = React.useMemo(() => new Set(visitedList), [visitedList]);
+
+    // Track if user has engaged with game mode (for analytics/UX)
+    const [, setGamePlayed] = useLocalStorage<boolean>('game_played', false);
+
+    // Mark game as played when component mounts (user entered game mode)
+    useEffect(() => {
+        setGamePlayed(true);
+    }, [setGamePlayed]);
 
     // --- Interaction Callback ---
     const onInteract = useCallback((target: GameObject) => {
-        setVisitedNodes(prev => new Set(prev).add(target.id));
+        setVisitedList(prev => {
+            if (prev.includes(target.id)) return prev;
+            return [...prev, target.id];
+        });
 
         if (target.type === 'project' && target.data) {
             setProjectModal(target.data);
@@ -67,7 +80,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
         } else if (target.id === 'blog') {
             setBlogModal(true);
         }
-    }, [setProjectModal, setContactModal, setIdentityModal, setBlogModal]);
+    }, [setProjectModal, setContactModal, setIdentityModal, setBlogModal, setVisitedList]);
 
     // --- Input & Physics Ref Sync ---
     const latestInteractionTarget = React.useRef<GameObject | null>(null);
@@ -162,7 +175,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
                 });
             }
         }
-    }, [projectModal, identityModal, contactModal, blogModal, physics.cameraRef, physics.canvasRef, physics.interactionTarget]);
+    }, [projectModal, identityModal, contactModal, blogModal, physics.cameraRef, physics.canvasRef, physics.interactionTarget, setModalOriginRect]);
 
     // Portal Logic: Ensure we are on client and have body access
     const [mounted, setMounted] = useState(false);

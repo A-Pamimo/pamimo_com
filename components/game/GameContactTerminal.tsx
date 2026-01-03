@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import GameButton from './ui/GameButton';
 
 import { CONTACT_EMAIL } from '../../constants';
 
@@ -87,12 +88,15 @@ const GameContactTerminal: React.FC<GameContactTerminalProps> = ({ onBack, initi
                         <div className="w-3 h-3 bg-emerald-500 animate-pulse rounded-full" />
                         <span className="font-mono text-emerald-500 font-bold tracking-widest text-sm">CONTACT TERMINAL</span>
                     </div>
-                    <button
+                    <GameButton
                         onClick={onBack}
-                        className="text-emerald-700 hover:text-emerald-400 font-mono text-xs uppercase"
+                        variant="ghost"
+                        color="emerald"
+                        bracketed
+                        className="text-xs"
                     >
-                        [CLOSE]
-                    </button>
+                        CLOSE
+                    </GameButton>
                 </div>
 
                 {/* Content */}
@@ -132,20 +136,28 @@ const GameContactTerminal: React.FC<GameContactTerminalProps> = ({ onBack, initi
                                 <p className="text-emerald-700 text-xs mb-2">EMAIL FREQUENCY:</p>
                                 <div className="flex items-center gap-2">
                                     <code className="text-emerald-400 font-bold bg-black px-2 py-1 border border-emerald-900">{CONTACT_EMAIL}</code>
-                                    <button
+                                    <GameButton
                                         onClick={() => {
                                             navigator.clipboard.writeText(CONTACT_EMAIL);
                                             // Optional feedback could go here
                                         }}
-                                        className="text-emerald-600 hover:text-emerald-400 text-xs bracket-btn"
+                                        variant="ghost"
+                                        color="emerald"
+                                        bracketed
+                                        className="text-emerald-600 hover:text-emerald-400 text-xs"
                                     >
-                                        [COPY]
-                                    </button>
+                                        COPY
+                                    </GameButton>
                                 </div>
                             </div>
-                            <a href={`mailto:${CONTACT_EMAIL}`} className="w-full md:w-auto bg-emerald-900/20 hover:bg-emerald-500 hover:text-black border border-emerald-500/50 text-emerald-500 px-8 py-3 font-bold transition-all text-center">
+                            <GameButton
+                                href={`mailto:${CONTACT_EMAIL}`}
+                                variant="primary"
+                                color="emerald"
+                                className="w-full md:w-auto bg-emerald-900/20 hover:bg-emerald-500 hover:text-black border border-emerald-500/50"
+                            >
                                 CONTACT ME
-                            </a>
+                            </GameButton>
                         </div>
                     </div>
 
@@ -164,6 +176,8 @@ const GameContactTerminal: React.FC<GameContactTerminalProps> = ({ onBack, initi
                                 >
                                     <textarea
                                         ref={textareaRef}
+                                        id="contact-message"
+                                        aria-label="Message content"
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
                                         placeholder="Write your message..."
@@ -171,13 +185,15 @@ const GameContactTerminal: React.FC<GameContactTerminalProps> = ({ onBack, initi
                                         className="w-full bg-black border border-emerald-900/50 p-4 text-emerald-500 focus:outline-none focus:border-emerald-500/50 resize-vertical min-h-[100px] mb-4 placeholder-emerald-900/50 text-sm"
                                     />
                                     <div className="flex justify-end">
-                                        <button
+                                        <GameButton
                                             onClick={handleTransmit}
                                             disabled={!message.trim()}
-                                            className="text-emerald-500 hover:text-emerald-400 border border-emerald-900 hover:border-emerald-500 px-6 py-2 text-xs uppercase transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            variant="secondary"
+                                            color="emerald"
+                                            bracketed
                                         >
-                                            [DRAFT EMAIL]
-                                        </button>
+                                            DRAFT EMAIL
+                                        </GameButton>
                                     </div>
                                 </motion.div>
                             )}
@@ -213,12 +229,15 @@ const GameContactTerminal: React.FC<GameContactTerminalProps> = ({ onBack, initi
                                 >
                                     <h3 className="text-emerald-400 font-bold mb-1">Message ready to send.</h3>
                                     <p className="text-emerald-700 text-xs">Opening mail client...</p>
-                                    <button
+                                    <GameButton
                                         onClick={() => setStep('compose')}
+                                        variant="ghost"
+                                        color="emerald"
+                                        bracketed
                                         className="mt-4 text-emerald-800 hover:text-emerald-500 text-xs underline"
                                     >
-                                        [RESET]
-                                    </button>
+                                        RESET
+                                    </GameButton>
                                 </motion.div>
                             )}
                         </AnimatePresence>

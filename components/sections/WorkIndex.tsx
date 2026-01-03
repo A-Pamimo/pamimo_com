@@ -10,14 +10,16 @@ interface WorkIndexProps {
   onSelectProject: (project: Project) => void;
 }
 
+type FilterType = 'all' | 'strategy' | 'product' | 'tech';
+
 const WorkIndex: React.FC<WorkIndexProps> = ({ onSelectProject }) => {
   const [showArchived, setShowArchived] = useState(false);
-  const [filter, setFilter] = useState<string>('all');
+  const [filter, setFilter] = useState<FilterType>('all');
 
   const projects = Object.values(PROJECT_DATA);
   const filteredProjects = filter === 'all'
     ? projects
-    : projects.filter(p => p.category.includes(filter as any));
+    : projects.filter(p => p.category.includes(filter));
 
   const activeProjects = filteredProjects.filter(p => !p.archived);
   const archivedProjects = filteredProjects.filter(p => p.archived);
@@ -28,12 +30,12 @@ const WorkIndex: React.FC<WorkIndexProps> = ({ onSelectProject }) => {
         <div className="flex flex-col md:flex-row justify-between items-end mb-16">
           <h2 className="font-display font-bold text-5xl md:text-7xl tracking-tighter">THE INDEX<span className="text-pop">.</span></h2>
           <div className="flex flex-wrap gap-2 mt-6 md:mt-0">
-            {[
-              { id: 'all', label: 'All Work' },
-              { id: 'strategy', label: 'Strategy' },
-              { id: 'product', label: 'Product' },
-              { id: 'tech', label: 'Data & Engineering' }
-            ].map(btn => (
+            {([
+              { id: 'all' as FilterType, label: 'All Work' },
+              { id: 'strategy' as FilterType, label: 'Strategy' },
+              { id: 'product' as FilterType, label: 'Product' },
+              { id: 'tech' as FilterType, label: 'Data & Engineering' }
+            ]).map(btn => (
               <button
                 key={btn.id}
                 onClick={() => setFilter(btn.id)}

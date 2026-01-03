@@ -43,7 +43,7 @@ export default function Hero({ isBusinessMode = false }: HeroProps) {
                             <div className="pl-4 border-l-4 border-theme-primary my-6 space-y-2 opacity-90">
                                 <p><strong>Both can be true.</strong></p>
                                 <p className="text-sm md:text-base max-w-prose">
-                                    New research highlights a "Grocery Gap" between official data and consumer reality.
+                                    New research highlights a &quot;Grocery Gap&quot; between official data and consumer reality.
                                     While the CPI tracks average prices, your brain tracks <em>frequency</em> and <em>loss</em>.
                                     This tool helps you calculate your <strong>Personal Cost Index</strong> based on these psychological factors.
                                 </p>

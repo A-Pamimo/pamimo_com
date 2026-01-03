@@ -34,6 +34,10 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
   }, []);
 
   // --- GEO SHAPES (Normal Mode Only) ---
+  // Performance optimizations:
+  // 1. IntersectionObserver pauses animation when not visible
+  // 2. Reduced shape count on mobile (5 vs 15)
+  // 3. Throttled resize handler
   useEffect(() => {
     if (simulationMode) return;
 
@@ -45,6 +49,12 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
     let width = 0;
     let height = 0;
     let animationFrameId: number;
+    let isVisible = true;
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    // Detect mobile for reduced complexity
+    const isMobile = window.innerWidth < 768;
+    const SHAPE_COUNT = isMobile ? 5 : 15;
 
     interface Shape {
       x: number;
@@ -74,7 +84,6 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
           if (this.y < -100 || this.y > height + 100) this.dy *= -1;
         },
         draw() {
-          // We check for dark mode via document class manually since canvas is outside React render cycle largely
           const isDark = document.documentElement.classList.contains('dark') || simulationPreview;
           ctx.beginPath();
           ctx.lineWidth = 1;
@@ -91,7 +100,7 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
 
     const initShapes = () => {
       shapes.length = 0;
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < SHAPE_COUNT; i++) {
         shapes.push(createShape());
       }
     };
@@ -103,7 +112,19 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
       initShapes();
     };
 
+    // Throttled resize handler
+    const handleResize = () => {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(resize, 150);
+    };
+
     const animateBg = () => {
+      // Only animate when visible
+      if (!isVisible) {
+        animationFrameId = requestAnimationFrame(animateBg);
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
       shapes.forEach(s => {
         s.update();
@@ -112,15 +133,29 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
       animationFrameId = requestAnimationFrame(animateBg);
     };
 
+    // IntersectionObserver to pause when not visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isVisible = entry.isIntersecting;
+        });
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(canvas);
+
     resize();
     initShapes();
     animateBg();
 
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', handleResize);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
       cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
     };
   }, [simulationMode, simulationPreview]);
 

@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { IconArrow } from '../ui/Icons';
 import CRTOverlay from './ui/CRTOverlay';
+import GameButton from './ui/GameButton';
 
 interface GameBlogConsoleProps {
     onBack: () => void;
@@ -25,12 +26,14 @@ const GameBlogConsole: React.FC<GameBlogConsoleProps> = ({ onBack }) => {
                         <div className="w-3 h-3 bg-green-500 animate-pulse rounded-full" />
                         <span className="text-sm font-bold tracking-widest">TRANSMISSION_RECEIVED // BLOG_001</span>
                     </div>
-                    <button
+                    <GameButton
                         onClick={onBack}
-                        className="border border-red-500/50 text-red-500 px-3 py-1 text-xs hover:bg-red-500 hover:text-black transition-colors uppercase font-bold"
+                        variant="danger"
+                        color="green"
+                        bracketed
                     >
-                        [DISCONNECT]
-                    </button>
+                        DISCONNECT
+                    </GameButton>
                 </div>
 
                 {/* Content */}
@@ -49,7 +52,7 @@ const GameBlogConsole: React.FC<GameBlogConsoleProps> = ({ onBack }) => {
                         <div className="space-y-6 text-sm md:text-base leading-relaxed text-green-300/90">
                             <p>
                                 <strong className="text-green-400">ABSTRACT:</strong> Why does the official CPI (2.9%) feel like a lie?
-                                New telemetry indicates a massive divergence between "StatCan Reality" and "Consumer Reality."
+                                New telemetry indicates a massive divergence between &quot;StatCan Reality&quot; and &quot;Consumer Reality.&quot;
                             </p>
                             <p>
                                 This divergence is not an error. It is a psychological feature driven by three variables:
@@ -60,7 +63,7 @@ const GameBlogConsole: React.FC<GameBlogConsoleProps> = ({ onBack }) => {
                                 <li><strong>Shrinkflation:</strong> The hidden tax of vanishing ounces.</li>
                             </ul>
                             <div className="p-4 border border-green-500/30 bg-green-500/5 text-xs text-green-400">
-                                &gt; CONCLUSION: Your "Personal Inflation Rate" is likely 12-15%.
+                                &gt; CONCLUSION: Your &quot;Personal Inflation Rate&quot; is likely 12-15%.
                             </div>
                         </div>
 

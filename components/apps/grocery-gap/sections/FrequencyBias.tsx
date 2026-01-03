@@ -85,7 +85,7 @@ export default function FrequencyBias() {
 
                 <div className={styles.alphaControl}>
                     <div className={styles.alphaLabel}>
-                        <span className={styles.alphaTitle}>Your "Bias Level"</span>
+                        <span className={styles.alphaTitle}>Your &quot;Bias Level&quot;</span>
                         <span className={styles.alphaValue}>{alpha.toFixed(2)}</span>
                     </div>
                     <input
@@ -107,7 +107,7 @@ export default function FrequencyBias() {
                     <p>
                         This slider lets you simulate different psychological states.
                         At <strong>0.44</strong> (default), you are seeing the world as most humans do—over-weighting daily purchases.
-                        Slide to <strong>0</strong> to see the "Logic" (CPI) view, or <strong>1</strong> to see fully emotive pricing.
+                        Slide to <strong>0</strong> to see the &quot;Logic&quot; (CPI) view, or <strong>1</strong> to see fully emotive pricing.
                     </p>
                 </div>
 
@@ -119,7 +119,7 @@ export default function FrequencyBias() {
                         </div>
                         <div className={styles.legendItem}>
                             <div className={`${styles.legendDot} ${styles.fillPerceived}`} />
-                            <span>Your Brain's Weight</span>
+                            <span>Your Brain&apos;s Weight</span>
                         </div>
                     </div>
 

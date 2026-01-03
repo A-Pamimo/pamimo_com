@@ -37,7 +37,7 @@ export default function Preamble() {
                     </div>
 
                     This distortion field creates an <strong>Invisible Tax</strong>.
-                    It represents the <em>loss of trust</em>—the mental energy spent verifying prices, switching brands, and managing the anxiety of "getting ripped off."
+                    It represents the <em>loss of trust</em>—the mental energy spent verifying prices, switching brands, and managing the anxiety of &quot;getting ripped off.&quot;
                     It is not paid to the government, but paid in stress and cognitive load.
                     Every time you see a price that defies your expectations, you pay this tax.
 

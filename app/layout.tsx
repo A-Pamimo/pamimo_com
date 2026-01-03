@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     siteName: 'Pamimo Akinjide Portfolio',
     images: [
       {
-        url: '/og-image.jpg', // You'll need to create this
+        url: '/og-image.png', // You'll need to create this
         width: 1200,
         height: 630,
         alt: 'Pamimo Akinjide - Strategy × Data × Systems'
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Pamimo Akinjide | Product Strategist & Economist',
     description: 'Award-winning strategist at the intersection of AI, data, and community. RBC Amplify winner | WFP Researcher | Systems Builder',
-    images: ['/og-image.jpg'],
+    images: ['/og-image.png'],
     creator: '@pamimo' // Replace with your actual Twitter handle if you have one
   },
   robots: {
@@ -100,7 +100,8 @@ export const metadata: Metadata = {
   },
 };
 
-import { LazyMotion, domMax } from "framer-motion"
+import { LazyMotion, domAnimation } from "framer-motion"
+import CustomCursor from '../components/ui/CustomCursor';
 
 export default function RootLayout({
   children,
@@ -116,9 +117,16 @@ export default function RootLayout({
         <meta name="geo.placename" content="Toronto" />
       </head>
       <body className="text-ink dark:text-cream antialiased overflow-x-hidden selection:bg-pop selection:text-white">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[9999] focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-pop focus:text-white focus:font-bold focus:shadow-lg focus:outline-none">
+          Skip to Content
+        </a>
 
-        <LazyMotion features={domMax}>
-          {children}
+        <CustomCursor />
+
+        <LazyMotion features={domAnimation}>
+          <div id="main-content">
+            {children}
+          </div>
         </LazyMotion>
 
         {/* JSON-LD Structured Data */}
@@ -131,7 +139,7 @@ export default function RootLayout({
               "name": "Pamimo Akinjide",
               "alternateName": ["Oluwapamimo Akinjide", "Oluwapamimo"],
               "url": "https://pamimoakinjide.com",
-              "image": "https://pamimoakinjide.com/og-image.jpg",
+              "image": "https://pamimoakinjide.com/og-image.png",
               "sameAs": [
                 "https://www.linkedin.com/in/pamimo",
                 "https://github.com/pamimo" // Add if you have one

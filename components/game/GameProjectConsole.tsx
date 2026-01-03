@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Project } from '../../types';
 import { IconCheck, IconTrophy } from '../ui/Icons';
 import CRTOverlay from './ui/CRTOverlay';
+import GameButton from './ui/GameButton';
 
 interface GameProjectConsoleProps {
     project: Project;
@@ -95,12 +96,9 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                             </div>
                         </div>
                         <div className="text-right hidden md:flex flex-col items-end gap-2">
-                            <button
-                                onClick={onBack}
-                                className="border border-red-500/50 text-red-500 px-3 py-1 text-xs hover:bg-red-500 hover:text-black transition-colors uppercase font-bold"
-                            >
-                                [DISCONNECT]
-                            </button>
+                            <GameButton onClick={onBack} variant="danger" bracketed>
+                                DISCONNECT
+                            </GameButton>
                             <div className="text-xs border border-term-accent px-2 py-1 inline-block mb-1">MEM: 64KB OK</div>
                             <div className="text-[10px] opacity-50">ENCRYPTION: NONE</div>
                         </div>
@@ -170,13 +168,19 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                 <div className="bg-[#111] border-t border-[#333] p-4 flex justify-between items-center text-xs font-mono text-term-accent">
                     <span className="animate-pulse">_CURSOR_ACTIVE</span>
                     <div className="flex gap-4">
-                        <button onClick={onBack} className="bg-term-accent text-term-bg px-4 py-2 font-bold hover:bg-white transition-colors uppercase">
-                            [CLOSE_FILE]
-                        </button>
+                        <GameButton onClick={onBack} variant="primary" bracketed>
+                            CLOSE_FILE
+                        </GameButton>
                         {project.link && (
-                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="border border-term-accent text-term-accent px-4 py-2 font-bold hover:bg-term-accent hover:text-term-bg transition-colors uppercase">
-                                [ACCESS_SOURCE_CODE]
-                            </a>
+                            <GameButton
+                                href={project.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                variant="secondary"
+                                bracketed
+                            >
+                                ACCESS_SOURCE_CODE
+                            </GameButton>
                         )}
                     </div>
                 </div>
