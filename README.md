@@ -68,7 +68,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Let's Talk
 
-I'm open to opportunities in **Product Strategy**, **Technical PM**, and **0-to-1 building**.
+I'm open to opportunities in **Product Management**, **Product Strategy**, **Technical PM**, and **0-to-1 building**.
 
 - **Email**: [oluwapamimoakinjide@gmail.com](mailto:oluwapamimoakinjide@gmail.com)
 - **LinkedIn**: [linkedin.com/in/pamimo](https://www.linkedin.com/in/pamimo)
