@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Project } from '../../types';
 import { IconArrow, IconBrain, IconGlobe, IconGov, IconUsers, IconChart, IconTrophy } from '../ui/Icons';
@@ -110,7 +111,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
           </div>
           <div className="md:w-1/3 flex-shrink-0 flex items-center justify-center bg-cream dark:bg-zinc-800/50 p-4 border border-ink/5 dark:border-white/5 overflow-hidden">
             {project.image ? (
-              <img src={project.image} alt={project.title} className="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500" />
+              <Image src={project.image} alt={project.title} width={400} height={300} className="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500" />
             ) : (
               getIcon('weg')
             )}
@@ -148,7 +149,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
           <div className="mt-6 pt-4 border-t border-dashed border-current opacity-30 flex justify-end">
             {/* Cleaner visual without code snippet */}
             {project.image ? (
-              <img src={project.image} alt={project.title} className="w-12 h-12 object-cover rounded-sm border border-current opacity-80" />
+              <Image src={project.image} alt={project.title} width={48} height={48} className="w-12 h-12 object-cover rounded-sm border border-current opacity-80" />
             ) : (
               getIcon('wfp')
             )}
