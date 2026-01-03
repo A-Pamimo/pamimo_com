@@ -1,57 +1,75 @@
-# Hi, I'm Pamimo.
+# PAMIMO
 
-**Product Strategist & Engineer.**  
-I build systems that bridge the gap between technical complexity and human intent.
+**Building. Scaling. Impact.**
+
+This is the source code for [pamimoakinjide.com](https://pamimoakinjide.com) — my personal portfolio and digital playground.
 
 ---
 
-## About This Repo
-Welcome to the source code of my personal portfolio, **[pamimoakinjide.com](https://pamimoakinjide.com)**.
+## What You're Looking At
 
-Unlike standard static sites, this project is a digital playground designed to demonstrate my core belief: **Code is a creative medium.** I built this from scratch to showcase that I can not only strategize and lead but also deliver production-grade engineering.
+This isn't a template. I built this from scratch because I believe **the medium is the message**. If I'm going to tell you I can ship product, I should probably... ship product.
 
-### Tech Stack
-*   **Framework**: Next.js 14 (App Router)
-*   **Language**: TypeScript (Strict Mode)
-*   **Design**: Tailwind CSS & Framer Motion
-*   **Engine**: Custom HTML5 Canvas Physics Engine (`StoryMode.tsx`)
+### The Fun Stuff
+- **Game Mode**: Click "Enter XP Mode" on the site. There's a custom physics engine under the hood (`components/game/`) that lets you explore my work in a retro terminal interface.
+- **Interactive Blog**: "The Grocery Gap" is a full data-driven web app, not a static article. It visualizes food inflation data with a calculator that adapts to your province.
+- **Sound Design**: Every button has synthesized audio feedback using the Web Audio API. No sound files — just code.
 
-### Architecture
-I organized the repository to separate strategic content from engineering logic:
+### The Boring (But Important) Stuff
+- **Zero-error build** on Next.js 14 with strict TypeScript
+- **Lazy-loaded game engine** so the marketing site loads fast
+- **Error boundaries** so if the game crashes, the rest of the site survives
+- **SEO-ready** with dynamic OpenGraph tags for every page
 
-```bash
+---
+
+## Tech Stack
+
+| Layer | Tech |
+|-------|------|
+| Framework | Next.js 14 (App Router) |
+| Language | TypeScript (Strict) |
+| Styling | Tailwind CSS |
+| Animation | Framer Motion |
+| Hosting | Cloudflare Pages |
+| Sound | Web Audio API (no files) |
+
+---
+
+## Project Structure
+
+```
 pamimo_com/
-├── app/                  # Next.js App Router (Pages & Layouts)
+├── app/                  # Pages & layouts
 ├── components/
-│   ├── game/             # The Physics Engine (Canvas API logic)
-│   ├── sections/         # Portfolio Sections (Hero, Work, About)
-│   └── ui/               # Reusable Design Tokens
-├── constants.ts          # "CMS-lite": All content/copy lives here
+│   ├── game/             # Physics engine & retro UI
+│   ├── apps/             # Interactive blog apps (Grocery Gap)
+│   ├── sections/         # Marketing sections (Hero, Work)
+│   └── ui/               # Design system (Button, ErrorBoundary)
+├── hooks/                # Reusable logic (useSound, useLocalStorage)
+├── constants.ts          # All content lives here (CMS-lite)
 └── public/               # Static assets
 ```
 
-## Running Locally
-If you're curious about how the physics engine works or want to poke around the code:
+---
 
-1.  **Clone the repo**
-    ```bash
-    git clone https://github.com/pamimo/pamimo_com.git
-    cd pamimo_com
-    ```
+## Run It Locally
 
-2.  **Install dependencies**
-    ```bash
-    npm install
-    ```
+```bash
+git clone https://github.com/pamimo/pamimo_com.git
+cd pamimo_com
+npm install
+npm run dev
+```
 
-3.  **Run the dev server**
-    ```bash
-    npm run dev
-    ```
-    Open [http://localhost:3000](http://localhost:3000) to see it in action.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Contact
-I am currently open to select opportunities in **Product Strategy** and **Technical Product Management**.
+---
 
-*   **Email**: [oluwapamimoakinjide@gmail.com](mailto:oluwapamimoakinjide@gmail.com)
-*   **LinkedIn**: [linkedin.com/in/pamimo](https://www.linkedin.com/in/pamimo)
+## Let's Talk
+
+I'm open to opportunities in **Product Strategy**, **Technical PM**, and **0-to-1 building**.
+
+- **Email**: [oluwapamimoakinjide@gmail.com](mailto:oluwapamimoakinjide@gmail.com)
+- **LinkedIn**: [linkedin.com/in/pamimo](https://www.linkedin.com/in/pamimo)
+- **Site**: [pamimoakinjide.com](https://pamimoakinjide.com)
