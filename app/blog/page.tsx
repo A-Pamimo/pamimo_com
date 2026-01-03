@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 // Server Component - fetches MDX data at build time
 export default function BlogIndex() {
     const posts = getSortedPostsData();
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
     // Transform posts for the client component
     const blogPosts = posts.map(post => ({
@@ -35,13 +36,16 @@ export default function BlogIndex() {
             id: 'grocery-gap',
             title: 'The Grocery Gap',
             description: 'An interactive exploration of why inflation feels higher than the official numbers say.',
-            date: '2025-01-05',
+            date: '2026-01-07', // Scheduled release date
             readTime: '8 MIN READ',
             href: '/blog/the-grocery-gap',
             tags: ['DATA VIZ', 'ECONOMICS', 'INTERACTIVE']
         });
     }
 
-    return <BlogIndexClient posts={blogPosts} />;
+    // Filter out posts scheduled for the future
+    const publishedPosts = blogPosts.filter(post => post.date <= today);
+
+    return <BlogIndexClient posts={publishedPosts} />;
 }
 

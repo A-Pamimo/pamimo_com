@@ -38,20 +38,31 @@ export default function BlogIndexClient({ posts }: BlogIndexClientProps) {
                     </p>
                 </div>
 
-                {/* Blog Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {posts.map((post) => (
-                        <BlogCard
-                            key={post.id}
-                            title={post.title}
-                            description={post.description}
-                            date={post.date}
-                            readTime={post.readTime}
-                            href={post.href}
-                            tags={post.tags}
-                        />
-                    ))}
-                </div>
+                {/* Blog Grid or Coming Soon */}
+                {posts.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {posts.map((post) => (
+                            <BlogCard
+                                key={post.id}
+                                title={post.title}
+                                description={post.description}
+                                date={post.date}
+                                readTime={post.readTime}
+                                href={post.href}
+                                tags={post.tags}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-20 text-center">
+                        <p className="font-mono text-xs tracking-widest uppercase opacity-40 mb-6">[ COMING SOON ]</p>
+                        <p className="text-lg opacity-50 mb-2">種一棵樹最好的時間是二十年前，其次是現在。</p>
+                        <blockquote className="max-w-xl text-2xl md:text-3xl font-serif italic opacity-70 leading-relaxed">
+                            &ldquo;The best time to plant a tree was 20 years ago. The second best time is now.&rdquo;
+                        </blockquote>
+                        <p className="mt-4 font-mono text-xs opacity-40">— Chinese Proverb</p>
+                    </div>
+                )}
             </main>
 
             {/* Footer Decor */}
