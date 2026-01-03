@@ -1,14 +1,18 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Preloader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
+    // Portal Logic
+    const [mounted, setMounted] = useState(false);
     const [show, setShow] = useState(true);
 
     useEffect(() => {
+        setMounted(true);
         // Check session storage
-        const hasSeenIntro = sessionStorage.getItem('intro_seen');
+        const hasSeenIntro = sessionStorage.getItem('intro_seen_v3');
 
         if (hasSeenIntro) {
             setShow(false);
@@ -21,22 +25,26 @@ const Preloader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
         // 2. 0.5s: Text Fade In
         // 3. 1.5s: Slide Up Start
         // 4. 2.3s: Complete
+        // NEW: Extended to 3500ms -> Reduced to 1750ms -> Reduced to 1000ms (1s)
         const timer = setTimeout(() => {
             setShow(false);
             setTimeout(onComplete, 800); // Wait for exit animation
-            sessionStorage.setItem('intro_seen', 'true');
-        }, 1800);
+            sessionStorage.setItem('intro_seen_v3', 'true');
+        }, 1000);
 
         return () => clearTimeout(timer);
     }, [onComplete]);
 
-    return (
+    if (!mounted) return null;
+
+    const content = (
         <AnimatePresence>
             {show && (
                 <motion.div
                     initial={{ y: 0 }}
                     exit={{ y: '-100%', transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
-                    className="fixed inset-0 z-[100] bg-ink dark:bg-zinc flex items-center justify-center pointer-events-none"
+                    className="fixed inset-0 bg-ink dark:bg-zinc flex items-center justify-center pointer-events-none"
+                    style={{ zIndex: 99999 }}
                 >
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -60,6 +68,8 @@ const Preloader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
             )}
         </AnimatePresence>
     );
+
+    return createPortal(content, document.body);
 };
 
 export default Preloader;

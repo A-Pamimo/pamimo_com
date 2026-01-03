@@ -78,9 +78,8 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
 
                 {/* Screen Content */}
                 <div
-                    ref={contentRef}
                     tabIndex={-1}
-                    className="relative flex-1 p-8 md:p-12 overflow-y-auto font-mono text-term-accent selection:bg-term-accent selection:text-term-bg scrollbar-hide focus:outline-none"
+                    className="relative z-20 flex-1 p-8 md:p-12 overflow-y-auto font-mono text-term-accent selection:bg-term-accent selection:text-term-bg scrollbar-hide focus:outline-none"
                 >
 
                     {/* Header */}

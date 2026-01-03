@@ -164,14 +164,22 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
         }
     }, [projectModal, identityModal, contactModal, blogModal, physics.cameraRef, physics.canvasRef, physics.interactionTarget]);
 
-    if (!active) return null;
+    // Portal Logic: Ensure we are on client and have body access
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
 
-    return (
+    if (!active || !mounted) return null;
+
+    // Use Portal to escape 'app/template.tsx' transforms
+    const content = (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-[100] bg-black text-white font-mono overflow-hidden touch-none ${physics.isHoveringObject ? 'cursor-pointer' : 'cursor-crosshair'}`}
+            className={`fixed inset-0 z-[9999] bg-black text-white font-mono overflow-hidden touch-none ${physics.isHoveringObject ? 'cursor-pointer' : 'cursor-crosshair'}`}
         >
             <canvas
                 ref={physics.canvasRef}
@@ -230,6 +238,10 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
             </div>
         </motion.div>
     );
+
+    // Dynamic Import or Direct Usage? Direct is fine for ReactDOM
+    const { createPortal } = require('react-dom');
+    return createPortal(content, document.body);
 };
 
 export default StoryMode;
