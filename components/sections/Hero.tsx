@@ -24,7 +24,7 @@ const Hero: React.FC = () => {
           <div className="flex items-center gap-3">
             <span className="w-2 h-2 bg-pop animate-pulse"></span>
             <span className="font-mono text-xs md:text-sm uppercase tracking-widest opacity-60">
-              Ready to Build // Available for Product Strategy
+              Ready to Build
             </span>
           </div>
           <div className="hidden md:flex items-center gap-2 font-mono text-xs opacity-40">
