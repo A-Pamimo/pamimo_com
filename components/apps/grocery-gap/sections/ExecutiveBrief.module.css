@@ -2,7 +2,7 @@
     padding: 6rem 1.5rem;
     background-color: #000;
     color: #fff;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .container {
@@ -16,28 +16,31 @@
 }
 
 .eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--gg-font-mono);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    color: #FF4400; /* Pop color */
+    color: var(--gg-accent-orange) !important;
+    /* Pop color */
     margin-bottom: 1rem;
 }
 
 .title {
-    font-family: var(--font-syne);
+    font-family: var(--gg-font-heading);
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
     letter-spacing: -0.02em;
+    color: #fff !important;
 }
 
 .subtitle {
-    font-family: var(--font-inter);
+    font-family: var(--gg-font-inter);
     font-size: 1.1rem;
     opacity: 0.7;
     max-width: 600px;
     line-height: 1.6;
+    color: #fff !important;
 }
 
 .grid {
@@ -47,38 +50,39 @@
 }
 
 .card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border: var(--gg-border-thick);
     padding: 2rem;
     transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
 .card:hover {
     transform: translateY(-5px);
-    border-color: #FF4400;
+    border-color: var(--gg-accent-orange);
 }
 
 .cardTitle {
-    font-family: var(--font-mono);
+    font-family: var(--gg-font-mono);
     font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
     margin-bottom: 1rem;
-    color: #fff;
+    color: #fff !important;
     letter-spacing: 0.05em;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 0.5rem;
 }
 
 .cardContent {
-    font-family: var(--font-inter);
+    font-family: var(--gg-font-inter);
     font-size: 0.95rem;
     line-height: 1.7;
     opacity: 0.8;
+    color: #fff !important;
 }
 
 .cardContent strong {
-    color: #fff;
+    color: #fff !important;
     font-weight: 600;
 }
 
@@ -86,11 +90,11 @@
     .section {
         padding: 4rem 1rem;
     }
-    
+
     .title {
         font-size: 2rem;
     }
-    
+
     .grid {
         grid-template-columns: 1fr;
     }

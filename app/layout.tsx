@@ -91,7 +91,7 @@ export const metadata: Metadata = {
     ],
   },
   verification: {
-    google: 'your-google-verification-code', // Add after setting up Google Search Console
+    // google: 'your-google-verification-code', // Add after setting up Google Search Console
     // yandex: 'your-yandex-verification-code',
     // bing: 'your-bing-verification-code',
   },
@@ -99,6 +99,8 @@ export const metadata: Metadata = {
     canonical: 'https://pamimoakinjide.com',
   },
 };
+
+import { LazyMotion, domMax } from "framer-motion"
 
 export default function RootLayout({
   children,
@@ -115,7 +117,9 @@ export default function RootLayout({
       </head>
       <body className="text-ink dark:text-cream antialiased overflow-x-hidden selection:bg-pop selection:text-white">
 
-        {children}
+        <LazyMotion features={domMax}>
+          {children}
+        </LazyMotion>
 
         {/* JSON-LD Structured Data */}
         <script

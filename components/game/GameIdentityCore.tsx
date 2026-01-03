@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -101,7 +101,7 @@ const GameIdentityCore: React.FC<GameIdentityCoreProps> = ({ onBack, initialBoun
                                     </div>
                                     <div className="bg-amber-500/10 p-4 border border-amber-500/30 mt-4">
                                         <p className="leading-relaxed text-sm opacity-90">
-                                            "Mission: Bridging the gap between technical rigor and human-centric strategy. Operating with high agency in complex systems."
+                                            &ldquo;Mission: Bridging the gap between technical rigor and human-centric strategy. Operating with high agency in complex systems.&rdquo;
                                         </p>
                                     </div>
                                 </div>

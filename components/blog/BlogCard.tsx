@@ -13,7 +13,7 @@ interface BlogCardProps {
 export default function BlogCard({ title, description, date, readTime, href, tags }: BlogCardProps) {
     return (
         <Link href={href} className="group block h-full">
-            <article className="relative h-full flex flex-col justify-between p-6 border-2 border-ink/10 dark:border-white/10 bg-white/50 dark:bg-black/20 hover:border-pop dark:hover:border-pop transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--pop)]">
+            <article className="relative h-full flex flex-col justify-between p-6 border-2 border-ink dark:border-white/20 bg-white dark:bg-charcoal/50 hover:border-pop dark:hover:border-pop transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--pop)]">
 
                 {/* Header */}
                 <div className="flex justify-between items-start mb-4">
@@ -30,10 +30,10 @@ export default function BlogCard({ title, description, date, readTime, href, tag
 
                 {/* Content */}
                 <div>
-                    <h3 className="text-xl md:text-2xl font-bold leading-tight mb-3 group-hover:text-pop transition-colors">
+                    <h3 className="text-xl md:text-2xl font-bold leading-tight mb-3 text-theme-text group-hover:text-pop transition-colors">
                         {title}
                     </h3>
-                    <p className="text-sm opacity-70 leading-relaxed line-clamp-3">
+                    <p className="text-sm text-theme-text opacity-80 leading-relaxed line-clamp-3">
                         {description}
                     </p>
                 </div>

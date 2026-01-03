@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { motion } from 'framer-motion';
@@ -53,7 +53,7 @@ const GameBlogPlaceholder: React.FC<GameBlogPlaceholderProps> = ({ onBack, initi
                     </div>
                     <h2 className="text-2xl font-bold text-purple-500 font-mono tracking-widest mb-2">ACCESS_DENIED</h2>
                     <p className="text-purple-300/70 font-mono text-sm">
-                        Node "BLOG_ARCHIVE" is currently under construction.
+                        Node &ldquo;BLOG_ARCHIVE&rdquo; is currently under construction.
                     </p>
                 </div>
 
@@ -78,3 +78,4 @@ const GameBlogPlaceholder: React.FC<GameBlogPlaceholderProps> = ({ onBack, initi
 };
 
 export default GameBlogPlaceholder;
+

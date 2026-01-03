@@ -11,18 +11,18 @@ interface ProvinceData {
     trend: 'rising' | 'stable' | 'mixed';
 }
 
-// Estimated MBM Indices based on StatsCan 2024 projections (Base 100 = National Avg)
+// Estimated Cost Indices based on StatsCan 2023 MBM Thresholds (Vancouver ~$58k, Montreal ~$48k)
 const provinceData: ProvinceData[] = [
     { abbr: 'BC', name: 'British Columbia', mbmIndex: 112.4, housingIndex: 145.2, trend: 'rising' },
-    { abbr: 'ON', name: 'Ontario', mbmIndex: 108.7, housingIndex: 138.5, trend: 'rising' },
-    { abbr: 'AB', name: 'Alberta', mbmIndex: 102.1, housingIndex: 95.4, trend: 'mixed' },
-    { abbr: 'QC', name: 'Quebec', mbmIndex: 94.5, housingIndex: 88.2, trend: 'stable' },
-    { abbr: 'NS', name: 'Nova Scotia', mbmIndex: 96.2, housingIndex: 92.1, trend: 'rising' },
-    { abbr: 'MB', name: 'Manitoba', mbmIndex: 92.8, housingIndex: 84.5, trend: 'stable' },
-    { abbr: 'SK', name: 'Saskatchewan', mbmIndex: 93.4, housingIndex: 82.1, trend: 'stable' },
-    { abbr: 'NB', name: 'New Brunswick', mbmIndex: 88.5, housingIndex: 78.4, trend: 'rising' },
-    { abbr: 'NL', name: 'Newfoundland & Lab.', mbmIndex: 95.1, housingIndex: 81.2, trend: 'mixed' },
-    { abbr: 'PE', name: 'P.E.I.', mbmIndex: 91.3, housingIndex: 86.5, trend: 'rising' },
+    { abbr: 'ON', name: 'Ontario', mbmIndex: 110.6, housingIndex: 142.1, trend: 'rising' }, // TO: 57.5k
+    { abbr: 'AB', name: 'Alberta', mbmIndex: 111.3, housingIndex: 105.4, trend: 'mixed' }, // Calgary: 57.9k
+    { abbr: 'QC', name: 'Quebec', mbmIndex: 93.1, housingIndex: 85.2, trend: 'stable' }, // MTL: 48.4k
+    { abbr: 'NS', name: 'Nova Scotia', mbmIndex: 101.8, housingIndex: 95.1, trend: 'rising' }, // HFX: 52.9k
+    { abbr: 'MB', name: 'Manitoba', mbmIndex: 94.2, housingIndex: 86.5, trend: 'stable' },
+    { abbr: 'SK', name: 'Saskatchewan', mbmIndex: 95.4, housingIndex: 84.1, trend: 'stable' },
+    { abbr: 'NB', name: 'New Brunswick', mbmIndex: 92.5, housingIndex: 78.4, trend: 'rising' },
+    { abbr: 'NL', name: 'Newfoundland & Lab.', mbmIndex: 100.5, housingIndex: 86.2, trend: 'mixed' }, // StJs: 52.2k
+    { abbr: 'PE', name: 'P.E.I.', mbmIndex: 96.3, housingIndex: 88.5, trend: 'rising' },
 ];
 
 function getIndexColor(index: number): string {
@@ -187,7 +187,7 @@ export default function RegionalMapCA() {
                         the Prairie provinces remain remarkably elastic in their housing response.&rdquo;
                     </p>
                     <p className={styles.insightSource}>
-                        Based on Statistics Canada Market Basket Measure (2024)
+                        Based on <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1110006601" target="_blank" rel="noopener noreferrer" className="underline hover:text-pop">Statistics Canada MBM Thresholds (2023)</a>
                     </p>
                 </div>
             </div>

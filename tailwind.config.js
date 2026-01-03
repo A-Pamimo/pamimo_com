@@ -16,10 +16,17 @@ module.exports = {
       colors: {
         cream: '#F2F0E9',
         ink: '#121212',
+        'theme-text': 'var(--ink)',
+        'theme-bg': 'var(--bg-cream)',
         charcoal: '#1A1A1A',
         zinc: '#27272a',
         pop: 'var(--color-pop)',
         gold: '#eab308',
+        term: {
+          accent: 'var(--term-accent)',
+          dim: 'var(--term-dim)',
+          bg: 'var(--term-bg)',
+        },
       },
       boxShadow: {
         'hard': '4px 4px 0px 0px currentColor',

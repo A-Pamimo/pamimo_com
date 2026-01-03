@@ -13,18 +13,24 @@ const Hero: React.FC = () => {
   const lineTwo = ["SCALING", "IMPACT."];
 
   return (
-    <section className="min-h-screen flex flex-col justify-center px-4 md:px-12 relative pt-20 pb-32 overflow-hidden">
+    <section className="h-[100dvh] flex flex-col justify-center px-4 md:px-12 relative py-0 overflow-hidden">
       <div className="max-w-7xl mx-auto w-full z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-8 flex items-center gap-3"
+          className="mb-8 flex items-center justify-between"
         >
-          <span className="w-2 h-2 bg-pop animate-pulse"></span>
-          <span className="font-mono text-xs md:text-sm uppercase tracking-widest opacity-60">
-            Ready to Build // Product Strategy & Engineering
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="w-2 h-2 bg-pop animate-pulse"></span>
+            <span className="font-mono text-xs md:text-sm uppercase tracking-widest opacity-60">
+              Ready to Build // Available for Product Strategy
+            </span>
+          </div>
+          <div className="hidden md:flex items-center gap-2 font-mono text-xs opacity-40">
+            <span>📍</span>
+            <span>SASKATOON, SK</span>
+          </div>
         </motion.div>
 
         {/* Refactored Typography: Grouped lines for tighter, less awkward spacing */}

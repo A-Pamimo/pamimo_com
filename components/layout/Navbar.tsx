@@ -14,39 +14,81 @@ interface NavbarProps {
   setSimulationPreview?: (active: boolean) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSimulationPreview }) => {
+import { useScrollDirection } from '../../hooks/useScrollDirection';
+
+// ... (other imports remain, but we remove local useState for scroll if we replace it completely, 
+// checking line 3 imports: `import React, { useEffect, useState } from 'react';`)
+// We will update the component to use the hook.
+
+import RegionToggle from '../apps/grocery-gap/ui/RegionToggle';
+
+interface NavbarProps {
+  simulationMode?: boolean;
+  toggleSimulation?: () => void;
+  setSimulationPreview?: (active: boolean) => void;
+  variant?: 'default' | 'blog';
+}
+
+const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSimulationPreview, variant = 'default' }) => {
   const { theme, toggleTheme } = useTheme();
-  const [scrolled, setScrolled] = useState(false);
+  const { scrollDirection, isScrolled } = useScrollDirection();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const linkClasses = 'pointer-events-auto';
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navClasses = scrolled
-    ? 'py-4 bg-cream/90 dark:bg-charcoal/90 backdrop-blur-md shadow-sm border-b border-ink/10 dark:border-white/10'
-    : 'py-6 pointer-events-none';
-
-  const linkClasses = scrolled ? 'pointer-events-auto' : 'pointer-events-auto';
+  // Motion Variants for fluid header (Apple Standard)
+  const navVariants = {
+    visible: {
+      y: 0,
+      backgroundColor: isScrolled ? 'rgba(245, 245, 240, 0.8)' : 'rgba(0, 0, 0, 0)',
+      transition: { type: "spring", stiffness: 260, damping: 20 }
+    },
+    hidden: {
+      y: '-100%',
+      transition: { type: "spring", stiffness: 260, damping: 20 }
+    }
+  };
 
   return (
     <>
-      <nav className={`fixed top-0 w-full z-50 px-6 flex justify-between items-center transition-all duration-300 ${navClasses}`}>
-        <Link href="#" className={`flex items-center hover:opacity-80 transition-opacity text-ink dark:text-cream ${linkClasses}`}>
+      <motion.nav
+        variants={navVariants}
+        animate={scrollDirection === 'down' && !mobileMenuOpen ? 'hidden' : 'visible'}
+        className={`fixed top-0 w-full z-50 px-6 flex justify-between items-center transition-colors duration-500
+          ${isScrolled
+            ? 'py-4 backdrop-blur-md border-b border-ink/5 dark:border-white/5 shadow-sm bg-cream/80 dark:bg-charcoal/80'
+            : 'py-6 bg-transparent border-transparent'
+          }
+        `}
+      >
+        <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity text-ink dark:text-cream ${linkClasses}`}>
           <Logo className="h-10 w-auto" variant="full" />
         </Link>
 
-        <div className={`flex items-center gap-6 ${linkClasses}`}>
-          {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link href="#about" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">ABOUT ME</Link>
-            <Link href="#work" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">INDEX</Link>
+        {variant === 'blog' ? (
+          /* Blog Mode Navigation */
+          <div className={`flex items-center gap-6 ${linkClasses}`}>
+            <Link href="/blog" className="hidden md:flex items-center gap-2 text-sm font-bold font-mono uppercase tracking-widest hover:text-pop transition-colors text-ink dark:text-cream">
+              <span>←</span> Index
+            </Link>
+            <div className="scale-90 origin-right">
+              <RegionToggle className="!static !shadow-none !border-ink/20 dark:!border-white/20 !bg-transparent hover:!bg-black/5" />
+            </div>
+          </div>
+        ) : (
+          /* Standard Desktop Links */
+          <div className={`hidden md:flex items-center gap-8 ${linkClasses}`}>
+            <Link href="/#about" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">ABOUT ME</Link>
+            <Link href="/#work" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">INDEX</Link>
             <Link href="/blog" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">WRITING</Link>
           </div>
+        )}
+
+        <div className={`flex items-center gap-6 ${linkClasses}`}>
+          {/* Duplicate div close for variant logic separation, wait, structure needs to be cleaner. 
+              The 'flex items-center gap-6' wrapper above was for Links. 
+              The wrapper on line 74 wraps links AND controls.
+              Refactoring structure slightly for clarity.
+          */}
 
           {/* Gamification Toggle (Renamed to XP.MODE) */}
           {toggleSimulation && (
@@ -56,6 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
                 onMouseEnter={() => setSimulationPreview && setSimulationPreview(true)}
                 onMouseLeave={() => setSimulationPreview && setSimulationPreview(false)}
                 className="group relative font-mono font-bold text-xs border border-ink dark:border-white px-4 py-2 transition-all hover:bg-black hover:text-green-400 hover:border-green-400 overflow-hidden"
+                title="Enable Interactive Game Mode (Experimental)"
               >
                 <div className="relative z-10 flex items-center gap-2">
                   <span className="group-hover:hidden">{simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}</span>
@@ -86,7 +129,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
             className="hidden md:flex text-sm font-bold bg-ink text-cream dark:bg-cream dark:text-ink px-4 py-2 hover:bg-pop hover:text-white dark:hover:bg-pop dark:hover:text-white transition-colors items-center gap-2 shadow-hard hover:shadow-hard-hover cursor-hoverable"
           >
             <span className="w-2 h-2 bg-green-500 animate-pulse"></span>
-            HIRE ME
+            WORK WITH ME
           </a>
 
           {/* Mobile Menu Btn */}
@@ -101,71 +144,73 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
           {/* Mobile Sticky CTA (Persistent Bottom Right) */}
 
         </div>
-      </nav>
+      </motion.nav >
 
       {/* Mobile Menu */}
       <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="fixed inset-0 bg-ink dark:bg-black z-[60] flex flex-col justify-center px-8"
-          >
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="absolute top-6 right-6 text-cream text-2xl cursor-hoverable"
+        {
+          mobileMenuOpen && (
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              className="fixed inset-0 bg-ink dark:bg-black z-[60] flex flex-col justify-center px-8"
             >
-              <IconClose className="w-8 h-8 pixel-icon" />
-            </button>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="absolute top-6 right-6 text-cream text-2xl cursor-hoverable"
+              >
+                <IconClose className="w-8 h-8 pixel-icon" />
+              </button>
 
-            <nav className="flex flex-col">
-              {[
-                { label: 'About Me', href: '#about' },
-                { label: 'Index', href: '#work' },
-                { label: 'Writing', href: '/blog' }
-              ].map((item, i) => (
+              <nav className="flex flex-col">
+                {[
+                  { label: 'About Me', href: '/#about' },
+                  { label: 'Index', href: '/#work' },
+                  { label: 'Writing', href: '/blog' }
+                ].map((item, i) => (
+                  <motion.a
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    initial={{ x: 50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                    className="text-cream font-display text-5xl font-bold mb-6 hover:text-pop transition-colors cursor-hoverable"
+                  >
+                    {item.label}
+                  </motion.a>
+                ))}
+                {/* Mobile Game Mode Toggle */}
+                {toggleSimulation && (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      toggleSimulation();
+                    }}
+                    className="text-left font-mono text-xl font-bold mb-8 flex items-center gap-3 text-pop hover:text-white transition-colors cursor-hoverable"
+                  >
+                    <span className={`w-3 h-3 rounded-full ${simulationMode ? 'bg-white' : 'bg-pop'}`}></span>
+                    {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
+                  </button>
+                )}
+
+                <div className="h-px bg-white/20 w-full mb-8" />
                 <motion.a
-                  key={item.label}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
+                  href={`mailto:${CONTACT_EMAIL}`}
                   initial={{ x: 50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="text-cream font-display text-5xl font-bold mb-6 hover:text-pop transition-colors cursor-hoverable"
+                  transition={{ delay: 0.3 }}
+                  className="text-pop text-xl font-mono cursor-hoverable"
                 >
-                  {item.label}
+                  {CONTACT_EMAIL}
                 </motion.a>
-              ))}
-              {/* Mobile Game Mode Toggle */}
-              {toggleSimulation && (
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    toggleSimulation();
-                  }}
-                  className="text-left font-mono text-xl font-bold mb-8 flex items-center gap-3 text-pop hover:text-white transition-colors cursor-hoverable"
-                >
-                  <span className={`w-3 h-3 rounded-full ${simulationMode ? 'bg-white' : 'bg-pop'}`}></span>
-                  {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
-                </button>
-              )}
-
-              <div className="h-px bg-white/20 w-full mb-8" />
-              <motion.a
-                href={`mailto:${CONTACT_EMAIL}`}
-                initial={{ x: 50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-pop text-xl font-mono cursor-hoverable"
-              >
-                {CONTACT_EMAIL}
-              </motion.a>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              </nav>
+            </motion.div>
+          )
+        }
+      </AnimatePresence >
     </>
   );
 };

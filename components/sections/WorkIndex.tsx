@@ -37,9 +37,9 @@ const WorkIndex: React.FC<WorkIndexProps> = ({ onSelectProject }) => {
               <button
                 key={btn.id}
                 onClick={() => setFilter(btn.id)}
-                className={`font-mono text-xs uppercase px-4 py-2 border border-ink dark:border-white transition-all cursor-hoverable ${filter === btn.id
-                  ? 'bg-ink dark:bg-white text-cream dark:text-ink shadow-hard'
-                  : 'bg-transparent hover:bg-pop hover:text-white hover:border-pop'
+                className={`font-mono text-sm uppercase px-5 py-2.5 border-2 transition-all cursor-hoverable ${filter === btn.id
+                  ? 'bg-ink dark:bg-white text-cream dark:text-ink border-ink dark:border-white shadow-hard'
+                  : 'bg-transparent border-pop/50 hover:bg-pop hover:text-white hover:border-pop'
                   }`}
               >
                 {btn.label}
@@ -76,7 +76,7 @@ const WorkIndex: React.FC<WorkIndexProps> = ({ onSelectProject }) => {
               onClick={() => setShowArchived(!showArchived)}
               className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-ink/50 dark:text-white/50 hover:text-pop transition-colors py-4"
             >
-              <span>{showArchived ? '[HIDE_ARCHIVE]' : '[VIEW_PAST_WORK]'}</span>
+              <span>{showArchived ? '[HIDE_ARCHIVE]' : '[View More Projects]'}</span>
               <span className={`transition-transform duration-300 ${showArchived ? 'rotate-180' : ''}`}>↓</span>
             </button>
 

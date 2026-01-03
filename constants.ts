@@ -7,7 +7,7 @@ export const PROJECT_DATA: Record<string, Project> = {
     nova: {
         id: "nova",
         title: "NOVA: Agentic AI for Banking",
-        subtitle: "Product Manager // RBC Amplify (Royal Bank of Canada)",
+        subtitle: "Product Manager // RBC Amplify (Patent Pending)",
         tag: "Product Innovation (Patent Pending)",
         context: "Selected for RBC Amplify to lead product strategy for a cross-functional squad tackling complex banking operations.",
         stack: ["Agentic AI", "Product Strategy", "Roadmapping", "Stakeholder Management", "Cross-functional Leadership", "Strategic Communication", "AI/ML Frameworks", "Business Case Development"],

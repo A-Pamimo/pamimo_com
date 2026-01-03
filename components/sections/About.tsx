@@ -1,9 +1,9 @@
-import React from 'react';
+﻿import React from 'react';
 import { IconCheck } from '../ui/Icons';
 
 const About: React.FC = () => {
   return (
-    <section id="about" className="py-24 px-4 md:px-12 bg-cream dark:bg-charcoal border-t border-ink dark:border-zinc-800 transition-colors">
+    <section id="about" className="py-32 px-4 md:px-12 bg-cream dark:bg-charcoal border-t border-ink dark:border-zinc-800 transition-colors">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         {/* Image */}
         <div className="relative group cursor-hoverable">
@@ -28,7 +28,7 @@ const About: React.FC = () => {
         <div>
           <h2 className="font-display font-bold text-4xl md:text-6xl mb-8 leading-none">THE<br /><span className="text-pop">THROUGH-LINE.</span></h2>
           <div className="prose prose-lg dark:prose-invert opacity-80 font-sans space-y-6">
-            <p>I see the world in systems. Whether I'm designing a product roadmap or building a community from scratch, I'm driven by the same question: <em>How can we make this last?</em></p>
+            <p>I see the world in systems. Whether I&apos;m designing a product roadmap or building a community from scratch, I&apos;m driven by the same question: <em>How can we make this last?</em></p>
 
             <div className="space-y-6 mt-8">
               {[
@@ -45,6 +45,10 @@ const About: React.FC = () => {
                 </div>
               ))}
             </div>
+
+            <p className="text-xs font-mono opacity-50 pt-8 border-t border-ink/10 dark:border-white/10 mt-8">
+              *Ask me about why I hate American milk or my Chinese language progress.
+            </p>
           </div>
         </div>
       </div>
@@ -53,3 +57,4 @@ const About: React.FC = () => {
 };
 
 export default About;
+

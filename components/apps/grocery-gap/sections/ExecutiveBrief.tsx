@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import styles from './ExecutiveBrief.module.css';
 
@@ -19,21 +19,23 @@ export default function ExecutiveBrief() {
                     <div className={styles.card}>
                         <h3 className={styles.cardTitle}>Retail Pricing Strategy</h3>
                         <p className={styles.cardContent}>
-                            Top-performing brands leverage <strong>Frequency Bias</strong>. By investing in loss leaders on high-frequency items (milk, eggs), retailers can purchase disproportionate positive customer sentiment, effectively decoupling their brand image from broader inflationary trends.
+                            Smart brands respect <strong>Frequency Bias</strong>. They know customers judge the entire economy by the price of eggs. Winning retailers protect these &ldquo;signal items&rdquo; to maintain trust, even if it means eating margin elsewhere.
                         </p>
                     </div>
 
                     <div className={styles.card}>
                         <h3 className={styles.cardTitle}>Risk: The Trust Tax</h3>
                         <p className={styles.cardContent}>
-                            Our data indicates a <strong>48% Brand Abandonment Rate</strong> when consumers detect shrinkflation. This "Trust Tax" creates a long-term liability that outweighs short-term margin protection. Transparency is now a competitive differentiator.
+                            When consumers spot shrinkflation, they don&rsquo;t just get annoyed. They leave. Data shows a <strong>48% Brand Abandonment Rate</strong><sup>1</sup>. In an era of high inflation, transparency isn&rsquo;t just ethical. It is a survival strategy.
+                            <br /><span className="text-[10px] opacity-60 mt-2 block italic">1. Source: PLMA 2024 Consumer Study</span>
                         </p>
                     </div>
 
                     <div className={styles.card}>
                         <h3 className={styles.cardTitle}>Geographic Arbitrage</h3>
                         <p className={styles.cardContent}>
-                            For talent acquisition, the <strong>Real Wage Gap</strong> between regions (up to 45% purchasing power differential) offers an opportunity. Companies can offer "lower" nominal salaries in high-elasticity markets (TX, OH) that actually deliver higher quality of life for employees.
+                            For talent acquisition, the <strong>Real Wage Gap</strong> between regions (up to 45% purchasing power differential)<sup>2</sup> offers an opportunity. Companies can offer &ldquo;lower&rdquo; nominal salaries in high-elasticity markets (TX, OH) that actually deliver higher quality of life for employees.
+                            <br /><span className="text-[10px] opacity-60 mt-2 block italic">2. Implied from BEA Regional Price Parity ranges (CA: 112.6 vs MS: 87.3)</span>
                         </p>
                     </div>
                 </div>
@@ -41,3 +43,4 @@ export default function ExecutiveBrief() {
         </section>
     );
 }
+

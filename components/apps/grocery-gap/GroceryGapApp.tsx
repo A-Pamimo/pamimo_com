@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Hero from './sections/Hero';
+import Preamble from './sections/Preamble';
 import GroceryTest from './sections/GroceryTest';
 import FrequencyBias from './sections/FrequencyBias';
 import Shrinkflation from './sections/Shrinkflation';
@@ -11,7 +12,9 @@ import Calculator from './sections/Calculator';
 import ExecutiveBrief from './sections/ExecutiveBrief';
 import AcademicAppendix from './sections/AcademicAppendix';
 import BackButton from './ui/BackButton';
+import ModeToggle from './ui/ModeToggle';
 import { useRegion } from './context/RegionContext';
+import ProgressBar from './ui/ProgressBar';
 
 export default function GroceryGapApp() {
     const { region } = useRegion();
@@ -20,27 +23,39 @@ export default function GroceryGapApp() {
 
     return (
         <main>
-            <BackButton />
+            <ProgressBar />
 
-            {/* Persona Switcher (Subtle) */}
-            <div className="fixed top-6 right-6 z-50">
-                <button
-                    onClick={() => setShowBizMode(!showBizMode)}
-                    className="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-ink/20 dark:border-white/20 hover:bg-ink hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
-                >
-                    {showBizMode ? 'Exit Boardroom' : 'Mode: Executive'}
-                </button>
+            {/* Persona Switcher */}
+            <div className="fixed top-24 right-6 z-40">
+                <ModeToggle
+                    isBusinessMode={showBizMode}
+                    onToggle={() => setShowBizMode(!showBizMode)}
+                />
             </div>
 
-            <Hero />
+            <Hero isBusinessMode={showBizMode} />
 
-            {showBizMode && <ExecutiveBrief />}
-
-            <GroceryTest />
-            <FrequencyBias />
-            <Shrinkflation />
-            {isCanada ? <RegionalMapCA /> : <RegionalMap />}
-            <Calculator />
+            {showBizMode ? (
+                // EXECUTIVE MODE LAYOUT
+                <>
+                    <ExecutiveBrief />
+                    {/* Retain Theory as "Root Cause Analysis" */}
+                    <FrequencyBias />
+                    <Shrinkflation />
+                    {isCanada ? <RegionalMapCA /> : <RegionalMap />}
+                    {/* Hide Calculator in Brief Mode */}
+                </>
+            ) : (
+                // FULL ARTICLE MODE LAYOUT
+                <>
+                    <Preamble />
+                    <GroceryTest />
+                    <FrequencyBias />
+                    <Shrinkflation />
+                    {isCanada ? <RegionalMapCA /> : <RegionalMap />}
+                    <Calculator />
+                </>
+            )}
 
             <AcademicAppendix />
         </main>

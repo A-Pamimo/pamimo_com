@@ -1,0 +1,31 @@
+/* NUCLEAR DARK MODE OVERRIDES - BRUTE FORCE CONTRAST FIX */
+:global(.dark) .title,
+:global(.dark) .subtitle,
+:global(.dark) .stepTitle,
+:global(.dark) .frequencyLabel,
+:global(.dark) .resultsLabel,
+:global(.dark) .comparisonLabel,
+:global(.dark) .comparisonValue,
+:global(.dark) .breakdownTitle,
+:global(.dark) .breakdownLabel,
+:global(.dark) .breakdownValue,
+:global(.dark) .rentLabel,
+:global(.dark) .housingOptionLabel {
+    color: #FFFFFF !important;
+}
+
+:global(.dark) .select,
+:global(.dark) .housingOption {
+    color: #FFFFFF !important;
+    border-color: #FFFFFF !important;
+    background-color: #1A1A1A;
+}
+
+:global(.dark) .select option {
+    background-color: #1A1A1A;
+    color: #FFFFFF;
+}
+
+:global(.dark) .resultsBig {
+    border: 2px solid #FFFFFF;
+}

@@ -7,6 +7,15 @@ const Preloader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
     const [show, setShow] = useState(true);
 
     useEffect(() => {
+        // Check session storage
+        const hasSeenIntro = sessionStorage.getItem('intro_seen');
+
+        if (hasSeenIntro) {
+            setShow(false);
+            onComplete();
+            return;
+        }
+
         // Sequence:
         // 1. 0s: Start
         // 2. 0.5s: Text Fade In
@@ -15,6 +24,7 @@ const Preloader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
         const timer = setTimeout(() => {
             setShow(false);
             setTimeout(onComplete, 800); // Wait for exit animation
+            sessionStorage.setItem('intro_seen', 'true');
         }, 1800);
 
         return () => clearTimeout(timer);

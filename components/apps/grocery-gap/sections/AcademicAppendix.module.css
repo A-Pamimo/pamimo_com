@@ -1,69 +1,94 @@
 .section {
-    background-color: #f5f5f5;
-    border-top: 1px solid #ddd;
-    padding: 1rem 0;
-}
-
-.dark .section {
-    background-color: #111;
-    border-top: 1px solid #333;
+    padding: var(--gg-space-xl) var(--gg-space-lg);
+    background-color: transparent;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: var(--gg-max-width-content);
     margin: 0 auto;
-    padding: 0 1.5rem;
+    background: var(--gg-bg-card);
+    border: var(--gg-border-thick);
+    box-shadow: var(--gg-shadow-hard);
+    padding: var(--gg-space-lg);
+    color: var(--gg-ink);
 }
 
 .toggleButton {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-family: var(--gg-font-mono);
+    font-size: 0.9rem;
     text-transform: uppercase;
+    font-weight: 700;
     letter-spacing: 0.1em;
-    color: inherit;
-    opacity: 0.5;
+    color: var(--gg-ink);
+    opacity: 1;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
     width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
 }
 
 .toggleButton:hover {
-    opacity: 1;
+    color: var(--gg-accent-orange);
 }
 
 .toggleIcon {
-    font-weight: bold;
+    font-weight: 800;
     font-size: 1.2em;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gg-ink);
+    color: var(--gg-white);
+    border-radius: 50%;
+}
+
+.toggleButton:hover .toggleIcon {
+    background: var(--gg-accent-orange);
 }
 
 .content {
-    margin-top: 2rem;
-    padding-bottom: 2rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    padding-top: 2rem;
+    margin-top: var(--gg-space-lg);
+    padding-top: var(--gg-space-lg);
+    border-top: 1px dashed var(--gg-ink);
+    animation: slideDown 0.3s ease-out;
 }
 
-.dark .content {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--gg-space-xl);
 }
 
 .columnTitle {
-    font-family: var(--font-mono);
+    font-family: var(--gg-font-mono);
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    margin-bottom: 1.5rem;
-    opacity: 0.7;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--gg-space-md);
+    color: var(--gg-accent-slate);
+    border-bottom: 2px solid var(--gg-accent-slate);
+    padding-bottom: 4px;
+    display: inline-block;
 }
 
 .citationList {
@@ -73,35 +98,52 @@
 }
 
 .citation {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     line-height: 1.6;
-    margin-bottom: 1rem;
-    font-family: var(--font-inter);
-    opacity: 0.8;
+    margin-bottom: var(--gg-space-md);
+    font-family: var(--gg-font-sans);
+    color: var(--gg-ink);
 }
 
 .citation strong {
-    font-weight: 600;
-    color: inherit;
+    font-weight: 700;
+    color: var(--gg-ink);
+    display: block;
+    margin-bottom: 2px;
 }
 
 .modelNote {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     line-height: 1.6;
-    font-family: var(--font-inter);
-    opacity: 0.8;
+    font-family: var(--gg-font-sans);
+    color: var(--gg-ink);
 }
 
 .codeBlock {
     display: block;
-    margin: 1rem 0;
-    background: rgba(0, 0, 0, 0.05);
-    padding: 0.5rem;
-    border-radius: 4px;
-    font-family: var(--font-mono);
+    margin: var(--gg-space-md) 0;
+    background: var(--gg-bg-cream);
+    padding: var(--gg-space-md);
+    border: var(--gg-border-thin);
+    font-family: var(--gg-font-mono);
     font-size: 0.8rem;
+    color: var(--gg-ink);
+    overflow-x: auto;
 }
 
-.dark .codeBlock {
-    background: rgba(255, 255, 255, 0.1);
+/* Dark Mode Overrides - Automatic via Variables, but explicit specific tweaks if needed */
+:global(.dark) .codeBlock {
+    background: var(--gg-ink);
+    color: var(--gg-on-dark);
+    border-color: var(--gg-on-dark);
+}
+
+:global(.dark) .toggleIcon {
+    background: var(--gg-white);
+    color: var(--gg-ink);
+}
+
+:global(.dark) .toggleButton:hover .toggleIcon {
+    background: var(--gg-accent-orange);
+    color: var(--gg-white);
 }

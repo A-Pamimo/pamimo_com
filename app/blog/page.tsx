@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { IconArrow } from '../../components/ui/Icons';
+import Navbar from '../../components/layout/Navbar';
 import BlogCard from '../../components/blog/BlogCard';
 
 // Blog Data (To be moved to a CMS or MDX later)
@@ -20,34 +19,21 @@ const BLOG_POSTS = [
 
 export default function BlogIndex() {
     return (
-        <div className="min-h-screen bg-cream dark:bg-charcoal text-ink dark:text-cream font-mono selection:bg-pop selection:text-white transition-colors duration-500">
-            {/* Header */}
-            <div className="sticky top-0 z-50 bg-cream/80 dark:bg-charcoal/80 backdrop-blur-md border-b border-ink/10 dark:border-white/10">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <Link
-                        href="/"
-                        className="flex items-center gap-2 text-xs font-bold tracking-widest opacity-60 hover:opacity-100 hover:text-pop transition-all group"
-                    >
-                        <span className="group-hover:-translate-x-1 transition-transform">
-                            <IconArrow className="w-4 h-4 rotate-180" />
-                        </span>
-                        BACK TO INDEX
-                    </Link>
-                    <div className="text-xs font-bold tracking-widest opacity-30 hidden md:block">
-                        ARCHIVE // {new Date().getFullYear()}
-                    </div>
-                </div>
-            </div>
+        <div className="min-h-screen bg-cream dark:bg-charcoal text-theme-text font-mono selection:bg-pop selection:text-white transition-colors duration-500">
+            <Navbar />
+
+            {/* Spacer for fixed navbar */}
+            <div className="h-28" />
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-6 py-20">
+            <main className="max-w-7xl mx-auto px-6 py-10">
                 <div className="mb-20">
-                    <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 relative">
+                    <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 relative text-theme-text">
                         WRITING
                         <span className="text-pop text-2xl absolute -top-4 -right-8 animate-pulse">●</span>
                     </h1>
-                    <p className="text-lg md:text-xl font-serif italic opacity-60 max-w-2xl leading-relaxed">
-                        Thoughts on technology, design, and the systems that shape our world.
+                    <p className="text-lg md:text-xl font-serif italic opacity-60 max-w-2xl leading-relaxed text-theme-text">
+                        Thoughts on economics, algorithms, and the future of work.
                     </p>
                 </div>
 
@@ -64,11 +50,6 @@ export default function BlogIndex() {
                             tags={post.tags}
                         />
                     ))}
-
-                    {/* Placeholder for future posts */}
-                    <div className="min-h-[300px] flex flex-col items-center justify-center border-2 border-dashed border-ink/10 dark:border-white/10 rounded-lg opacity-30 hover:opacity-50 transition-opacity">
-                        <span className="font-mono text-xs uppercase tracking-widest">More Coming Soon</span>
-                    </div>
                 </div>
             </main>
 

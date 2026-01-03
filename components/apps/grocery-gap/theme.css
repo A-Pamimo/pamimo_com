@@ -1,52 +1,98 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
-
 /* Scope everything to the wrapper class */
 .grocery-gap-app-theme {
     /* Colors - Neo-Brutalist Palette */
-    --bg-cream: #F2F0E9;
-    --ink: #121212;
-    --white: #FFFFFF;
+    --gg-bg-cream: #F2F0E9;
+    --gg-ink: #121212;
+    --gg-white: #FFFFFF;
+    --gg-ink-inverse: #FFFFFF;
+
+    /* Semantic Tokens */
+    --gg-bg-card: #FFFFFF;
+    --gg-text-on-ink: #FFFFFF;
+    /* Convenience contrast tokens */
+    --gg-on-dark: var(--gg-text-on-ink);
+    /* text color to use on dark backgrounds */
+    --gg-on-light: var(--gg-ink);
+    /* text color to use on light backgrounds */
 
     /* Accents */
-    --accent-orange: #FF4400;
-    --accent-green: #4ADE80;
-    --accent-slate: #CFCFCF;
+    --gg-accent-orange: #FF4400;
+    --gg-accent-orange-muted: #FF8855;
+    --gg-accent-orange-subtle: #FFF0EB;
+    --gg-accent-green: #4ADE80;
+    --gg-accent-slate: #CFCFCF;
 
-    /* Typography */
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    /* Semantic Colors */
+    --gg-color-positive: var(--gg-accent-green);
+    --gg-color-negative: var(--gg-accent-orange);
+    --gg-color-neutral: var(--gg-accent-slate);
+
+    /* Typography - Inherit from Next.js Global Font Loaders */
+    --gg-font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+    --gg-font-mono: var(--font-mono), monospace;
 
     /* Spacing Scale */
-    --space-xs: 0.25rem;
-    --space-sm: 0.5rem;
-    --space-md: 1rem;
-    --space-lg: 1.5rem;
-    --space-xl: 2rem;
-    --space-2xl: 3rem;
-    --space-3xl: 4rem;
-    --space-4xl: 6rem;
+    --gg-space-xs: 0.25rem;
+    --gg-space-sm: 0.5rem;
+    --gg-space-md: 1rem;
+    --gg-space-lg: 1.5rem;
+    --gg-space-xl: 2rem;
+    --gg-space-2xl: 3rem;
+    --gg-space-3xl: 4rem;
+    --gg-space-4xl: 6rem;
 
     /* Max Widths */
-    --max-width-content: 1200px;
+    --gg-max-width-content: 1200px;
 
     /* Brutalist UI Tokens */
-    --border-thick: 2px solid var(--ink);
-    --border-thin: 1px solid var(--ink);
-    --shadow-hard: 4px 4px 0px 0px var(--ink);
-    --shadow-hard-hover: 2px 2px 0px 0px var(--ink);
-    --radius-sharp: 0px;
-    --radius-minimal: 2px;
+    --gg-border-thick: 2px solid var(--gg-ink);
+    --gg-border-thin: 1px solid var(--gg-ink);
+    --gg-shadow-hard: 4px 4px 0px 0px currentColor;
+    /* Adaptive shadow */
+    --gg-shadow-hard-hover: 2px 2px 0px 0px currentColor;
+    --gg-radius-sharp: 0px;
+    --gg-radius-minimal: 2px;
+    /* Keeping per user preference, but generally prefer 0 */
 
     /* Transitions */
-    --transition-snap: 100ms cubic-bezier(0, 0, 0.2, 1);
+    --gg-transition-snap: 100ms cubic-bezier(0, 0, 0.2, 1);
 
     /* Reset Context */
-    font-family: var(--font-sans);
+    font-family: var(--gg-font-sans);
     font-size: 16px;
     line-height: 1.5;
-    color: var(--ink);
-    background-color: var(--bg-cream);
+    color: var(--gg-ink);
+    background-color: var(--gg-bg-cream);
     min-height: 100vh;
+}
+
+/* Dark Mode Variant */
+html.dark .grocery-gap-app-theme,
+.dark .grocery-gap-app-theme {
+    /* Inverted Colors */
+    --gg-bg-cream: #1A1A1A;
+    --gg-ink: #F2F0E9;
+    --gg-white: #FFFFFF;
+    --gg-ink-inverse: #121212;
+
+    /* Semantic Tokens */
+    --gg-bg-card: #121212;
+    --gg-text-on-ink: #121212;
+    /* Convenience contrast tokens */
+    --gg-on-dark: var(--gg-ink);
+    /* in dark mode, on-dark should be dark text (for white/light surfaces) */
+    --gg-on-light: var(--gg-ink-inverse);
+    /* in dark mode, on-light should be the inverse ink */
+    /* Keep white as white for text contrast */
+
+    /* Adjusted borders for dark mode */
+    --gg-border-thick: 2px solid var(--gg-ink);
+    --gg-border-thin: 1px solid var(--gg-ink);
+    --gg-shadow-hard: 4px 4px 0px 0px rgba(242, 240, 233, 0.3);
+    --gg-shadow-hard-hover: 2px 2px 0px 0px rgba(242, 240, 233, 0.3);
+
+    background-color: var(--gg-bg-cream);
+    color: var(--gg-ink);
 }
 
 /* Typography Overrides scoped */
@@ -54,10 +100,9 @@
 .grocery-gap-app-theme h2,
 .grocery-gap-app-theme h3,
 .grocery-gap-app-theme h4 {
-    font-family: var(--font-sans);
-    color: var(--ink);
+    font-family: var(--gg-font-sans);
+    color: var(--gg-ink);
     font-weight: 800;
-    text-transform: uppercase;
     letter-spacing: -0.02em;
     margin: 0;
 }
@@ -76,19 +121,19 @@
 }
 
 .grocery-gap-app-theme p {
-    font-family: var(--font-sans);
+    font-family: var(--gg-font-sans);
     font-weight: 400;
     margin-bottom: 1.5em;
     max-width: 65ch;
-    color: var(--ink);
+    color: var(--gg-ink);
 }
 
 /* Utility Classes */
 .grocery-gap-app-theme .container {
     width: 100%;
-    max-width: var(--max-width-content);
+    max-width: var(--gg-max-width-content);
     margin: 0 auto;
-    padding: 0 var(--space-lg);
+    padding: 0 var(--gg-space-lg);
 }
 
 /* Texture Overlay */
@@ -104,3 +149,7 @@
     opacity: 0.03;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
+
+/* Scoped accessibility fallbacks for module-class selectors (covers hashed CSS module names)
+   These ensure components using background variables get an explicit contrasting text color. */
+/* (Removed broad fallbacks — prefer targeted fixes in module CSS) */

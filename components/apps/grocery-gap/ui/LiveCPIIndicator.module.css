@@ -1,0 +1,134 @@
+.container {
+    background: #FFFFFF;
+    border: var(--gg-border-thick);
+    border-radius: var(--gg-radius-minimal);
+    padding: 1.5rem;
+    display: inline-flex;
+    flex-direction: column;
+    font-family: var(--gg-font-sans);
+    min-width: 320px;
+    box-shadow: var(--gg-shadow-hard);
+    text-align: left;
+    transition: transform 0.1s;
+}
+
+.container:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px var(--gg-ink);
+}
+
+.loading {
+    font-family: var(--gg-font-mono);
+    font-size: 0.75rem;
+    opacity: 0.5;
+    padding: 0.5rem;
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #FF5555;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background-color: currentColor;
+    border-radius: 50%;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.label {
+    font-size: 1.125rem;
+    color: #333333;
+    opacity: 0.9;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.value {
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: #333333;
+}
+
+.value.positive {
+    color: #FF3333;
+}
+
+.value.negative {
+    color: #388e3c;
+}
+
+.period {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #666666;
+    margin-left: 0.5rem;
+}
+
+.source {
+    font-size: 0.875rem;
+    color: #888888;
+    margin-top: auto;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+:global(.dark) .container {
+    background: #1A1A1A;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark) .label {
+    color: var(--gg-on-dark);
+    opacity: 0.7;
+}
+
+:global(.dark) .value {
+    color: var(--gg-on-dark);
+}
+
+:global(.dark) .value.positive {
+    color: #ff8a80;
+}
+
+:global(.dark) .value.negative {
+    color: #81c784;
+}
+
+:global(.dark) .period {
+    color: var(--gg-on-dark);
+    opacity: 0.6;
+}
+
+:global(.dark) .source {
+    color: var(--gg-on-dark);
+    opacity: 0.5;
+}

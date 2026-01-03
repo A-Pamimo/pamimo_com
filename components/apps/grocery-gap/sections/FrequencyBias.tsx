@@ -1,8 +1,9 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import styles from './FrequencyBias.module.css';
 import TLDR from '../ui/TLDR';
+import { useRegion } from '../context/RegionContext';
 
 interface BasketItem {
     name: string;
@@ -10,19 +11,30 @@ interface BasketItem {
     frequencyPerYear: number;
 }
 
-const basketItems: BasketItem[] = [
-    { name: 'Groceries', cpiWeight: 13.5, frequencyPerYear: 156 }, // 3x/week
-    { name: 'Gasoline', cpiWeight: 3.4, frequencyPerYear: 52 },
-    { name: 'Restaurants', cpiWeight: 5.6, frequencyPerYear: 52 },
+const basketItemsUS: BasketItem[] = [
+    { name: 'Groceries', cpiWeight: 8.0, frequencyPerYear: 156 }, // BLS "Food at home" Dec 2024: 8.043%
+    { name: 'Gasoline', cpiWeight: 3.3, frequencyPerYear: 52 },   // BLS "Gasoline, all types"
+    { name: 'Restaurants', cpiWeight: 5.4, frequencyPerYear: 52 },
     { name: 'Electricity', cpiWeight: 2.5, frequencyPerYear: 12 },
-    { name: 'Rent/Mortgage', cpiWeight: 32.4, frequencyPerYear: 12 },
+    { name: 'Rent/Mortgage', cpiWeight: 36.2, frequencyPerYear: 12 }, // BLS "Shelter": 36.2%
     { name: 'Healthcare', cpiWeight: 8.1, frequencyPerYear: 4 },
     { name: 'Apparel', cpiWeight: 2.5, frequencyPerYear: 6 },
     { name: 'Electronics', cpiWeight: 1.2, frequencyPerYear: 0.5 },
 ];
 
-function calculatePerceivedWeight(item: BasketItem, alpha: number): number {
-    const totalFrequency = basketItems.reduce((a, b) => a + b.frequencyPerYear, 0);
+const basketItemsCA: BasketItem[] = [
+    { name: 'Groceries', cpiWeight: 10.8, frequencyPerYear: 156 }, // StatsCan 2024: ~10.75%
+    { name: 'Gasoline', cpiWeight: 3.7, frequencyPerYear: 52 },   // StatsCan 2024: 3.71%
+    { name: 'Restaurants', cpiWeight: 5.9, frequencyPerYear: 52 }, // StatsCan 2023: 5.90%
+    { name: 'Electricity', cpiWeight: 1.7, frequencyPerYear: 12 }, // StatsCan 2024: 1.68%
+    { name: 'Rent/Mortgage', cpiWeight: 29.1, frequencyPerYear: 12 }, // StatsCan 2024 Shelter: 29.12%
+    { name: 'Healthcare', cpiWeight: 4.5, frequencyPerYear: 4 },  // Lower due to public coverage
+    { name: 'Apparel', cpiWeight: 3.8, frequencyPerYear: 6 },
+    { name: 'Electronics', cpiWeight: 1.5, frequencyPerYear: 0.5 }, // Adjust to fill
+];
+
+function calculatePerceivedWeight(item: BasketItem, alpha: number, basket: BasketItem[]): number {
+    const totalFrequency = basket.reduce((a, b) => a + b.frequencyPerYear, 0);
     const frequencyWeight = (item.frequencyPerYear / totalFrequency) * 100;
 
     // Blend CPI weight and frequency weight using alpha
@@ -30,13 +42,16 @@ function calculatePerceivedWeight(item: BasketItem, alpha: number): number {
 }
 
 export default function FrequencyBias() {
+    const { region } = useRegion();
+    const basketItems = region.code === 'CA' ? basketItemsCA : basketItemsUS;
+
     const [alpha, setAlpha] = useState(0.44);
     const [showFullCitation, setShowFullCitation] = useState(false);
 
     // Calculate perceived weights for all items
     const perceivedWeights = basketItems.map(item => ({
         ...item,
-        perceivedWeight: calculatePerceivedWeight(item, alpha),
+        perceivedWeight: calculatePerceivedWeight(item, alpha, basketItems),
     }));
 
     // Normalize to sum to ~100%
@@ -52,23 +67,24 @@ export default function FrequencyBias() {
     const maxWeight = Math.max(maxCpi, maxPerceived);
 
     return (
-        <section className={styles.section}>
+        <section id="frequency-bias" className={styles.section}>
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <p className={styles.eyebrow}>Chapter 1: The Cognitive Gap</p>
+                    <p className={styles.eyebrow}>Chapter 1: Why Our Brains Lie</p>
                     <h2 className={styles.title}>Frequency Bias</h2>
                     <p className={styles.subtitle}>
                         Your brain weights price signals by how often you encounter them,
                         not by their actual share of your spending.
                     </p>
-                    <TLDR>
-                        You buy milk more often than fridges. So when milk prices go up, you feel like <em>everything</em> is getting expensive, even if big-ticket items are stable. This "frequency bias" distorts your perception of inflation.
+                    <TLDR source="European Economic Review (2014)" sourceLink="https://ideas.repec.org/a/eee/eecrev/v67y2014i1p144-158.html">
+                        Researchers proved that even when people <em>know</em> the official inflation rate,
+                        they ignore it if it conflicts with the price changes of their most frequent purchases.
                     </TLDR>
                 </div>
 
                 <div className={styles.alphaControl}>
                     <div className={styles.alphaLabel}>
-                        <span className={styles.alphaTitle}>Price Sensitivity</span>
+                        <span className={styles.alphaTitle}>Your "Bias Level"</span>
                         <span className={styles.alphaValue}>{alpha.toFixed(2)}</span>
                     </div>
                     <input
@@ -81,43 +97,66 @@ export default function FrequencyBias() {
                         className={styles.alphaSlider}
                     />
                     <div className={styles.alphaDescription}>
-                        <span>Mathematical Reality (CPI)</span>
-                        <span>Your Brain's Average</span>
-                        <span>Pure Feeling</span>
+                        <span>0.0 (Pure Logic)</span>
+                        <span>0.44 (Avg Human)</span>
+                        <span>1.0 (Pure Emotion)</span>
                     </div>
                 </div>
+                <div className={styles.sliderExplainer}>
+                    <p>
+                        This slider lets you simulate different psychological states.
+                        At <strong>0.44</strong> (default), you are seeing the world as most humans do—over-weighting daily purchases.
+                        Slide to <strong>0</strong> to see the "Logic" (CPI) view, or <strong>1</strong> to see fully emotive pricing.
+                    </p>
+                </div>
 
-                <div className={styles.baskets}>
-                    <div className={styles.basket}>
-                        <h3 className={styles.basketTitle}>Official CPI Weights</h3>
-                        {basketItems.map(item => (
-                            <div key={item.name} className={styles.basketItem}>
-                                <span className={styles.basketItemName}>{item.name}</span>
-                                <div className={styles.basketItemBar}>
-                                    <div
-                                        className={`${styles.basketItemFill} ${styles.fillCpi}`}
-                                        style={{ width: `${(item.cpiWeight / maxWeight) * 100}%` }}
-                                    />
+                <div className={styles.chartContainer}>
+                    <div className={styles.chartLegend}>
+                        <div className={styles.legendItem}>
+                            <div className={`${styles.legendDot} ${styles.fillCpi}`} />
+                            <span>Official CPI Weight</span>
+                        </div>
+                        <div className={styles.legendItem}>
+                            <div className={`${styles.legendDot} ${styles.fillPerceived}`} />
+                            <span>Your Brain's Weight</span>
+                        </div>
+                    </div>
+
+                    <div className={styles.chartGrid}>
+                        {normalizedWeights.map(item => (
+                            <div key={item.name} className={styles.chartRow}>
+                                <div className={styles.rowLabel}>{item.name}</div>
+                                <div className={styles.rowBars}>
+                                    {/* Official CPI Bar */}
+                                    <div className={styles.barGroup}>
+                                        <div
+                                            className={`${styles.bar} ${styles.fillCpi}`}
+                                            style={{ width: `${Math.min((item.cpiWeight / 50) * 100, 100)}%` }}
+                                        />
+                                        <span className={styles.barValue}>{item.cpiWeight.toFixed(1)}%</span>
+                                    </div>
+
+                                    {/* Perceived Bar */}
+                                    <div className={styles.barGroup}>
+                                        <div
+                                            className={`${styles.bar} ${styles.fillPerceived}`}
+                                            style={{ width: `${Math.min((item.perceivedWeight / 50) * 100, 100)}%` }}
+                                        />
+                                        <span className={`${styles.barValue} ${styles.valuePerceived}`}>
+                                            {item.perceivedWeight.toFixed(1)}%
+                                        </span>
+                                    </div>
                                 </div>
-                                <span className={styles.basketItemValue}>{item.cpiWeight.toFixed(1)}%</span>
                             </div>
                         ))}
                     </div>
-
-                    <div className={styles.basket}>
-                        <h3 className={styles.basketTitle}>Perceived Weights (Sensitivity = {alpha.toFixed(2)})</h3>
-                        {normalizedWeights.map(item => (
-                            <div key={item.name} className={styles.basketItem}>
-                                <span className={styles.basketItemName}>{item.name}</span>
-                                <div className={styles.basketItemBar}>
-                                    <div
-                                        className={`${styles.basketItemFill} ${styles.fillPerceived}`}
-                                        style={{ width: `${(item.perceivedWeight / maxWeight) * 100}%` }}
-                                    />
-                                </div>
-                                <span className={styles.basketItemValue}>{item.perceivedWeight.toFixed(1)}%</span>
-                            </div>
-                        ))}
+                    <div className="mt-4 text-center text-[10px] text-theme-text opacity-50 font-mono">
+                        {region.code === 'CA' ? (
+                            <>Source: <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000501" target="_blank" rel="noopener noreferrer" className="underline hover:text-pop">Statistics Canada Basket Weights (2024)</a></>
+                        ) : (
+                            <>Source: <a href="https://www.bls.gov/news.release/cpi.t02.htm" target="_blank" rel="noopener noreferrer" className="underline hover:text-pop">BLS Consumer Price Index Relative Importance (Dec 2024)</a></>
+                        )}
+                        <span className="block mt-1 opacity-70">*Bars scaled to max 50% for visibility</span>
                     </div>
                 </div>
 
@@ -141,9 +180,9 @@ export default function FrequencyBias() {
                         <div className={styles.accordionContent}>
                             <p>
                                 The researchers conducted controlled experiments where people bought items with different
-                                purchase frequencies. They found a "frequency bias" of 0.44. In plain English:
+                                purchase frequencies. They found a &ldquo;frequency bias&rdquo; of 0.44. In plain English:
                                 consumers notice price changes in frequent items (like milk) about 4x more than
-                                they "should" if they were acting like a perfect computer.
+                                they &ldquo;should&rdquo; if they were acting like a perfect computer.
                             </p>
                             <p style={{ marginTop: '1rem' }}>
                                 Additional validation from Vogel, Menz, and Fritsche (2009) found that in a 12-country
@@ -157,3 +196,4 @@ export default function FrequencyBias() {
         </section>
     );
 }
+

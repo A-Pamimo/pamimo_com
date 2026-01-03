@@ -2,6 +2,7 @@
 
 import styles from './Shrinkflation.module.css';
 import TLDR from '../ui/TLDR';
+import LiveCPIIndicator from '../ui/LiveCPIIndicator';
 
 interface ShrinkProduct {
     name: string;
@@ -58,88 +59,86 @@ const hiddenCosts = [
 
 export default function Shrinkflation() {
     const { region } = useRegion();
+    // Use live indicator only for US context for now (as FRED data is US-based)
+    const showLiveIndicator = region.code === 'US';
     const shrinkProducts = region.code === 'CA' ? shrinkProductsCA : shrinkProductsUS;
 
     return (
-        <section className={styles.section}>
+        <section id="shrinkflation" className={styles.section}>
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <p className={styles.eyebrow}>Chapter 2: The Measurement Gap</p>
-                    <h2 className={styles.title}>Shrinkflation Detective</h2>
+                    <p className={styles.eyebrow}>Chapter 2: Hidden Costs</p>
+                    <h2 className={styles.title}>Shrinkflation Examples</h2>
                     <p className={styles.subtitle}>
-                        Same package, same price, less product. The BLS says they capture this.
-                        Academic research says they miss most of the welfare loss.
+                        Same package, same price, less product. The BLS tracks price-per-ounce,
+                        but they miss the <strong>loss of trust</strong>. That is the invisible tax.
                     </p>
-                    <TLDR>
+                    {showLiveIndicator && (
+                        <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                            <LiveCPIIndicator />
+                        </div>
+                    )}
+                    <TLDR inverted={true} source="Rojas et al. (2024), SSRN" sourceLink="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4746409">
                         Companies make products smaller instead of raising prices. It tricks your brain and your wallet because you focus on the sticker price, not the price per ounce.
                     </TLDR>
                 </div>
 
                 <div className={styles.statsBanner}>
                     <div className={styles.statCard}>
-                        <span className={styles.statNumber}>11.2%</span>
-                        <span className={styles.statLabel}>Avg shrinkflation (2023)</span>
+                        <span className={styles.statNumber}>3.9pp</span>
+                        <span className={styles.statLabel}>
+                            <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4746409" target="_blank" className="hover:underline decoration-white/30">
+                                Unmeasured Welfare Loss*
+                                <span className="block text-[9px] opacity-70 font-normal no-underline">
+                                    *(percentage points difference from official CPI)
+                                </span>
+                            </a>
+                        </span>
                     </div>
                     <div className={styles.statCard}>
-                        <span className={styles.statNumber}>79%</span>
-                        <span className={styles.statLabel}>Consumers who noticed</span>
+                        <span className={styles.statNumber}>82%</span>
+                        <span className={styles.statLabel}>
+                            <a href="https://business.yougov.com/content/48833-shrinkflation-affects-brand-loyalty-for-nearly-half-of-us-shoppers" target="_blank" className="hover:underline decoration-white/30">
+                                Consumers who noticed
+                            </a>
+                        </span>
                     </div>
                     <div className={styles.statCard}>
                         <span className={styles.statNumber}>48%</span>
-                        <span className={styles.statLabel}>Who abandoned a brand</span>
+                        <span className={styles.statLabel}>
+                            <a href="https://plma.com/" target="_blank" className="hover:underline decoration-white/30">
+                                Who abandoned a brand
+                            </a>
+                        </span>
                     </div>
                 </div>
 
                 <div className={styles.products}>
                     {shrinkProducts.map((product) => {
                         const shrinkPercent = ((product.oldSize - product.newSize) / product.oldSize) * 100;
-                        const hiddenInflation = (product.oldSize / product.newSize - 1) * 100;
-                        const maxHeight = 100;
-                        const oldHeight = maxHeight;
-                        const newHeight = (product.newSize / product.oldSize) * maxHeight;
 
                         return (
                             <div key={product.name} className={styles.productCard}>
-                                <div className={styles.productVisual}>
-                                    <div className={styles.sizeBox}>
-                                        <span className={styles.sizeLabel}>Before</span>
-                                        <div
-                                            className={`${styles.sizeBar} ${styles.sizeBarOld}`}
-                                            style={{ height: `${oldHeight}px` }}
-                                        />
-                                        <span className={styles.sizeValue}>
-                                            {product.oldSize} {product.unit}
-                                        </span>
-                                    </div>
-                                    <span className={styles.arrow}>→</span>
-                                    <div className={styles.sizeBox}>
-                                        <span className={styles.sizeLabel}>After ({product.year})</span>
-                                        <div
-                                            className={styles.sizeBar}
-                                            style={{ height: `${newHeight}px` }}
-                                        />
-                                        <span className={styles.sizeValue}>
-                                            {product.newSize} {product.unit}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className={styles.productInfo}>
+                                <div className={styles.cardHeader}>
                                     <h3 className={styles.productName}>{product.name}</h3>
-                                    <p className={styles.productCategory}>{product.category}</p>
-                                    <div className={styles.shrinkDetails}>
-                                        <div className={styles.shrinkDetail}>
-                                            <p className={styles.shrinkDetailLabel}>Size Change</p>
-                                            <p className={`${styles.shrinkDetailValue} ${styles.shrinkDetailNegative}`}>
-                                                -{shrinkPercent.toFixed(0)}%
-                                            </p>
-                                        </div>
-                                        <div className={styles.shrinkDetail}>
-                                            <p className={styles.shrinkDetailLabel}>Hidden Inflation</p>
-                                            <p className={`${styles.shrinkDetailValue} ${styles.shrinkDetailPositive}`}>
-                                                +{hiddenInflation.toFixed(0)}%
-                                            </p>
-                                        </div>
-                                    </div>
+                                    <span className={styles.productCategory}>{product.category}</span>
+                                </div>
+
+                                <div className={styles.progressContainer}>
+                                    <div
+                                        className={styles.progressBar}
+                                        style={{ width: `${(product.newSize / product.oldSize) * 100}%` }}
+                                    />
+                                    <div className={styles.progressBarBackground} />
+                                </div>
+
+                                <div className={styles.cardFooter}>
+                                    <span className={styles.sizeChange}>
+                                        {product.oldSize} &rarr; {product.newSize} {product.unit}
+                                    </span>
+                                    <span className={styles.percentChange}>
+                                        -{shrinkPercent.toFixed(0)}%
+                                    </span>
                                 </div>
                             </div>
                         );
@@ -174,7 +173,7 @@ export default function Shrinkflation() {
                     <p className={styles.gapExplanation}>
                         Rojas, Jaenicke, and Page (2024) found a{' '}
                         <span className={styles.gapHighlight}>3.9 percentage point gap</span>{' '}
-                        between standard and hedonic inflation measures in packaged goods,
+                        between standard and hedonic (quality-adjusted) inflation measures in packaged goods,
                         suggesting significant unmeasured welfare loss.
                     </p>
                     <p className={styles.citation}>

@@ -2,46 +2,122 @@ import styles from './Hero.module.css';
 import { useRegion } from '../context/RegionContext';
 import RegionToggle from '../ui/RegionToggle';
 
-export default function Hero() {
+interface HeroProps {
+    isBusinessMode?: boolean;
+}
+
+export default function Hero({ isBusinessMode = false }: HeroProps) {
     const { region } = useRegion();
     const isCanada = region.code === 'CA';
 
     return (
         <section className={styles.hero}>
-            <RegionToggle />
             <div className={styles.heroContent}>
-                <div className={styles.tagline}>[BEHAVIORAL_ECONOMICS]</div>
+                <div className={styles.tagline}>
+                    {isBusinessMode ? '[STRATEGIC_BRIEF]' : '[BEHAVIORAL_ECONOMICS]'}
+                </div>
 
                 <h1 className={styles.title}>
-                    The Grocery Gap
-                    <span className={styles.titleAccent}>The Cost You Feel</span>
+                    {isBusinessMode ? 'The Perception Gap' : 'The Grocery Gap'}
+                    <span className={styles.titleAccent}>
+                        {isBusinessMode ? 'Executive Briefing' : 'The Cost You Feel'}
+                    </span>
                 </h1>
 
                 <div className={styles.subtitle}>
-                    <p>The government says inflation is {isCanada ? '2.9%' : '3.4%'}.</p>
-                    <p>You feel like it is 15%.</p>
-                    <p><strong>Both can be true.</strong></p>
+                    {isBusinessMode ? (
+                        <div className="space-y-4">
+                            <p className="text-xl md:text-2xl font-medium mb-4">
+                                Why official CPI data ({isCanada ? '2.9%' : '3.4%'}) fails to capture consumer sentiment (15%+).
+                            </p>
+                            <p className="text-sm md:text-base opacity-90 max-w-prose border-l-4 border-pop pl-4">
+                                This brief isolates the <strong>three psychological drivers</strong> creating the current wedge between economic data and voter/consumer reality: Frequency Bias, Loss Aversion, and Shrinkflation.
+                            </p>
+                        </div>
+                    ) : (
+                        <>
+                            <p className="text-xl md:text-2xl font-medium mb-4">
+                                The government says inflation is {isCanada ? '2.9%' : '3.4%'}.
+                                You feel like it is 15%.
+                            </p>
+                            <div className="pl-4 border-l-4 border-theme-primary my-6 space-y-2 opacity-90">
+                                <p><strong>Both can be true.</strong></p>
+                                <p className="text-sm md:text-base max-w-prose">
+                                    New research highlights a "Grocery Gap" between official data and consumer reality.
+                                    While the CPI tracks average prices, your brain tracks <em>frequency</em> and <em>loss</em>.
+                                    This tool helps you calculate your <strong>Personal Cost Index</strong> based on these psychological factors.
+                                </p>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <div className={styles.stats}>
-                    <div className={styles.stat}>
-                        <span className={styles.statNumber}>2.5x</span>
-                        <span className={styles.statLabel}>Mental multiplier</span>
-                    </div>
-                    <div className={styles.stat}>
-                        <span className={styles.statNumber}>{isCanada ? '3-5%' : '3.9%'}</span>
-                        <span className={styles.statLabel}>Shrinkflation Gap</span>
-                    </div>
-                    <div className={styles.stat}>
-                        <span className={styles.statNumber}>{isCanada ? '145%' : '57.8%'}</span>
-                        <span className={styles.statLabel}>{isCanada ? 'BC Housing Premium' : 'Housing Premium'}</span>
-                    </div>
+                    {[
+                        {
+                            value: '2.5x',
+                            label: 'Mental multiplier',
+                            desc: 'We feel price increases 2.5× more painfully than savings (Loss Aversion).',
+                            anchor: 'frequency-bias'
+                        },
+                        {
+                            value: isCanada ? '3-5%' : '3.9pp',
+                            label: 'Shrinkflation Gap',
+                            desc: 'Hidden welfare loss from package downsizing not fully captured in CPI.',
+                            anchor: 'shrinkflation' // Ensure this anchor exists in Shrinkflation.tsx
+                        },
+                        {
+                            value: isCanada ? '145%' : '57.8%',
+                            label: isCanada ? 'BC Housing Premium' : 'Housing Premium',
+                            desc: 'How much more housing costs relative to general inflation.',
+                            anchor: 'regional-friction'
+                        }
+                    ].map((stat, i) => (
+                        <button
+                            key={i}
+                            className={styles.stat}
+                            onClick={() => {
+                                const el = document.getElementById(stat.anchor);
+                                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            aria-label={`Jump to ${stat.label} section`}
+                        >
+                            <div className={styles.statContent}>
+                                <div className="flex justify-between items-start w-full">
+                                    <span className={styles.statNumber}>{stat.value}</span>
+                                    <span className="text-[10px] font-mono opacity-50 uppercase tracking-wider group-hover:text-theme-primary transition-colors">
+                                        Read More
+                                    </span>
+                                </div>
+                                <span className={styles.statLabel}>{stat.label}</span>
+                                <span className="block text-[10px] mt-2 opacity-60 font-normal leading-tight normal-case max-w-[180px]">
+                                    {stat.desc}
+                                </span>
+                            </div>
+                            <div className={styles.statArrow}>↓</div>
+                        </button>
+                    ))}
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-ink/10 dark:border-white/10 flex flex-wrap gap-6 text-[10px] font-mono opacity-50 uppercase tracking-widest">
+                    <span>Sources:</span>
+                    <a href="https://www.bls.gov/cpi/" target="_blank" rel="noopener noreferrer" className="hover:underline hover:opacity-100 transition-opacity">
+                        US Bureau of Labor Statistics (CPI)
+                    </a>
+                    <span className="opacity-30">|</span>
+                    <a href="https://www150.statcan.gc.ca/n1/daily-quotidien/240220/dq240220a-eng.htm" target="_blank" rel="noopener noreferrer" className="hover:underline hover:opacity-100 transition-opacity">
+                        StatsCan (CPI)
+                    </a>
+                    <span className="opacity-30">|</span>
+                    <span className="cursor-help" title="Kahneman, D., & Tversky, A. (1979). Prospect Theory: An Analysis of Decision under Risk.">
+                        Kahneman & Tversky (1979)
+                    </span>
                 </div>
             </div>
 
             <div className={styles.scrollPrompt}>
                 <div className={styles.scrollIcon}></div>
-                <span>Scroll_Down</span>
+
             </div>
         </section>
     );

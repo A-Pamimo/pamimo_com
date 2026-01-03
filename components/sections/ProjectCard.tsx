@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Project } from '../../types';
 import { IconArrow, IconBrain, IconGlobe, IconGov, IconUsers, IconChart, IconTrophy } from '../ui/Icons';
 
@@ -9,6 +10,19 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }) => {
+  const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) / 25;
+    const y = (e.clientY - rect.top - rect.height / 2) / 25;
+    setTilt({ rotateX: -y, rotateY: x });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ rotateX: 0, rotateY: 0 });
+  };
+
   const getIcon = (id: string) => {
     switch (id) {
       case 'nova': return <IconBrain className="w-32 h-32 text-pop relative z-10 opacity-80 pixel-icon" />;
@@ -25,9 +39,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
   // Special layouts based on card type to match visual parity
   if (project.id === 'nova') {
     return (
-      <div onClick={() => onClick(project)} className={`project-card ${className} border border-ink dark:border-white/20 p-0 group hover:shadow-hard transform transition-all active:scale-[0.98] bg-cream dark:bg-black cursor-hoverable cursor-pointer`}>
+      <motion.div
+        onClick={() => onClick(project)}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformStyle: 'preserve-3d' }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className={`project-card ${className} border border-ink dark:border-white/20 p-8 group hover:shadow-hard transform transition-shadow active:scale-[0.98] bg-cream dark:bg-black cursor-hoverable cursor-pointer`}
+      >
         <div className="h-full flex flex-col md:flex-row pointer-events-none">
-          <div className="p-8 flex-1 flex flex-col justify-between">
+          <div className="flex-1 flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-center mb-4">
                 <span className="font-mono text-xs bg-ink text-cream dark:bg-white dark:text-ink px-2 py-1">{project.tag.toUpperCase()}</span>
@@ -56,14 +77,21 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
             {getIcon('nova')}
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   // WEG Prominent layout
   if (project.id === 'weg') {
     return (
-      <div onClick={() => onClick(project)} className={`project-card ${className} border border-ink dark:border-white/20 p-6 group hover:shadow-hard transform transition-all active:scale-[0.98] cursor-hoverable cursor-pointer bg-white dark:bg-charcoal flex flex-col justify-between overflow-hidden`}>
+      <motion.div
+        onClick={() => onClick(project)}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformStyle: 'preserve-3d' }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className={`project-card ${className} border border-ink dark:border-white/20 p-8 group hover:shadow-hard transform transition-shadow active:scale-[0.98] cursor-hoverable cursor-pointer bg-white dark:bg-charcoal flex flex-col justify-between overflow-hidden`}
+      >
         <div className="flex flex-col md:flex-row gap-8 h-full pointer-events-none">
           <div className="flex-1 flex flex-col justify-between min-w-0">
             <div>
@@ -80,11 +108,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
               ))}
             </div>
           </div>
-          <div className="md:w-1/3 flex-shrink-0 flex items-center justify-center bg-cream dark:bg-zinc-800/50 p-4 border border-ink/5 dark:border-white/5">
-            {getIcon('weg')}
+          <div className="md:w-1/3 flex-shrink-0 flex items-center justify-center bg-cream dark:bg-zinc-800/50 p-4 border border-ink/5 dark:border-white/5 overflow-hidden">
+            {project.image ? (
+              <img src={project.image} alt={project.title} className="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500" />
+            ) : (
+              getIcon('weg')
+            )}
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -113,9 +145,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
         </div>
 
         {project.id === 'wfp' && (
-          <div className="mt-6 pt-4 border-t border-dashed border-current opacity-30 flex justify-between">
-            <code className="text-xs text-pop block mb-1">import stata</code>
-            {getIcon('wfp')}
+          <div className="mt-6 pt-4 border-t border-dashed border-current opacity-30 flex justify-end">
+            {/* Cleaner visual without code snippet */}
+            {project.image ? (
+              <img src={project.image} alt={project.title} className="w-12 h-12 object-cover rounded-sm border border-current opacity-80" />
+            ) : (
+              getIcon('wfp')
+            )}
           </div>
         )}
         {project.id === 'sctc' && <div className="flex items-end">{getIcon('sctc')}</div>}

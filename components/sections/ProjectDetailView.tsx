@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -122,10 +122,10 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
                             {project.testimonial && (
                                 <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:750ms] border-l-4 border-pop pl-6 py-2 my-8">
                                     <blockquote className="font-display text-xl md:text-2xl font-bold italic mb-4">
-                                        "{project.testimonial}"
+                                        &ldquo;{project.testimonial}&rdquo;
                                     </blockquote>
                                     <cite className="font-mono text-xs opacity-60 not-italic uppercase tracking-widest block">
-                                        — {project.testimonialAuthor || 'Verified Client'}
+                                        â€” {project.testimonialAuthor || 'Verified Client'}
                                     </cite>
                                 </div>
                             )}

@@ -12,6 +12,13 @@ interface GameProjectConsoleProps {
     initialBounds?: { x: number, y: number, w: number, h: number } | null;
 }
 
+// --- DESIGN PHILOSOPHY ---
+// The Project Console simulates an old-school CRT Terminal.
+// We use CSS gradients for scanlines and a slight "glow" effect via text-shadows.
+// The data structure (project prop) is flat, but we present it as a "File"
+// to maintain the narrative immersion.
+// -------------------------
+
 const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack, initialBounds }) => {
     const contentRef = useRef<HTMLDivElement>(null);
 
@@ -72,11 +79,11 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                 <div
                     ref={contentRef}
                     tabIndex={-1}
-                    className="relative flex-1 p-8 md:p-12 overflow-y-auto font-mono text-[#33ff00] selection:bg-[#33ff00] selection:text-black scrollbar-hide focus:outline-none"
+                    className="relative flex-1 p-8 md:p-12 overflow-y-auto font-mono text-term-accent selection:bg-term-accent selection:text-term-bg scrollbar-hide focus:outline-none"
                 >
 
                     {/* Header */}
-                    <div className="flex justify-between items-start border-b border-[#33ff00]/30 pb-4 mb-8">
+                    <div className="flex justify-between items-start border-b border-term-accent/30 pb-4 mb-8">
                         <div>
                             <h1 className="text-2xl md:text-4xl font-bold uppercase mb-2 tracking-tighter">
                                 {project.title}
@@ -88,7 +95,7 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                             </div>
                         </div>
                         <div className="text-right hidden md:block">
-                            <div className="text-xs border border-[#33ff00] px-2 py-1 inline-block mb-1">MEM: 64KB OK</div>
+                            <div className="text-xs border border-term-accent px-2 py-1 inline-block mb-1">MEM: 64KB OK</div>
                             <div className="text-[10px] opacity-50">ENCRYPTION: NONE</div>
                         </div>
                     </div>
@@ -99,20 +106,20 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                         {/* Main Data */}
                         <div className="lg:col-span-2 space-y-8">
                             <div>
-                                <h3 className="text-xs bg-[#33ff00] text-black inline-block px-2 py-0.5 mb-2 font-bold">&gt; MISSION_OBJECTIVE</h3>
+                                <h3 className="text-xs bg-term-accent text-term-bg inline-block px-2 py-0.5 mb-2 font-bold">&gt; MISSION_OBJECTIVE</h3>
                                 <p className="text-lg opacity-90 leading-relaxed">
                                     {project.what}
                                 </p>
                             </div>
 
                             <div>
-                                <h3 className="text-xs border border-[#33ff00]/50 inline-block px-2 py-0.5 mb-2 opacity-70">&gt; EXECUTION_PROTOCOL</h3>
+                                <h3 className="text-xs border border-term-accent/50 inline-block px-2 py-0.5 mb-2 opacity-70">&gt; EXECUTION_PROTOCOL</h3>
                                 <p className="text-sm opacity-80 leading-relaxed whitespace-pre-wrap">
                                     {project.how}
                                 </p>
                             </div>
 
-                            <div className="border border-[#33ff00]/30 p-4 bg-[#33ff00]/5">
+                            <div className="border border-term-accent/30 p-4 bg-term-accent/5">
                                 <h3 className="text-xs font-bold mb-2 flex items-center gap-2">
                                     <IconCheck className="w-4 h-4" /> SYSTEM_OUTCOME
                                 </h3>
@@ -140,7 +147,7 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                                 <h3 className="text-xs opacity-50 mb-2">CATEGORY</h3>
                                 <div className="flex gap-2">
                                     {project.category.map(c => (
-                                        <span key={c} className="text-xs border border-[#33ff00]/30 px-2 py-1 uppercase">{c}</span>
+                                        <span key={c} className="text-xs border border-term-accent/30 px-2 py-1 uppercase">{c}</span>
                                     ))}
                                 </div>
                             </div>
@@ -155,14 +162,14 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                 </div>
 
                 {/* Footer Controls */}
-                <div className="bg-[#111] border-t border-[#333] p-4 flex justify-between items-center text-xs font-mono text-[#33ff00]">
+                <div className="bg-[#111] border-t border-[#333] p-4 flex justify-between items-center text-xs font-mono text-term-accent">
                     <span className="animate-pulse">_CURSOR_ACTIVE</span>
                     <div className="flex gap-4">
-                        <button onClick={onBack} className="bg-[#33ff00] text-black px-4 py-2 font-bold hover:bg-white transition-colors uppercase">
+                        <button onClick={onBack} className="bg-term-accent text-term-bg px-4 py-2 font-bold hover:bg-white transition-colors uppercase">
                             [CLOSE_FILE]
                         </button>
                         {project.link && (
-                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="border border-[#33ff00] text-[#33ff00] px-4 py-2 font-bold hover:bg-[#33ff00] hover:text-black transition-colors uppercase">
+                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="border border-term-accent text-term-accent px-4 py-2 font-bold hover:bg-term-accent hover:text-term-bg transition-colors uppercase">
                                 [ACCESS_SOURCE_CODE]
                             </a>
                         )}

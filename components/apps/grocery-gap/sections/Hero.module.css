@@ -1,15 +1,22 @@
 .hero {
+    /* contrast-ignore */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
     /* Left align for brutalist look */
-    background-color: var(--bg-cream);
-    padding: var(--space-2xl);
+    background-color: var(--gg-bg-cream);
+    padding: var(--gg-space-2xl);
     position: relative;
     overflow: hidden;
-    border-bottom: var(--border-thick);
+    border-bottom: var(--gg-border-thick);
+    color: var(--gg-on-light);
+}
+
+/* Dark override: readable text on dark backgrounds */
+:global(.dark) .hero {
+    color: var(--gg-on-dark) !important;
 }
 
 /* Diagonal stripe background pattern */
@@ -21,8 +28,8 @@
     width: 100%;
     height: 100%;
     background-image: repeating-linear-gradient(45deg,
-            var(--ink) 0,
-            var(--ink) 1px,
+            var(--gg-ink) 0,
+            var(--gg-ink) 1px,
             transparent 1px,
             transparent 20px);
     opacity: 0.05;
@@ -36,117 +43,146 @@
 }
 
 .tagline {
-    font-family: var(--font-mono);
+    font-family: var(--gg-font-mono);
     font-size: 0.875rem;
-    background: var(--ink);
-    color: var(--white);
+    background: var(--gg-ink);
+    color: var(--gg-white);
     padding: 4px 8px;
     display: inline-block;
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--gg-space-lg);
     text-transform: uppercase;
 }
 
 .title {
-    font-family: var(--font-sans);
+    font-family: var(--gg-font-sans);
     font-size: clamp(3.5rem, 8vw, 6.5rem);
     font-weight: 900;
-    color: var(--ink);
+    color: var(--gg-ink);
     line-height: 0.85;
     letter-spacing: -0.04em;
     text-transform: uppercase;
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--gg-space-xl);
 }
 
 .titleAccent {
-    color: var(--accent-orange);
     display: block;
+    font-size: 0.5em;
+    font-weight: 500;
     font-style: italic;
-    /* Slight variation */
+    color: var(--gg-color-neutral);
+    margin-top: 0.2em;
 }
 
 .subtitle {
-    font-family: var(--font-sans);
+    font-family: var(--gg-font-sans);
     font-size: clamp(1.25rem, 2.5vw, 1.75rem);
     font-weight: 500;
-    color: var(--ink);
+    color: var(--gg-ink);
     max-width: 600px;
     line-height: 1.4;
-    margin-bottom: var(--space-3xl);
-    border-left: 4px solid var(--accent-orange);
-    padding-left: var(--space-lg);
+    margin-bottom: var(--gg-space-3xl);
+    border-left: 4px solid var(--gg-accent-orange);
+    padding-left: var(--gg-space-lg);
 }
 
 .stats {
     display: flex;
-    gap: var(--space-2xl);
-    margin-bottom: var(--space-3xl);
+    gap: var(--gg-space-2xl);
+    margin-bottom: var(--gg-space-3xl);
     flex-wrap: wrap;
 }
 
 .stat {
-    border: var(--border-thin);
-    background: var(--white);
-    padding: var(--space-lg);
-    box-shadow: var(--shadow-hard);
+    border: var(--gg-border-thin);
+    background: var(--gg-white);
     min-width: 200px;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .stat:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0px 0px var(--ink);
+    box-shadow: 6px 6px 0px 0px var(--gg-ink);
+    background: var(--gg-bg-white);
+}
+
+.statContent {
+    padding: var(--gg-space-lg);
+    transition: opacity 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Removed old popup styles */
+.statPopup {
+    display: none;
+}
+
+/* New arrow style */
+.statArrow {
+    padding: 0 var(--gg-space-lg) var(--gg-space-lg);
+    font-size: 1.25rem;
+    color: var(--gg-accent-orange);
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.2s ease;
+}
+
+.stat:hover .statArrow {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .statNumber {
-    font-family: var(--font-mono);
+    font-family: var(--gg-font-mono);
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--accent-orange);
+    color: var(--gg-accent-orange);
     display: block;
     line-height: 1;
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--gg-space-xs);
 }
 
 .statLabel {
-    font-family: var(--font-mono);
+    font-family: var(--gg-font-mono);
     font-size: 0.75rem;
     text-transform: uppercase;
-    color: var(--ink);
+    color: var(--gg-ink);
 }
 
 .scrollPrompt {
     position: absolute;
-    bottom: var(--space-xl);
-    left: var(--space-2xl);
+    bottom: var(--gg-space-xl);
+    left: var(--gg-space-2xl);
     /* Left align scroll prompt too */
     display: flex;
     align-items: center;
-    gap: var(--space-sm);
-    font-family: var(--font-mono);
+    gap: var(--gg-space-sm);
+    font-family: var(--gg-font-mono);
     font-size: 0.75rem;
     text-transform: uppercase;
-    color: var(--ink);
+    color: var(--gg-ink);
 }
 
 .scrollIcon {
-    width: 20px;
-    height: 32px;
-    border: 2px solid var(--ink);
-    border-radius: 10px;
-    /* Minimal radius */
-    position: relative;
+    width: 24px;
+    height: 24px;
+    border-right: 2px solid var(--gg-ink);
+    border-bottom: 2px solid var(--gg-ink);
+    transform: rotate(45deg);
+    animation: scrollBounce 1.5s ease-in-out infinite;
+    margin: 0 auto;
 }
 
 .scrollIcon::before {
-    content: '';
-    position: absolute;
-    top: 6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 6px;
-    background: var(--ink);
-    animation: scrollBounce 1.5s ease-in-out infinite;
+    display: none;
 }
 
 @keyframes scrollBounce {
@@ -163,17 +199,22 @@
 
 @media (max-width: 768px) {
     .hero {
-        padding: var(--space-lg);
+        padding: var(--gg-space-lg);
         justify-content: flex-start;
-        padding-top: var(--space-4xl);
+        padding-top: var(--gg-space-4xl);
     }
 
     .stats {
         flex-direction: column;
-        gap: var(--space-lg);
+        gap: var(--gg-space-lg);
     }
 
     .stat {
         width: 100%;
     }
+}
+
+/* Dark-mode readability for the hero section */
+:global(.dark) .hero {
+    color: var(--gg-on-light) !important;
 }

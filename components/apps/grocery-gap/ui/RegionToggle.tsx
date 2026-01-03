@@ -5,7 +5,11 @@ import { useSearchParams } from 'next/navigation';
 import styles from './RegionToggle.module.css';
 import { useRegion } from '../context/RegionContext';
 
-export default function RegionToggle() {
+interface RegionToggleProps {
+    className?: string;
+}
+
+export default function RegionToggle({ className = '' }: RegionToggleProps) {
     const { region } = useRegion();
     const isCanada = region.code === 'CA';
 
@@ -16,14 +20,14 @@ export default function RegionToggle() {
     return (
         <Link
             href={targetQuery}
-            className={styles.toggle}
+            className={`${styles.toggle} ${className}`}
             aria-label={targetLabel}
             replace
             scroll={false}
         >
-            <span className={styles.flag}>{region.flag}</span>
-            <span className={styles.label}>{region.code}</span>
-            <span className={styles.arrow}>⇄</span>
+            <span className={`${styles.option} ${!isCanada ? styles.active : ''}`}>🇺🇸 US</span>
+            <span className={styles.divider}>|</span>
+            <span className={`${styles.option} ${isCanada ? styles.active : ''}`}>🇨🇦 CA</span>
         </Link>
     );
 }

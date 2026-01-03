@@ -5,42 +5,100 @@
 @layer base {
   :root {
     --color-pop: #FF4400;
+
+    /* Neo-Brutalist Variables */
+    --ink: #111111;
+    --bg-cream: #F5F5F0;
+    --white: #FFFFFF;
+    --accent-orange: #FF4400;
+
+    --border-thick: 2px solid var(--ink);
+    --border-thin: 1px solid var(--ink);
+    --shadow-hard: 4px 4px 0px 0px var(--ink);
+
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-3xl: 3rem;
+    --space-4xl: 4rem;
+
+    /* Terminal (Game) Theme Variables */
+    --term-accent: #33ff00;
+    /* Default Classic Green */
+    --term-dim: rgba(51, 255, 0, 0.3);
+    --term-bg: #000000;
+
+    --font-mono: var(--font-mono);
+    /* Inherit from layout defined vars if possible, else fallback */
+    --font-sans: var(--font-inter);
+    /* We need to ensure fonts are available or use valid defaults if layout vars aren't matching */
   }
+
   .dark {
-    --color-pop: #FF5522; /* Optical adjustment: Slightly lighter/desaturated for dark mode legibility */
+    --color-pop: #FF5522;
+
+    /* Dark Mode Overrides */
+    --ink: #F5F5F0;
+    /* Text becomes Light Cream */
+    --bg-cream: #050505;
+    /* Background becomes Almost Black */
+    --white: #121212;
+    /* Card Backgrounds become Dark Grey */
+    /* Accent Orange stays roughly same or pop override */
+
+    /* Update borders/shadows to use the new 'ink' (which is light) ??? 
+       Usually brutalisim keeps black borders, but on dark mode, white borders look cool.
+       If --ink is light, borders become light. Perfect.
+    */
   }
 }
 
 /* Base transitions */
-body { 
-    transition-property: background-color, border-color, color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1); /* "Apple-like" Snappy Ease-Out */
-    transition-duration: 500ms;
+body {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  /* "Apple-like" Snappy Ease-Out */
+  transition-duration: 500ms;
 }
 
 /* Custom Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #52525b; border-radius: 0px; } 
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #52525b;
+  border-radius: 0px;
+}
 
 /* Selection */
-::selection { background: #FF4400; color: #fff; }
+::selection {
+  background: #FF4400;
+  color: #fff;
+}
 
 /* Pixel Icon Utility */
 .pixel-icon {
-    shape-rendering: crispEdges; 
-    fill: currentColor;
-    display: inline-block;
-    vertical-align: middle;
+  shape-rendering: crispEdges;
+  fill: currentColor;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
