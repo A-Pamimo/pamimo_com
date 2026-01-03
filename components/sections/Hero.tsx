@@ -79,7 +79,7 @@ const Hero: React.FC = () => {
             <div className="flex flex-wrap gap-y-2 gap-x-4 mb-6 font-mono text-xs md:text-sm text-pop uppercase tracking-wider font-bold">
               <span>[HIGH_AGENCY]</span>
               <span>[COMMUNITY_BUILDER]</span>
-              <span>[0_TO_1]</span>
+              <span>[SYSTEMS_THINKER]</span>
             </div>
 
             <p className="text-lg md:text-xl font-sans leading-relaxed opacity-80 border-l-2 border-pop pl-6">
