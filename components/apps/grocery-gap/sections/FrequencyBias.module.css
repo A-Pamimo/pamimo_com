@@ -1,5 +1,5 @@
 .section {
-    padding: 6rem 1.5rem;
+    padding: var(--gg-space-4xl) var(--gg-space-lg);
     background: var(--gg-bg-white);
     color: var(--gg-ink);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -17,7 +17,7 @@
 
 .header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: var(--gg-space-3xl);
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
@@ -53,7 +53,7 @@
     box-shadow: var(--gg-shadow-hard);
     border-radius: var(--gg-radius-minimal);
     max-width: 600px;
-    margin: 0 auto 3rem;
+    margin: 0 auto var(--gg-space-3xl);
 }
 
 :global(.dark) .alphaControl {
@@ -116,7 +116,7 @@
 }
 
 .chartContainer {
-    margin: 4rem 0;
+    margin: var(--gg-space-4xl) 0;
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
@@ -215,8 +215,8 @@
 
 /* Restored Citation Styles */
 .citation {
-    margin-top: 4rem;
-    padding-top: 2rem;
+    margin-top: var(--gg-space-4xl);
+    padding-top: var(--gg-space-2xl);
     border-top: var(--gg-border-thin);
     text-align: center;
 }

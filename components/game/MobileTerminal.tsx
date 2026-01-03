@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Project } from '../../types';
 import { useProjectData } from '../../hooks/useProjectData';
 import { IconCheck, IconTrophy } from '../ui/Icons';
+import CRTOverlay from './ui/CRTOverlay';
 
 interface MobileTerminalProps {
     onExit: () => void;
@@ -28,17 +29,16 @@ const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black text-green-500 font-mono overflow-hidden flex flex-col"
+            className="fixed inset-0 z-[100] bg-term-bg text-term-accent font-mono overflow-hidden flex flex-col"
         >
             {/* CRT Scanline Overlay - Persistent */}
-            <div className="absolute inset-0 z-20 pointer-events-none opacity-20 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
-            <div className="absolute inset-0 z-20 pointer-events-none bg-[radial-gradient(circle,rgba(0,0,0,0)_60%,rgba(0,0,0,0.6)_100%)]" />
+            <CRTOverlay />
 
             {/* Header - Persistent */}
-            <header className="p-4 border-b border-green-500/30 flex justify-between items-center relative z-30 bg-black/90 backdrop-blur-sm shrink-0">
+            <header className="p-4 border-b border-term-accent/30 flex justify-between items-center relative z-30 bg-term-bg/90 backdrop-blur-sm shrink-0">
                 <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 animate-pulse rounded-full" />
-                    <span className="text-xs font-bold tracking-widest text-green-400">
+                    <div className="w-2 h-2 bg-term-accent animate-pulse rounded-full" />
+                    <span className="text-xs font-bold tracking-widest text-term-accent">
                         {selectedProject ? 'SECURE_ACCESS // GRANTED' : 'SECURE_LINK // V.2.0'}
                     </span>
                 </div>
@@ -61,10 +61,10 @@ const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
                             exit={{ opacity: 0 }}
                             className="h-full flex flex-col justify-center items-center text-center gap-4"
                         >
-                            <span className="text-green-500 animate-pulse text-sm">ESTABLISHING UPLINK...</span>
-                            <div className="w-48 h-1 bg-green-900 rounded-full overflow-hidden">
+                            <span className="text-term-accent animate-pulse text-sm">ESTABLISHING UPLINK...</span>
+                            <div className="w-48 h-1 bg-term-dim rounded-full overflow-hidden">
                                 <motion.div
-                                    className="h-full bg-green-500"
+                                    className="h-full bg-term-accent"
                                     initial={{ width: 0 }}
                                     animate={{ width: "100%" }}
                                     transition={{ duration: 0.8, ease: "circOut" }}
@@ -80,10 +80,10 @@ const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
                             exit={{ opacity: 0 }}
                             className="p-4 min-h-full flex flex-col"
                         >
-                            <div className="mb-6 sticky top-0 bg-black/80 backdrop-blur-sm z-40 pb-4 border-b border-green-900/50">
+                            <div className="mb-6 sticky top-0 bg-term-bg/80 backdrop-blur-sm z-40 pb-4 border-b border-term-accent/50">
                                 <button
                                     onClick={() => setSelectedProject(null)}
-                                    className="text-[10px] uppercase tracking-widest text-green-700 mb-4 hover:text-green-400 transition-colors flex items-center gap-1"
+                                    className="text-[10px] uppercase tracking-widest text-term-accent/70 mb-4 hover:text-term-accent transition-colors flex items-center gap-1"
                                 >
                                     &lt; RETURN TO DIRECTORY
                                 </button>
@@ -91,13 +91,13 @@ const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
                                 {/* Shared Element Title */}
                                 <motion.h2
                                     layoutId={`title-${selectedProject.id}`}
-                                    className="text-2xl font-black text-green-400 uppercase leading-none mb-1"
+                                    className="text-2xl font-black text-term-accent uppercase leading-none mb-1"
                                 >
                                     {selectedProject.title}
                                 </motion.h2>
                                 <motion.div
                                     layoutId={`meta-${selectedProject.id}`}
-                                    className="flex items-center gap-3 text-xs text-green-700 font-bold"
+                                    className="flex items-center gap-3 text-xs text-term-accent/70 font-bold"
                                 >
                                     <span>{selectedProject.year}</span>
                                     <span>ID: {selectedProject.id.toUpperCase()}</span>
@@ -111,20 +111,20 @@ const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
                                 className="space-y-8 pb-12"
                             >
                                 <div>
-                                    <div className="text-[10px] text-green-800 mb-1 font-bold">&gt; MISSION_OBJECTIVE</div>
-                                    <p className="text-sm leading-relaxed text-green-400/90">{selectedProject.what}</p>
+                                    <div className="text-[10px] text-term-accent/80 mb-1 font-bold">&gt; MISSION_OBJECTIVE</div>
+                                    <p className="text-sm leading-relaxed text-term-accent/90">{selectedProject.what}</p>
                                 </div>
 
                                 <div>
-                                    <div className="text-[10px] text-green-800 mb-1 font-bold">&gt; EXECUTION_PROTOCOL</div>
-                                    <p className="text-xs leading-relaxed text-green-500/80">{selectedProject.how}</p>
+                                    <div className="text-[10px] text-term-accent/80 mb-1 font-bold">&gt; EXECUTION_PROTOCOL</div>
+                                    <p className="text-xs leading-relaxed text-term-accent/80">{selectedProject.how}</p>
                                 </div>
 
-                                <div className="border border-green-500/20 bg-green-900/10 p-4 rounded-sm">
-                                    <div className="text-[10px] text-green-400 mb-2 font-bold flex items-center gap-2">
+                                <div className="border border-term-accent/20 bg-term-accent/10 p-4 rounded-sm">
+                                    <div className="text-[10px] text-term-accent mb-2 font-bold flex items-center gap-2">
                                         <IconCheck className="w-3 h-3" /> SYSTEM_OUTCOME
                                     </div>
-                                    <p className="text-sm font-bold text-green-400">{selectedProject.impact}</p>
+                                    <p className="text-sm font-bold text-term-accent">{selectedProject.impact}</p>
                                     {selectedProject.id === 'nova' && (
                                         <div className="mt-2 text-[10px] text-yellow-500 flex items-center gap-1">
                                             <IconTrophy className="w-3 h-3" /> AWARD_DETECTED
@@ -133,10 +133,10 @@ const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
                                 </div>
 
                                 <div>
-                                    <div className="text-[10px] text-green-800 mb-2 font-bold">&gt; TECH_STACK</div>
+                                    <div className="text-[10px] text-term-accent/80 mb-2 font-bold">&gt; TECH_STACK</div>
                                     <div className="flex flex-wrap gap-2">
                                         {selectedProject.stack.map(s => (
-                                            <span key={s} className="text-[10px] border border-green-900 text-green-600 px-2 py-1 rounded-sm">
+                                            <span key={s} className="text-[10px] border border-term-dim text-term-accent/80 px-2 py-1 rounded-sm">
                                                 {s}
                                             </span>
                                         ))}
@@ -153,8 +153,8 @@ const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
                                 exit={{ opacity: 0 }}
                                 className="mb-6"
                             >
-                                <h2 className="text-xs text-green-700 mb-2 uppercase tracking-widest">Directory Listing</h2>
-                                <div className="h-px w-full bg-green-900" />
+                                <h2 className="text-xs text-term-accent/70 mb-2 uppercase tracking-widest">Directory Listing</h2>
+                                <div className="h-px w-full bg-term-dim" />
                             </motion.div>
 
                             {projects.map((project, i) => (
@@ -167,28 +167,28 @@ const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
                                     onClick={() => setSelectedProject(project)}
                                     className="w-full text-left group relative cursor-pointer"
                                 >
-                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 transform scale-y-0 group-active:scale-y-100 transition-transform origin-top" />
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-term-accent transform scale-y-0 group-active:scale-y-100 transition-transform origin-top" />
 
-                                    <div className="border border-green-900 bg-green-900/10 p-4 active:bg-green-500/20 transition-colors">
+                                    <div className="border border-term-dim bg-term-accent/5 p-4 active:bg-term-accent/20 transition-colors">
                                         <div className="flex justify-between items-start mb-1">
                                             <motion.span
                                                 layoutId={`title-${project.id}`}
-                                                className="text-sm font-bold text-green-400 group-active:text-white"
+                                                className="text-sm font-bold text-term-accent group-active:text-white"
                                             >
                                                 {project.title.toUpperCase()}
                                             </motion.span>
                                             <motion.span
                                                 layoutId={`meta-${project.id}`}
-                                                className="text-[10px] text-green-700 font-mono"
+                                                className="text-[10px] text-term-accent/70 font-mono"
                                             >
                                                 {project.year}
                                             </motion.span>
                                         </div>
                                         <div className="flex justify-between items-end">
-                                            <span className="text-[10px] text-green-600 font-mono uppercase">
+                                            <span className="text-[10px] text-term-accent/60 font-mono uppercase">
                                                 {project.id === 'nova' ? '★★ AWARD WINNER' : `ID: ${project.id.toUpperCase()}`}
                                             </span>
-                                            <span className="text-xs text-green-500 opacity-0 group-active:opacity-100 transition-opacity">
+                                            <span className="text-xs text-term-accent opacity-0 group-active:opacity-100 transition-opacity">
                                                 [OPEN] &gt;
                                             </span>
                                         </div>
@@ -202,7 +202,7 @@ const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
                                 transition={{ delay: 0.5 }}
                                 className="pt-8 text-center opacity-50"
                             >
-                                <p className="text-[10px] text-green-800">
+                                <p className="text-[10px] text-term-accent/80">
                                     END OF STREAM <br />
                                     UNAUTHORIZED ACCESS PROHIBITED
                                 </p>
@@ -213,7 +213,7 @@ const MobileTerminal: React.FC<MobileTerminalProps> = ({ onExit }) => {
             </div>
 
             {/* Quick Actions Footer */}
-            <div className="p-4 border-t border-green-900 bg-black z-30 flex justify-between gap-4 text-[10px] text-green-600 font-bold shrink-0">
+            <div className="p-4 border-t border-term-dim bg-term-bg z-30 flex justify-between gap-4 text-[10px] text-term-accent/60 font-bold shrink-0">
                 <span>LOC: 43.6532° N, 79.3832° W</span>
                 <span className="animate-pulse">SIGNAL: 100%</span>
             </div>

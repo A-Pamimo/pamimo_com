@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Project } from '../../types';
 import { IconCheck, IconTrophy } from '../ui/Icons';
+import CRTOverlay from './ui/CRTOverlay';
 
 interface GameProjectConsoleProps {
     project: Project;
@@ -94,7 +95,13 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                                 <span>STATUS: ARCHIVED</span>
                             </div>
                         </div>
-                        <div className="text-right hidden md:block">
+                        <div className="text-right hidden md:flex flex-col items-end gap-2">
+                            <button
+                                onClick={onBack}
+                                className="border border-red-500/50 text-red-500 px-3 py-1 text-xs hover:bg-red-500 hover:text-black transition-colors uppercase font-bold"
+                            >
+                                [DISCONNECT]
+                            </button>
                             <div className="text-xs border border-term-accent px-2 py-1 inline-block mb-1">MEM: 64KB OK</div>
                             <div className="text-[10px] opacity-50">ENCRYPTION: NONE</div>
                         </div>
@@ -155,10 +162,9 @@ const GameProjectConsole: React.FC<GameProjectConsoleProps> = ({ project, onBack
                     </div>
 
                     {/* Scanlines Overlay */}
-                    <div className="absolute inset-0 pointer-events-none" style={{
-                        background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
-                        backgroundSize: '100% 2px, 3px 100%'
-                    }} />
+                    <div className="absolute inset-0 pointer-events-none z-10">
+                        <CRTOverlay />
+                    </div>
                 </div>
 
                 {/* Footer Controls */}

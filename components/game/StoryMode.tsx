@@ -7,7 +7,8 @@ import GameProjectConsole from './GameProjectConsole';
 import GameIdentityCore from './GameIdentityCore';
 import GameCommsRelay from './GameCommsRelay';
 import GameContactTerminal from './GameContactTerminal';
-import GameBlogPlaceholder from './GameBlogPlaceholder';
+import GameBlogConsole from './GameBlogConsole';
+import CRTOverlay from './ui/CRTOverlay';
 import { renderGame } from './gameRenderer';
 
 import GameA11yOverlay from './GameA11yOverlay';
@@ -217,16 +218,16 @@ const StoryMode: React.FC<StoryModeProps> = ({ active, onExit, onSelectProject }
                     />
                 )}
                 {blogModal && (
-                    <GameBlogPlaceholder
+                    <GameBlogConsole
                         onBack={() => setBlogModal(false)}
-                        initialBounds={modalOriginRect}
                     />
                 )}
             </AnimatePresence>
 
             {/* CRT Overlay */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(0,0,0,0)_0%,rgba(0,0,0,0.6)_100%)] pointer-events-none z-10"></div>
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-[5] bg-[length:100%_2px,3px_100%] pointer-events-none opacity-20"></div>
+            <div className="absolute inset-0 z-10 pointer-events-none">
+                <CRTOverlay />
+            </div>
         </motion.div>
     );
 };

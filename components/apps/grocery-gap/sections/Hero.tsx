@@ -11,7 +11,7 @@ export default function Hero({ isBusinessMode = false }: HeroProps) {
     const isCanada = region.code === 'CA';
 
     return (
-        <section className={styles.hero}>
+        <section className={styles.hero} data-mode={isBusinessMode ? 'business' : 'consumer'}>
             <div className={styles.heroContent}>
                 <div className={styles.tagline}>
                     {isBusinessMode ? '[STRATEGIC_BRIEF]' : '[BEHAVIORAL_ECONOMICS]'}

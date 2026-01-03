@@ -64,6 +64,11 @@
     margin-bottom: var(--gg-space-xl);
 }
 
+.hero[data-mode="business"] .title {
+    font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+    letter-spacing: -0.02em;
+}
+
 .titleAccent {
     display: block;
     font-size: 0.5em;

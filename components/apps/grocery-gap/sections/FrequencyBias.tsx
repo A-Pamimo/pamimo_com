@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import styles from './FrequencyBias.module.css';
 import TLDR from '../ui/TLDR';
 import { useRegion } from '../context/RegionContext';
@@ -129,18 +130,26 @@ export default function FrequencyBias() {
                                 <div className={styles.rowBars}>
                                     {/* Official CPI Bar */}
                                     <div className={styles.barGroup}>
-                                        <div
+                                        <motion.div
                                             className={`${styles.bar} ${styles.fillCpi}`}
-                                            style={{ width: `${Math.min((item.cpiWeight / 50) * 100, 100)}%` }}
+                                            style={{ width: `${Math.min((item.cpiWeight / 50) * 100, 100)}%`, transformOrigin: 'left' }}
+                                            initial={{ scaleX: 0 }}
+                                            whileInView={{ scaleX: 1 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.8, ease: "circOut", delay: 0.1 }}
                                         />
                                         <span className={styles.barValue}>{item.cpiWeight.toFixed(1)}%</span>
                                     </div>
 
                                     {/* Perceived Bar */}
                                     <div className={styles.barGroup}>
-                                        <div
+                                        <motion.div
                                             className={`${styles.bar} ${styles.fillPerceived}`}
-                                            style={{ width: `${Math.min((item.perceivedWeight / 50) * 100, 100)}%` }}
+                                            style={{ width: `${Math.min((item.perceivedWeight / 50) * 100, 100)}%`, transformOrigin: 'left' }}
+                                            initial={{ scaleX: 0 }}
+                                            whileInView={{ scaleX: 1 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.8, ease: "circOut", delay: 0.2 }}
                                         />
                                         <span className={`${styles.barValue} ${styles.valuePerceived}`}>
                                             {item.perceivedWeight.toFixed(1)}%
