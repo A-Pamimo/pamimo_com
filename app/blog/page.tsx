@@ -43,9 +43,6 @@ export default function BlogIndex() {
         });
     }
 
-    // Filter out posts scheduled for the future
-    const publishedPosts = blogPosts.filter(post => post.date <= today);
-
-    return <BlogIndexClient posts={publishedPosts} />;
+    return <BlogIndexClient posts={blogPosts} />;
 }
 

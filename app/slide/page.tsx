@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 
 const SlidePage: React.FC = () => {
@@ -81,7 +82,7 @@ const SlidePage: React.FC = () => {
               <div className="bg-blue-50 p-[0.6cqw] border-[0.15cqw] border-blue-600 relative z-30 shadow-[0.3cqw_0.3cqw_0px_0px_#2563EB] transform rotate-1 shrink-0 hover:rotate-0 hover:scale-105 transition-all duration-200">
                 <p className="mb-[0.2cqw] text-[0.7cqw] text-blue-600 font-black tracking-wider">THE_FREEZE</p>
                 <p className="uppercase leading-tight text-[0.85cqw]">LANDED SASKATCHEWAN. <span className="text-white bg-blue-600 px-[0.2cqw]">-28°C</span>.</p>
-                <p className="mt-[0.2cqw] text-[0.7cqw] opacity-70">"ONLY BEEN WORSE SINCE."</p>
+                <p className="mt-[0.2cqw] text-[0.7cqw] opacity-70">&quot;ONLY BEEN WORSE SINCE.&quot;</p>
               </div>
 
               <div className="bg-purple-50 p-[0.6cqw] border-[0.15cqw] border-purple-600 relative z-30 shadow-[0.3cqw_0.3cqw_0px_0px_#9333EA] transform -rotate-1 shrink-0 hover:rotate-0 hover:scale-105 transition-all duration-200">
@@ -183,7 +184,7 @@ const SlidePage: React.FC = () => {
               <div className="bg-[#FFC0CB] border-[0.15cqw] border-black p-[0.8cqw] text-black transform -rotate-2 relative z-30 w-full self-center shadow-[0.4cqw_0.4cqw_0px_0px_#000] mt-[2cqw] shrink-0 hover:rotate-0 hover:scale-105 transition-all duration-200">
                 <div className="bg-black text-white inline-block px-[0.4cqw] py-[0.1cqw] text-[0.6cqw] mb-[0.4cqw] font-black border border-white transform -rotate-3">ASK_ME_ABOUT</div>
                 <p className="text-black uppercase leading-tight font-black text-[1cqw]">
-                  "COOKING IS JUST ENGINEERING YOU CAN EAT."
+                  &quot;COOKING IS JUST ENGINEERING YOU CAN EAT.&quot;
                 </p>
               </div>
 

@@ -15,11 +15,6 @@ interface NavbarProps {
 }
 
 import { useScrollDirection } from '../../hooks/useScrollDirection';
-
-// ... (other imports remain, but we remove local useState for scroll if we replace it completely, 
-// checking line 3 imports: `import React, { useEffect, useState } from 'react';`)
-// We will update the component to use the hook.
-
 import RegionToggle from '../apps/grocery-gap/ui/RegionToggle';
 
 interface NavbarProps {
@@ -70,7 +65,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
             <Link href="/blog" className="hidden md:flex items-center gap-2 text-sm font-bold font-mono uppercase tracking-widest hover:text-pop transition-colors text-ink dark:text-cream">
               <span>←</span> Index
             </Link>
-            <div className="scale-90 origin-right">
+            <div className="hidden md:block scale-90 origin-right">
               <RegionToggle className="!static !shadow-none !border-ink/20 dark:!border-white/20 !bg-transparent hover:!bg-black/5" />
             </div>
           </div>
@@ -206,8 +201,15 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
                 >
                   {CONTACT_EMAIL}
                 </motion.a>
+
+                {/* Mobile Region Toggle (Blog Mode Only) */}
+                {variant === 'blog' && (
+                  <div className="mb-8">
+                    <RegionToggle className="!static !w-full justify-center !border-ink/20 dark:!border-white/20 !bg-transparent" />
+                  </div>
+                )}
               </nav>
-            </motion.div>
+            </motion.div >
           )
         }
       </AnimatePresence >

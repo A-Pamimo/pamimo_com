@@ -102,6 +102,7 @@ export const metadata: Metadata = {
 
 import { LazyMotion, domAnimation } from "framer-motion"
 import CustomCursor from '../components/ui/CustomCursor';
+import ScrollToTop from '../components/ui/ScrollToTop';
 
 export default function RootLayout({
   children,
@@ -122,6 +123,7 @@ export default function RootLayout({
         </a>
 
         <CustomCursor />
+        <ScrollToTop />
 
         <LazyMotion features={domAnimation}>
           <div id="main-content">
