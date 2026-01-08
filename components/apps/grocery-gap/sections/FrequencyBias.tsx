@@ -55,11 +55,14 @@ export default function FrequencyBias() {
         perceivedWeight: calculatePerceivedWeight(item, alpha, basketItems),
     }));
 
-    // Normalize to sum to ~100%
-    const totalPerceived = perceivedWeights.reduce((a, b) => a + b.perceivedWeight, 0);
+    // Normalize to sum to the same total as the CPI weights (the subset total)
+    // This ensures that at alpha=0, the Perceived Weight == CPI Weight exactly.
+    const totalCpiWeight = basketItems.reduce((a, b) => a + b.cpiWeight, 0);
+    const totalPerceivedRaw = perceivedWeights.reduce((a, b) => a + b.perceivedWeight, 0);
+
     const normalizedWeights = perceivedWeights.map(item => ({
         ...item,
-        perceivedWeight: (item.perceivedWeight / totalPerceived) * 100,
+        perceivedWeight: (item.perceivedWeight / totalPerceivedRaw) * totalCpiWeight,
     }));
 
     // Find max for scaling
@@ -74,12 +77,12 @@ export default function FrequencyBias() {
                     <p className={styles.eyebrow}>Chapter 1: Why Our Brains Lie</p>
                     <h2 className={styles.title}>Frequency Bias</h2>
                     <p className={styles.subtitle}>
-                        Your brain weights price signals by how often you encounter them,
-                        not by their actual share of your spending.
+                        Your brain weights price signals by how often you see them,
+                        not by how much they actually hurt your wallet.
                     </p>
                     <TLDR source="European Economic Review (2014)" sourceLink="https://ideas.repec.org/a/eee/eecrev/v67y2014i1p144-158.html">
                         Researchers proved that even when people <em>know</em> the official inflation rate,
-                        they ignore it if it conflicts with the price changes of their most frequent purchases.
+                        they subconsiously overweight the price changes of goods they buy frequently.
                     </TLDR>
                 </div>
 
@@ -106,8 +109,9 @@ export default function FrequencyBias() {
                 <div className={styles.sliderExplainer}>
                     <p>
                         This slider lets you simulate different psychological states.
-                        At <strong>0.44</strong> (default), you are seeing the world as most humans do—over-weighting daily purchases.
-                        Slide to <strong>0</strong> to see the &quot;Logic&quot; (CPI) view, or <strong>1</strong> to see fully emotive pricing.
+                        At <strong>0.44</strong> (default), you see the world as most humans do.
+                        You buy groceries 13x more often than you pay rent, so your brain creates a disproportionate panic about egg prices while ignoring your rent check.
+                        Slide to <strong>0</strong> to think like a cold robot, or <strong>1</strong> to embrace full financial hysteria.
                     </p>
                 </div>
 

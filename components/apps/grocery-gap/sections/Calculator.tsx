@@ -1,15 +1,18 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import styles from './Calculator.module.css';
 import TLDR from '../ui/TLDR';
+import { useRegionalCPI } from '@/app/actions/getRegionalCPI';
 import { useRegion } from '../context/RegionContext';
+import MethodologyModal from '../ui/MethodologyModal';
 
 interface StateOption {
     abbr: string;
     name: string;
-    cpiRate: number; // Nov 2024 YoY CPI %
+    cpiRate: number; // Nov 2025 YoY CPI % (Fallback)
     housingRpp: number;
+    regionCode?: string; // For live API mapping
 }
 
 const CountUp = ({ end, decimals = 0, suffix = '', className = '' }: { end: number, decimals?: number, suffix?: string, className?: string }) => {
@@ -55,60 +58,60 @@ const HOUSING_RPP_AVG = 100; // Placeholder, housing logic separate
 // Source: https://www.bls.gov/regions/subjects/consumer-price-indexes.htm
 const statesUS: StateOption[] = [
     // Northeast (3.5%)
-    { abbr: 'CT', name: 'Connecticut', cpiRate: REGION_CPI.NE, housingRpp: 125.6 },
-    { abbr: 'ME', name: 'Maine', cpiRate: REGION_CPI.NE, housingRpp: 110 },
-    { abbr: 'MA', name: 'Massachusetts', cpiRate: REGION_CPI.NE, housingRpp: 132.6 },
-    { abbr: 'NH', name: 'New Hampshire', cpiRate: REGION_CPI.NE, housingRpp: 115 },
-    { abbr: 'NJ', name: 'New Jersey', cpiRate: REGION_CPI.NE, housingRpp: 121.4 },
-    { abbr: 'NY', name: 'New York', cpiRate: REGION_CPI.NE, housingRpp: 139.5 },
-    { abbr: 'PA', name: 'Pennsylvania', cpiRate: REGION_CPI.NE, housingRpp: 95 },
-    { abbr: 'RI', name: 'Rhode Island', cpiRate: REGION_CPI.NE, housingRpp: 110 },
-    { abbr: 'VT', name: 'Vermont', cpiRate: REGION_CPI.NE, housingRpp: 105 },
+    { abbr: 'CT', name: 'Connecticut', cpiRate: REGION_CPI.NE, regionCode: 'NE', housingRpp: 125.6 },
+    { abbr: 'ME', name: 'Maine', cpiRate: REGION_CPI.NE, regionCode: 'NE', housingRpp: 110 },
+    { abbr: 'MA', name: 'Massachusetts', cpiRate: REGION_CPI.NE, regionCode: 'NE', housingRpp: 132.6 },
+    { abbr: 'NH', name: 'New Hampshire', cpiRate: REGION_CPI.NE, regionCode: 'NE', housingRpp: 115 },
+    { abbr: 'NJ', name: 'New Jersey', cpiRate: REGION_CPI.NE, regionCode: 'NE', housingRpp: 121.4 },
+    { abbr: 'NY', name: 'New York', cpiRate: REGION_CPI.NE, regionCode: 'NE', housingRpp: 139.5 },
+    { abbr: 'PA', name: 'Pennsylvania', cpiRate: REGION_CPI.NE, regionCode: 'NE', housingRpp: 95 },
+    { abbr: 'RI', name: 'Rhode Island', cpiRate: REGION_CPI.NE, regionCode: 'NE', housingRpp: 110 },
+    { abbr: 'VT', name: 'Vermont', cpiRate: REGION_CPI.NE, regionCode: 'NE', housingRpp: 105 },
     // Midwest (2.6%)
-    { abbr: 'IL', name: 'Illinois', cpiRate: REGION_CPI.MW, housingRpp: 90 },
-    { abbr: 'IN', name: 'Indiana', cpiRate: REGION_CPI.MW, housingRpp: 72.8 },
-    { abbr: 'IA', name: 'Iowa', cpiRate: REGION_CPI.MW, housingRpp: 70 },
-    { abbr: 'KS', name: 'Kansas', cpiRate: REGION_CPI.MW, housingRpp: 68 },
-    { abbr: 'MI', name: 'Michigan', cpiRate: REGION_CPI.MW, housingRpp: 78 },
-    { abbr: 'MN', name: 'Minnesota', cpiRate: REGION_CPI.MW, housingRpp: 85 },
-    { abbr: 'MO', name: 'Missouri', cpiRate: REGION_CPI.MW, housingRpp: 71.5 },
-    { abbr: 'NE', name: 'Nebraska', cpiRate: REGION_CPI.MW, housingRpp: 72 },
-    { abbr: 'ND', name: 'North Dakota', cpiRate: REGION_CPI.MW, housingRpp: 70 },
-    { abbr: 'OH', name: 'Ohio', cpiRate: REGION_CPI.MW, housingRpp: 74.2 },
-    { abbr: 'SD', name: 'South Dakota', cpiRate: REGION_CPI.MW, housingRpp: 70 },
-    { abbr: 'WI', name: 'Wisconsin', cpiRate: REGION_CPI.MW, housingRpp: 80 },
+    { abbr: 'IL', name: 'Illinois', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 90 },
+    { abbr: 'IN', name: 'Indiana', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 72.8 },
+    { abbr: 'IA', name: 'Iowa', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 70 },
+    { abbr: 'KS', name: 'Kansas', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 68 },
+    { abbr: 'MI', name: 'Michigan', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 78 },
+    { abbr: 'MN', name: 'Minnesota', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 85 },
+    { abbr: 'MO', name: 'Missouri', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 71.5 },
+    { abbr: 'NE', name: 'Nebraska', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 72 },
+    { abbr: 'ND', name: 'North Dakota', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 70 },
+    { abbr: 'OH', name: 'Ohio', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 74.2 },
+    { abbr: 'SD', name: 'South Dakota', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 70 },
+    { abbr: 'WI', name: 'Wisconsin', cpiRate: REGION_CPI.MW, regionCode: 'MW', housingRpp: 80 },
     // South (2.7%)
-    { abbr: 'AL', name: 'Alabama', cpiRate: REGION_CPI.SO, housingRpp: 65 },
-    { abbr: 'AR', name: 'Arkansas', cpiRate: REGION_CPI.SO, housingRpp: 57.2 },
-    { abbr: 'DE', name: 'Delaware', cpiRate: REGION_CPI.SO, housingRpp: 90 },
-    { abbr: 'DC', name: 'Washington D.C.', cpiRate: REGION_CPI.SO, housingRpp: 145.3 },
-    { abbr: 'FL', name: 'Florida', cpiRate: REGION_CPI.SO, housingRpp: 104.2 },
-    { abbr: 'GA', name: 'Georgia', cpiRate: REGION_CPI.SO, housingRpp: 82.6 },
-    { abbr: 'KY', name: 'Kentucky', cpiRate: REGION_CPI.SO, housingRpp: 68 },
-    { abbr: 'LA', name: 'Louisiana', cpiRate: REGION_CPI.SO, housingRpp: 70 },
-    { abbr: 'MD', name: 'Maryland', cpiRate: REGION_CPI.SO, housingRpp: 105 },
-    { abbr: 'MS', name: 'Mississippi', cpiRate: REGION_CPI.SO, housingRpp: 54.9 },
-    { abbr: 'NC', name: 'North Carolina', cpiRate: REGION_CPI.SO, housingRpp: 84.3 },
-    { abbr: 'OK', name: 'Oklahoma', cpiRate: REGION_CPI.SO, housingRpp: 68.4 },
-    { abbr: 'SC', name: 'South Carolina', cpiRate: REGION_CPI.SO, housingRpp: 75 },
-    { abbr: 'TN', name: 'Tennessee', cpiRate: REGION_CPI.SO, housingRpp: 79.8 },
-    { abbr: 'TX', name: 'Texas', cpiRate: REGION_CPI.SO, housingRpp: 87.2 },
-    { abbr: 'VA', name: 'Virginia', cpiRate: REGION_CPI.SO, housingRpp: 100 },
-    { abbr: 'WV', name: 'West Virginia', cpiRate: REGION_CPI.SO, housingRpp: 60 },
+    { abbr: 'AL', name: 'Alabama', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 65 },
+    { abbr: 'AR', name: 'Arkansas', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 57.2 },
+    { abbr: 'DE', name: 'Delaware', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 90 },
+    { abbr: 'DC', name: 'Washington D.C.', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 145.3 },
+    { abbr: 'FL', name: 'Florida', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 104.2 },
+    { abbr: 'GA', name: 'Georgia', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 82.6 },
+    { abbr: 'KY', name: 'Kentucky', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 68 },
+    { abbr: 'LA', name: 'Louisiana', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 70 },
+    { abbr: 'MD', name: 'Maryland', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 105 },
+    { abbr: 'MS', name: 'Mississippi', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 54.9 },
+    { abbr: 'NC', name: 'North Carolina', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 84.3 },
+    { abbr: 'OK', name: 'Oklahoma', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 68.4 },
+    { abbr: 'SC', name: 'South Carolina', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 75 },
+    { abbr: 'TN', name: 'Tennessee', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 79.8 },
+    { abbr: 'TX', name: 'Texas', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 87.2 },
+    { abbr: 'VA', name: 'Virginia', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 100 },
+    { abbr: 'WV', name: 'West Virginia', cpiRate: REGION_CPI.SO, regionCode: 'SO', housingRpp: 60 },
     // West (2.4%)
-    { abbr: 'AK', name: 'Alaska', cpiRate: REGION_CPI.WE, housingRpp: 110 },
-    { abbr: 'AZ', name: 'Arizona', cpiRate: REGION_CPI.WE, housingRpp: 98.5 },
-    { abbr: 'CA', name: 'California', cpiRate: REGION_CPI.WE, housingRpp: 157.8 },
-    { abbr: 'CO', name: 'Colorado', cpiRate: REGION_CPI.WE, housingRpp: 115.3 },
-    { abbr: 'HI', name: 'Hawaii', cpiRate: REGION_CPI.WE, housingRpp: 139.2 },
-    { abbr: 'ID', name: 'Idaho', cpiRate: REGION_CPI.WE, housingRpp: 95 },
-    { abbr: 'MT', name: 'Montana', cpiRate: REGION_CPI.WE, housingRpp: 90 },
-    { abbr: 'NV', name: 'Nevada', cpiRate: REGION_CPI.WE, housingRpp: 100 },
-    { abbr: 'NM', name: 'New Mexico', cpiRate: REGION_CPI.WE, housingRpp: 80 },
-    { abbr: 'OR', name: 'Oregon', cpiRate: REGION_CPI.WE, housingRpp: 112.4 },
-    { abbr: 'UT', name: 'Utah', cpiRate: REGION_CPI.WE, housingRpp: 105 },
-    { abbr: 'WA', name: 'Washington', cpiRate: REGION_CPI.WE, housingRpp: 117.8 },
-    { abbr: 'WY', name: 'Wyoming', cpiRate: REGION_CPI.WE, housingRpp: 85 },
+    { abbr: 'AK', name: 'Alaska', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 110 },
+    { abbr: 'AZ', name: 'Arizona', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 98.5 },
+    { abbr: 'CA', name: 'California', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 157.8 },
+    { abbr: 'CO', name: 'Colorado', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 115.3 },
+    { abbr: 'HI', name: 'Hawaii', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 139.2 },
+    { abbr: 'ID', name: 'Idaho', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 95 },
+    { abbr: 'MT', name: 'Montana', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 90 },
+    { abbr: 'NV', name: 'Nevada', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 100 },
+    { abbr: 'NM', name: 'New Mexico', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 80 },
+    { abbr: 'OR', name: 'Oregon', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 112.4 },
+    { abbr: 'UT', name: 'Utah', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 105 },
+    { abbr: 'WA', name: 'Washington', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 117.8 },
+    { abbr: 'WY', name: 'Wyoming', cpiRate: REGION_CPI.WE, regionCode: 'WE', housingRpp: 85 },
 ].sort((a, b) => a.name.localeCompare(b.name));
 
 // Canadian Provinces/Territories - CPI (StatCan Nov 2025)
@@ -144,7 +147,10 @@ export default function Calculator() {
     const { region } = useRegion();
     const isCanada = region.code === 'CA';
     const locationOptions = isCanada ? provincesCA : statesUS;
-    const officialCPI = isCanada ? 2.4 : 3.4;
+
+    // Fetch live CPI data from worker
+    const { data: cpiData, loading: cpiLoading, error: cpiError } = useRegionalCPI();
+    const officialCPI = cpiData?.regions?.US?.yearOverYear || (isCanada ? 2.2 : 2.7);
 
     const [step, setStep] = useState(1);
     const [selectedState, setSelectedState] = useState<StateOption | null>(null);
@@ -160,6 +166,9 @@ export default function Calculator() {
     const [mortgageRenewed, setMortgageRenewed] = useState(false);
     const [rentPercent, setRentPercent] = useState(30);
     const [showResults, setShowResults] = useState(false);
+    const [showMethodology, setShowMethodology] = useState(false);
+    const [advancedMode, setAdvancedMode] = useState(false);
+    const [alpha, setAlpha] = useState(0.44);
 
     // Persistence
     useEffect(() => {
@@ -221,24 +230,36 @@ export default function Calculator() {
     const results = useMemo(() => {
         if (!selectedState || !housingType) return null;
 
-        // Base: Use the region's actual CPI rate instead of national
-        const baseInflation = selectedState.cpiRate;
-        const nationalCPI = isCanada ? NATIONAL_CPI_CA : NATIONAL_CPI_US;
+        // Base: Use live API data if available, else static fallback
+        let baseInflation = selectedState.cpiRate;
+        if (cpiData?.regions && selectedState.regionCode) {
+            const regionKey = selectedState.regionCode as keyof typeof cpiData.regions;
+            const liveRegion = cpiData.regions[regionKey];
+            if (liveRegion) {
+                baseInflation = liveRegion.yearOverYear;
+            }
+        }
+
+        const nationalCPI = isCanada ? NATIONAL_CPI_CA : (cpiData?.regions?.US?.yearOverYear || NATIONAL_CPI_US);
 
         // Frequency Bias (over-weight high-frequency purchases)
-        const alpha = 0.44;
         const totalFreq = Object.values(frequencies).reduce((a, b) => a + b, 0);
         const highFreqItems = ['groceries', 'gasoline', 'restaurants'];
         const highFreqWeight = highFreqItems.reduce((a, id) => a + frequencies[id], 0) / totalFreq;
         const frequencyBiasAdd = alpha * (highFreqWeight - 0.5) * baseInflation;
 
-        // Housing Pressure (only for renters with high burden)
+        // Housing Pressure - CORRECTED to use actual shelter CPI weight
         let housingPressure = 0;
-        if (housingType === 'rent' && rentPercent > 30) {
-            const excessBurden = (rentPercent - 30) / 100;
-            housingPressure = excessBurden * baseInflation * 0.5;
+        const shelterWeight = isCanada ? 0.291 : 0.362; // Actual CPI basket weight for shelter
+        // Estimate shelter inflation (typically higher than general CPI)
+        const shelterInflation = baseInflation * 1.5; // Shelter typically inflates 1.5x general rate
+
+        if (housingType === 'rent') {
+            // Use actual rent burden and shelter weight
+            housingPressure = (rentPercent / 100) * shelterWeight * shelterInflation;
         } else if (housingType === 'own' && isCanada && mortgageRenewed) {
-            housingPressure = baseInflation * 0.3; // Mortgage shock
+            // Mortgage shock for Canadian homeowners
+            housingPressure = shelterWeight * shelterInflation * 0.5;
         }
 
         // Shrinkflation (Separate, not added to main %)
@@ -248,10 +269,19 @@ export default function Calculator() {
         // Perceived Cost Index (without shrinkflation baked in)
         const perceivedCPI = baseInflation + frequencyBiasAdd + housingPressure;
 
+        // Confidence interval based on alpha standard error (±0.15)
+        const alphaStdError = 0.15;
+        const confidenceLow = baseInflation + (alpha - alphaStdError) * (highFreqWeight - 0.5) * baseInflation + housingPressure;
+        const confidenceHigh = baseInflation + (alpha + alphaStdError) * (highFreqWeight - 0.5) * baseInflation + housingPressure;
+
         return {
-            perceived: Math.max(perceivedCPI, nationalCPI),
+            perceived: perceivedCPI,
             official: nationalCPI,
             shrinkflationLoss: shrinkflationLoss,
+            confidenceInterval: {
+                low: confidenceLow,
+                high: confidenceHigh,
+            },
             breakdown: {
                 base: baseInflation,
                 frequencyBias: frequencyBiasAdd,
@@ -259,7 +289,7 @@ export default function Calculator() {
                 mortgageShock: (housingType === 'own' && isCanada && mortgageRenewed) ? housingPressure : 0,
             },
         };
-    }, [selectedState, housingType, frequencies, rentPercent, isCanada, mortgageRenewed]);
+    }, [selectedState, housingType, frequencies, rentPercent, isCanada, mortgageRenewed, cpiData, alpha]);
 
     const renderStep = () => {
         switch (step) {
@@ -337,6 +367,41 @@ export default function Calculator() {
                                 </div>
                             ))}
                         </div>
+
+                        {/* Advanced Mode Toggle */}
+                        <div className="mt-6 pt-4 border-t border-ink/10 dark:border-white/10">
+                            <button
+                                onClick={() => setAdvancedMode(!advancedMode)}
+                                className="text-xs font-mono uppercase tracking-widest text-theme-text opacity-60 hover:opacity-100 transition-opacity flex items-center gap-2"
+                            >
+                                <span>{advancedMode ? '−' : '+'}</span>
+                                Advanced: Adjust Frequency Bias Sensitivity
+                            </button>
+                            {advancedMode && (
+                                <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded">
+                                    <label className="block text-sm font-bold mb-2">
+                                        Frequency Bias (α): {alpha.toFixed(2)}
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="1"
+                                        step="0.01"
+                                        value={alpha}
+                                        onChange={(e) => setAlpha(parseFloat(e.target.value))}
+                                        className="w-full"
+                                    />
+                                    <div className="flex justify-between text-xs mt-1 opacity-60">
+                                        <span>0.0 (Rational)</span>
+                                        <span>0.44 (Average)</span>
+                                        <span>1.0 (Emotional)</span>
+                                    </div>
+                                    <p className="text-xs mt-2 opacity-70 leading-relaxed">
+                                        Most people: 0.44. Adjust if you think you're more/less emotional about price changes.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 );
 
@@ -404,13 +469,17 @@ export default function Calculator() {
                     <div className={styles.header}>
                         <p className={styles.eyebrow}>Your Results</p>
                         <h2 className={styles.title}>Your Personal Cost Index</h2>
+                        <p className="text-xs opacity-60 mt-2">(Behavioral Economics Model)</p>
                     </div>
 
                     <div className={styles.form}>
                         <div className={styles.results}>
                             <div className={styles.resultsBig}>
-                                <p className={styles.resultsLabel}>Your Perceived Cost Index</p>
+                                <p className={styles.resultsLabel}>Your Personal Cost Index</p>
                                 <CountUp end={results.perceived} decimals={1} suffix="%" className={styles.resultsNumber} />
+                                <p className="text-xs opacity-50 mt-2 font-mono">
+                                    95% Confidence: {results.confidenceInterval.low.toFixed(1)}% - {results.confidenceInterval.high.toFixed(1)}%
+                                </p>
                             </div>
 
                             <div className={styles.resultsComparison}>
@@ -420,7 +489,12 @@ export default function Calculator() {
                                     </p>
                                     <p className={styles.comparisonLabel}>
                                         Official CPI
-                                        <span className="block text-[9px] opacity-60 font-mono mt-0.5">(Source: {isCanada ? 'StatCan' : 'BLS'})</span>
+                                        <span className="block text-[9px] opacity-60 font-mono mt-0.5">
+                                            (Source: {isCanada ? 'StatCan' : 'BLS'})
+                                            {cpiData && !cpiData.source.includes('Fallback') && !isCanada && (
+                                                <span className="text-green-500 font-bold ml-1 animate-pulse">● Live</span>
+                                            )}
+                                        </span>
                                     </p>
                                 </div>
                                 <div className={styles.comparisonItem}>
@@ -467,19 +541,26 @@ export default function Calculator() {
                             </div>
 
                             <div className="mt-8 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                                <h4 className="text-xs font-bold uppercase tracking-widest mb-2 text-pop">Pro Tip: Negotiation</h4>
+                                <h4 className="text-xs font-bold uppercase tracking-widest mb-2 text-pop">Understanding Your Cost Structure</h4>
                                 <p className="text-sm text-theme-text opacity-80 leading-relaxed">
-                                    Official CPI says inflation is {results.official.toFixed(1)}%, so your boss might offer a matching raise.
-                                    But your <strong className="text-theme-text">personal</strong> inflation is {results.perceived.toFixed(1)}%.
-                                    Use this gap to argue for a cost-of-living adjustment that reflects your <em>actual</em> reality.
+                                    Official CPI says inflation is {results.official.toFixed(1)}%, but your personal experience is {results.perceived.toFixed(1)}%.
+                                    Understanding your actual cost structure can help frame conversations about compensation and career decisions.
+                                    While employers typically use official CPI for raises, knowing your real expenses helps you make informed choices about job offers, relocations, and budget planning.
                                 </p>
                             </div>
+
+                            <button
+                                onClick={() => setShowMethodology(true)}
+                                className="mt-4 w-full text-center text-xs font-mono uppercase tracking-widest text-pop hover:underline"
+                            >
+                                + Show the Math (Methodology)
+                            </button>
 
                             <div className={styles.shareButtons}>
                                 <button
                                     className={`${styles.shareButton} ${styles.shareButtonPrimary}`}
                                     onClick={() => {
-                                        const text = `My perceived inflation is ${results.perceived.toFixed(1)}% vs the official ${results.official.toFixed(1)}% CPI. That's a ${(results.perceived / results.official).toFixed(1)}x gap! Find yours at The Grocery Gap.`;
+                                        const text = `Based on my spending patterns, my perceived inflation is ${results.perceived.toFixed(1)}% vs the official ${results.official.toFixed(1)}% CPI. Calculate yours at The Grocery Gap!`;
                                         navigator.clipboard.writeText(text);
                                         alert('Copied to clipboard!');
                                     }}
@@ -514,7 +595,13 @@ export default function Calculator() {
                             </div>
                         </div>
                     </div>
+
+                    <p className="text-center text-xs opacity-50 mt-6 max-w-md mx-auto">
+                        Educational model based on behavioral economics research. Results illustrate concepts, not precise predictions.
+                    </p>
                 </div>
+
+                <MethodologyModal isOpen={showMethodology} onClose={() => setShowMethodology(false)} />
             </section >
         );
     }
@@ -586,7 +673,16 @@ export default function Calculator() {
                     <p className="text-center text-[10px] opacity-50 mt-4 max-w-xs mx-auto">
                         Your inputs are processed locally to generate your Personal Cost Index. No personal financial data is stored.
                     </p>
+
+                    <button
+                        onClick={() => setShowMethodology(true)}
+                        className="mt-4 text-center text-xs font-mono uppercase tracking-widest text-theme-text opacity-50 hover:opacity-100 transition-opacity mx-auto block"
+                    >
+                        How is this calculated?
+                    </button>
                 </div>
+
+                <MethodologyModal isOpen={showMethodology} onClose={() => setShowMethodology(false)} />
             </div>
         </section>
     );

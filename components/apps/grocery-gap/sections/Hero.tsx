@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styles from './Hero.module.css';
 import { useRegion } from '../context/RegionContext';
 import RegionToggle from '../ui/RegionToggle';
@@ -9,6 +10,7 @@ interface HeroProps {
 export default function Hero({ isBusinessMode = false }: HeroProps) {
     const { region } = useRegion();
     const isCanada = region.code === 'CA';
+    const [expandedTLDR, setExpandedTLDR] = useState(false);
 
     return (
         <section className={styles.hero} data-mode={isBusinessMode ? 'business' : 'consumer'}>
@@ -36,6 +38,26 @@ export default function Hero({ isBusinessMode = false }: HeroProps) {
                         </div>
                     ) : (
                         <>
+                            <div className="mb-6 border-2 border-black dark:border-white">
+                                <button
+                                    onClick={() => setExpandedTLDR(!expandedTLDR)}
+                                    className="w-full flex justify-between items-center p-3 bg-black text-white dark:bg-white dark:text-black hover:bg-pop hover:text-white transition-colors"
+                                >
+                                    <span className="font-bold text-xs uppercase tracking-widest">TL;DR: The Executive Summary</span>
+                                    <span className="font-mono text-sm">{expandedTLDR ? '[−]' : '[+]'}</span>
+                                </button>
+
+                                {expandedTLDR && (
+                                    <div className="p-4 bg-white dark:bg-black text-theme-text border-t-2 border-black dark:border-white">
+                                        <p className="text-sm md:text-base leading-relaxed">
+                                            Official inflation counts every price change equally. Your brain does not.
+                                            You pay a "psychological tax" every time you buy eggs or gas, but you ignore the flat price of TVs.
+                                            This tool calculates the gap between the government's data and your reality.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
                             <p className="text-xl md:text-2xl font-medium mb-4">
                                 The government says inflation is {isCanada ? '2.9%' : '3.4%'}.
                                 You feel like it is 15%.

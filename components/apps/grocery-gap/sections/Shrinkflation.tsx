@@ -38,22 +38,22 @@ const shrinkProductsCA: ShrinkProduct[] = [
     { name: 'Granola Bars (Box)', category: 'Snacks', oldSize: 6, newSize: 5, unit: 'bars', year: '2024', priceChange: 0 },
 ];
 
-const hiddenCosts = [
+export const hiddenCosts = [
     {
         title: 'Per-Unit Fallacy',
-        description: 'BLS assumes price-size elasticity of 1.0. Actual data shows 0.4-0.7, meaning bulk discounts disappear with shrinkage.',
+        description: 'BLS assumes you perfectly calculate price-per-ounce while rushing through the aisle. Spoiler: you don\'t.',
     },
     {
         title: 'The Recipe Problem',
-        description: 'A 500g recipe with a 450g package forces you to buy two units. The leftover becomes waste or future cost.',
+        description: 'The recipe calls for 500g. The new box is 450g. Now you have to buy two. Thanks, corporate math.',
     },
     {
         title: 'Search Cost',
-        description: 'Relearning package sizes, comparing new unit prices, and adjusting shopping habits takes cognitive effort.',
+        description: 'You now spend 5 extra minutes staring at tiny labels to see if the "Family Size" got smaller. That time isn\'t free.',
     },
     {
         title: 'Trust Tax',
-        description: 'Reduced confidence in price signals means more time spent verifying value. This is uncompensated labor.',
+        description: 'Remember when a pound of coffee was actually a pound? Neither do we. The mental load of verifying everything is exhausting.',
     },
 ];
 
@@ -66,50 +66,38 @@ export default function Shrinkflation() {
     return (
         <section id="shrinkflation" className={styles.section}>
             <div className={styles.container}>
-                <div className={styles.header}>
-                    <p className={styles.eyebrow}>Chapter 2: Hidden Costs</p>
-                    <h2 className={styles.title}>Shrinkflation Examples</h2>
-                    <p className={styles.subtitle}>
-                        Same package, same price, less product. The BLS tracks price-per-ounce,
-                        but they miss the <strong>loss of trust</strong>. That is the invisible tax.
-                    </p>
-                    {showLiveIndicator && (
-                        <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-                            <LiveCPIIndicator />
-                        </div>
-                    )}
-                    <TLDR inverted={true} source="Rojas et al. (2024), SSRN" sourceLink="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4746409">
-                        Companies make products smaller instead of raising prices. It tricks your brain and your wallet because you focus on the sticker price, not the price per ounce.
-                    </TLDR>
-                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-8">
+                    <div className={styles.header}>
+                        <p className={styles.eyebrow}>Chapter 2: Hidden Costs</p>
+                        <h2 className={styles.title}>Shrinkflation</h2>
+                        <p className={styles.subtitle}>
+                            Same package, same price, less product. The BLS tracks strict price-per-ounce,
+                            but they miss the <strong>loss of trust</strong>. That is the invisible tax.
+                        </p>
+                        {showLiveIndicator && (
+                            <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                                <LiveCPIIndicator />
+                            </div>
+                        )}
+                        <TLDR inverted={true} source="Rojas et al. (2024), SSRN" sourceLink="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4804636">
+                            Companies make products smaller instead of raising prices. It tricks your brain and your wallet because you focus on the sticker price, not the price per ounce.
+                        </TLDR>
+                        <p className="text-xs opacity-60 mt-3 italic max-w-prose">
+                            <strong>Research Note:</strong> The 3.9 percentage point welfare loss is specific to packaged goods during 2012-2021.
+                            This represents unmeasured value erosion, not perceived inflation. We apply it proportionally based on grocery shopping frequency as an illustrative estimate.
+                        </p>
+                    </div>
 
-                <div className={styles.statsBanner}>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>3.9pp</span>
-                        <span className={styles.statLabel}>
-                            <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4746409" target="_blank" className="hover:underline decoration-white/30">
-                                Unmeasured Welfare Loss*
-                                <span className="block text-[9px] opacity-70 font-normal no-underline">
-                                    *(percentage points difference from official CPI)
-                                </span>
-                            </a>
-                        </span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>82%</span>
-                        <span className={styles.statLabel}>
-                            <a href="https://business.yougov.com/content/48833-shrinkflation-affects-brand-loyalty-for-nearly-half-of-us-shoppers" target="_blank" className="hover:underline decoration-white/30">
-                                Consumers who noticed
-                            </a>
-                        </span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>48%</span>
-                        <span className={styles.statLabel}>
-                            <a href="https://plma.com/" target="_blank" className="hover:underline decoration-white/30">
-                                Who abandoned a brand
-                            </a>
-                        </span>
+                    {/* Meme: Visual Example */}
+                    <div className="max-w-sm mx-auto w-full border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rotate-1 hover:rotate-0 transition-transform duration-300">
+                        <img
+                            src="/images/shrinkflation_pizza_meme.jpg"
+                            alt="Pizza shrinkflation meme showing smaller slices - Nobody will notice"
+                            className="w-full"
+                        />
+                        <div className="bg-black text-white p-3 text-center">
+                            <p className="text-sm font-bold uppercase tracking-wider">Exhibit A: The Classic Move</p>
+                        </div>
                     </div>
                 </div>
 

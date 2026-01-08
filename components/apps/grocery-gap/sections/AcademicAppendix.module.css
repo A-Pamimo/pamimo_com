@@ -147,3 +147,24 @@
     background: var(--gg-accent-orange);
     color: var(--gg-white);
 }
+
+.fullWidth {
+    grid-column: 1 / -1;
+    margin-top: var(--gg-space-xl);
+    padding-top: var(--gg-space-lg);
+    border-top: 1px dashed var(--gg-ink);
+}
+
+.memeContainer {
+    margin-top: var(--gg-space-xl);
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.memeImage {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 2px solid var(--gg-ink);
+    box-shadow: 4px 4px 0px var(--gg-ink);
+}

@@ -37,15 +37,28 @@ export default function Preamble() {
                     </div>
 
                     This distortion field creates an <strong>Invisible Tax</strong>.
-                    It represents the <em>loss of trust</em>—the mental energy spent verifying prices, switching brands, and managing the anxiety of &quot;getting ripped off.&quot;
+                    It represents the <em>loss of trust</em> - the mental energy spent verifying prices, switching brands, and managing the anxiety of &quot;getting ripped off.&quot;
                     It is not paid to the government, but paid in stress and cognitive load.
                     Every time you see a price that defies your expectations, you pay this tax.
-
-                    <p>
-                        To understand it, we need to measure your personal baseline.
-                        Let&apos;s start by testing your own reaction to recent price changes.
-                    </p>
                 </div>
+
+                {/* Meme: The Frequency Bias Hook */}
+                <div className="max-w-sm mx-auto w-full border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] -rotate-1 mt-12 mb-4">
+                    <img
+                        src="/images/frequency_bias_meat_meme.jpg"
+                        alt="What inflation? A package of hamburger meat costs the same as it did last month meme"
+                        className="w-full"
+                    />
+                    <div className="bg-black text-white p-3 text-center">
+                        <p className="text-sm font-bold uppercase tracking-wider">Your Brain: "Everything's Fine!"</p>
+                        <p className="text-xs mt-1 opacity-80">When you see the same price but ignore the shrinking package</p>
+                    </div>
+                </div>
+
+                <p>
+                    To understand it, we need to measure your personal baseline.
+                    Let&apos;s start by testing your own reaction to recent price changes.
+                </p>
             </div>
         </section>
     );
