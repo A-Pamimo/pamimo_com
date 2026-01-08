@@ -15,8 +15,8 @@ export default function Preamble() {
                 <div className={styles.content}>
                     <p>
                         Official inflation data isn&rsquo;t lying. It just isn&rsquo;t telling <em>your</em> truth.
-                        The CPI is a diverse national average, but your life is a specific sequence of receipts.
-                        When these two realities diverge, we lose faith in the system.
+                        The CPI is a diverse national average, but my life (and yours) is a specific sequence of receipts.
+                        When these two realities diverge, I start to lose faith in the system.
                     </p>
 
                     <div className={styles.definitions}>
@@ -61,8 +61,9 @@ export default function Preamble() {
                 </div>
 
                 <p>
-                    To understand it, we need to measure your personal baseline.
+                    To understand it, I need to measure your personal baseline.
                     Let&apos;s start by testing your own reaction to recent price changes.
+                    (Warning: This might make you want to cry, unlike the onions I can&apos;t afford anymore.)
                 </p>
             </div>
         </section>

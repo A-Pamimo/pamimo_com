@@ -144,7 +144,7 @@ export default function AcademicAppendix() {
 
                                         <div className="border-l-4 border-black dark:border-white pl-3">
                                             <p className="text-xs font-bold">2. Measurement Gap (Shrinkflation)</p>
-                                            <p className="text-xs opacity-70">The 3.9pp figure from Rojas et al. (2024) is specific to <strong>packaged goods during 2012-2021</strong>. We extrapolate this proportionally based on your grocery share as an illustrative estimate.</p>
+                                            <p className="text-xs opacity-70">The 3.9pp figure from Rojas et al. (2024) is specific to <strong>packaged goods during 2012-2021</strong>. I extrapolate this proportionally based on your grocery share as an illustrative estimate.</p>
                                         </div>
 
                                         <div className="border-l-4 border-black dark:border-white pl-3">
@@ -173,12 +173,12 @@ export default function AcademicAppendix() {
                             <div className={styles.fullWidth}>
                                 <h3 className={styles.columnTitle}>Technical Deep Dive</h3>
                                 <p className={styles.citation}>
-                                    <strong>How we built this:</strong> We deployed a custom <strong>Cloudflare Worker</strong> that acts as a global edge proxy.
+                                    <strong>How I built this:</strong> I deployed a custom <strong>Cloudflare Worker</strong> that acts as a global edge proxy.
                                     Every time you load this page, the worker securely calls the official <strong>BLS API</strong> to fetch the absolute latest Regional CPI data (Series CUUR0000SA0).
-                                    We cache this data for 24 hours to protect the government&apos;s servers while ensuring you see the same numbers the Fed sees.
+                                    I cache this data for 24 hours to protect the government&apos;s servers while ensuring you see the same numbers the Fed sees.
                                 </p>
                                 <p className={styles.citation}>
-                                    <strong>Why it matters:</strong> Most calculators use static yearly data. We wanted you to see the real number, right now, as it changes.
+                                    <strong>Why it matters:</strong> Most calculators use static yearly data. I wanted you to see the real number, right now, as it changes.
                                 </p>
 
                                 <div className={styles.memeContainer}>

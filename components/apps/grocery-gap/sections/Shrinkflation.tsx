@@ -54,7 +54,7 @@ export const hiddenCosts = [
     },
     {
         title: 'Trust Tax',
-        description: 'Remember when a pound of coffee was actually a pound? Neither do we. The mental load of verifying everything is exhausting.',
+        description: 'Remember when a pound of coffee was actually a pound? Neither do I. The mental load of verifying everything is exhausting.',
     },
 ];
 
@@ -85,7 +85,10 @@ export default function Shrinkflation() {
                         </TLDR>
                         <p className="text-xs opacity-60 mt-3 italic max-w-prose">
                             <strong>Research Note:</strong> The 3.9 percentage point welfare loss is specific to packaged goods during 2012-2021.
-                            This represents unmeasured value erosion, not perceived inflation. We apply it proportionally based on grocery shopping frequency as an illustrative estimate.
+                            This represents unmeasured value erosion, not perceived inflation. I apply it proportionally based on grocery shopping frequency as an illustrative estimate.
+                        </p>
+                        <p className="text-xs opacity-60 mt-2 italic text-center">
+                            I&apos;d tell you a joke about shrinkflation, but the punchline is getting smaller every year.
                         </p>
                     </div>
 
