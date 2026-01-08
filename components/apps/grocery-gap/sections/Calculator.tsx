@@ -397,7 +397,7 @@ export default function Calculator() {
                                         <span>1.0 (Emotional)</span>
                                     </div>
                                     <p className="text-xs mt-2 opacity-70 leading-relaxed">
-                                        Most people: 0.44. Adjust if you think you're more/less emotional about price changes.
+                                        Most people: 0.44. Adjust if you think you&apos;re more/less emotional about price changes.
                                     </p>
                                 </div>
                             )}

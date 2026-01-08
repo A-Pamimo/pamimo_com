@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from './AcademicAppendix.module.css';
 import { useRegionalCPI } from '@/app/actions/getRegionalCPI';
+import Image from 'next/image';
 
 export default function AcademicAppendix() {
     const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +28,7 @@ export default function AcademicAppendix() {
                                 <h3 className={styles.columnTitle}>Primary Research</h3>
                                 <ul className={styles.citationList}>
                                     <li className={styles.citation}>
-                                        <strong>Frequency Bias:</strong> Georganas, S., Healy, P. J., & Li, N. (2014). <a href="https://ideas.repec.org/a/eee/eecrev/v67y2014i1p144-158.html" target="_blank" rel="noopener noreferrer" className="hover:text-pop hover:underline">Frequency bias in consumers' perceptions of inflation</a>. <em>European Economic Review</em>, 67, 144-158.
+                                        <strong>Frequency Bias:</strong> Georganas, S., Healy, P. J., & Li, N. (2014). <a href="https://ideas.repec.org/a/eee/eecrev/v67y2014i1p144-158.html" target="_blank" rel="noopener noreferrer" className="hover:text-pop hover:underline">Frequency bias in consumers&apos; perceptions of inflation</a>. <em>European Economic Review</em>, 67, 144-158.
                                     </li>
                                     <li className={styles.citation}>
                                         <strong>Grocery Price Exposure:</strong> D&apos;Acunto, F., Malmendier, U., Ospina, J., & Weber, M. (2021). <a href="https://www.nber.org/papers/w27951" target="_blank" rel="noopener noreferrer" className="hover:text-pop hover:underline">Exposure to grocery prices and inflation expectations</a>. <em>Journal of Political Economy</em>, 129(5), 1615-1639.
@@ -131,7 +132,7 @@ export default function AcademicAppendix() {
                                     <p className="text-sm font-bold mb-2 text-pop">Important: This is a stylized educational model</p>
 
                                     <p className="text-xs opacity-80 leading-relaxed mb-3">
-                                        The Personal Cost Index illustrates <strong>why perception differs from measurement</strong>, not which is "more correct."
+                                        The Personal Cost Index illustrates <strong>why perception differs from measurement</strong>, not which is &quot;more correct.&quot;
                                         It combines three distinct phenomena:
                                     </p>
 
@@ -148,7 +149,7 @@ export default function AcademicAppendix() {
 
                                         <div className="border-l-4 border-black dark:border-white pl-3">
                                             <p className="text-xs font-bold">3. Distributional Effects (Housing Burden)</p>
-                                            <p className="text-xs opacity-70">If your housing costs differ from the average, you'll experience inflation differently. This isn't bias - it's <strong>real variation</strong> in personal circumstances.</p>
+                                            <p className="text-xs opacity-70">If your housing costs differ from the average, you&apos;ll experience inflation differently. This isn&apos;t bias - it&apos;s <strong>real variation</strong> in personal circumstances.</p>
                                         </div>
                                     </div>
 
@@ -164,7 +165,7 @@ export default function AcademicAppendix() {
 
                                     <p className="text-xs opacity-60 mt-3 italic">
                                         This model is designed for education, not as a replacement for official statistics.
-                                        It helps explain the "vibecession" - why people feel worse about the economy than the data suggests they should.
+                                        It helps explain the &quot;vibecession&quot; - why people feel worse about the economy than the data suggests they should.
                                     </p>
                                 </div>
                             </div>
@@ -174,14 +175,22 @@ export default function AcademicAppendix() {
                                 <p className={styles.citation}>
                                     <strong>How we built this:</strong> We deployed a custom <strong>Cloudflare Worker</strong> that acts as a global edge proxy.
                                     Every time you load this page, the worker securely calls the official <strong>BLS API</strong> to fetch the absolute latest Regional CPI data (Series CUUR0000SA0).
-                                    We cache this data for 24 hours to protect the government's servers while ensuring you see the same numbers the Fed sees.
+                                    We cache this data for 24 hours to protect the government&apos;s servers while ensuring you see the same numbers the Fed sees.
                                 </p>
                                 <p className={styles.citation}>
                                     <strong>Why it matters:</strong> Most calculators use static yearly data. We wanted you to see the real number, right now, as it changes.
                                 </p>
 
                                 <div className={styles.memeContainer}>
-                                    <img src="/images/inflation_meme.png" alt="Rent vs Eggs Inflation Meme" className={styles.memeImage} />
+                                    <div className="relative w-full aspect-[4/3]">
+                                        <Image
+                                            src="/images/inflation_meme.png"
+                                            alt="Rent vs Eggs Inflation Meme"
+                                            fill
+                                            className={styles.memeImage}
+                                            sizes="(max-width: 768px) 100vw, 400px"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>

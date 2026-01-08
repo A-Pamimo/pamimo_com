@@ -3,6 +3,7 @@
 import styles from './Shrinkflation.module.css';
 import TLDR from '../ui/TLDR';
 import LiveCPIIndicator from '../ui/LiveCPIIndicator';
+import Image from 'next/image';
 
 interface ShrinkProduct {
     name: string;
@@ -90,11 +91,15 @@ export default function Shrinkflation() {
 
                     {/* Meme: Visual Example */}
                     <div className="max-w-sm mx-auto w-full border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rotate-1 hover:rotate-0 transition-transform duration-300">
-                        <img
-                            src="/images/shrinkflation_pizza_meme.jpg"
-                            alt="Pizza shrinkflation meme showing smaller slices - Nobody will notice"
-                            className="w-full"
-                        />
+                        <div className="relative w-full aspect-[4/3]">
+                            <Image
+                                src="/images/shrinkflation_pizza_meme.jpg"
+                                alt="Pizza shrinkflation meme showing smaller slices - Nobody will notice"
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, 400px"
+                            />
+                        </div>
                         <div className="bg-black text-white p-3 text-center">
                             <p className="text-sm font-bold uppercase tracking-wider">Exhibit A: The Classic Move</p>
                         </div>

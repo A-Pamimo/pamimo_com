@@ -51,8 +51,8 @@ export default function Hero({ isBusinessMode = false }: HeroProps) {
                                     <div className="p-4 bg-white dark:bg-black text-theme-text border-t-2 border-black dark:border-white">
                                         <p className="text-sm md:text-base leading-relaxed">
                                             Official inflation counts every price change equally. Your brain does not.
-                                            You pay a "psychological tax" every time you buy eggs or gas, but you ignore the flat price of TVs.
-                                            This tool calculates the gap between the government's data and your reality.
+                                            You pay a &quot;psychological tax&quot; every time you buy eggs or gas, but you ignore the flat price of TVs.
+                                            This tool calculates the gap between the government&apos;s data and your reality.
                                         </p>
                                     </div>
                                 )}

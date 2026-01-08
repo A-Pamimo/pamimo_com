@@ -28,14 +28,14 @@ export default function MethodologyModal({ isOpen, onClose }: MethodologyModalPr
                             <span className="italic opacity-80"> Housing_Pressure</span>
                         </div>
                         <p className={styles.note}>
-                            (Shrinkflation shown separately as "Hidden Value Loss")
+                            (Shrinkflation shown separately as &quot;Hidden Value Loss&quot;)
                         </p>
                     </section>
 
                     <section className={styles.section}>
                         <h3 className={styles.sectionTitle}>1. Regional CPI (Base Rate)</h3>
                         <p className={styles.description}>
-                            Your state or province's official inflation rate from government sources (BLS for US, StatCan for Canada).
+                            Your state or province&apos;s official inflation rate from government sources (BLS for US, StatCan for Canada).
                         </p>
                         <div className={styles.example}>
                             <strong>Example:</strong> Northeast US = 3.1%, South = 2.2%
@@ -70,12 +70,12 @@ export default function MethodologyModal({ isOpen, onClose }: MethodologyModalPr
                             Where ShelterWeight = 36.2% (US) or 29.1% (Canada) of CPI basket
                         </p>
                         <div className={styles.example}>
-                            <strong>Example:</strong> If you spend 45% of income on rent, shelter inflation is 5%, and you're in the US:<br />
+                            <strong>Example:</strong> If you spend 45% of income on rent, shelter inflation is 5%, and you&apos;re in the US:<br />
                             → 0.45 × 0.362 × 5.0 = <strong>+0.81%</strong>
                         </div>
                         <p className={styles.insight}>
-                            <strong>Why this matters:</strong> If housing is eating more of your budget than the "average" person,
-                            you'll feel inflation more acutely even if the official rate is moderate.
+                            <strong>Why this matters:</strong> If housing is eating more of your budget than the &quot;average&quot; person,
+                            you&apos;ll feel inflation more acutely even if the official rate is moderate.
                         </p>
                     </section>
 
@@ -113,7 +113,7 @@ export default function MethodologyModal({ isOpen, onClose }: MethodologyModalPr
                         <h3 className={styles.sectionTitle}>Important Limitations</h3>
                         <ul className={styles.limitationsList}>
                             <li>This is a <strong>stylized educational model</strong>, not a replacement for official CPI</li>
-                            <li>It illustrates <strong>why perception differs from measurement</strong>, not which is "more correct"</li>
+                            <li>It illustrates <strong>why perception differs from measurement</strong>, not which is &quot;more correct&quot;</li>
                             <li>The model assumes α = 0.44 applies universally (it varies by person)</li>
                             <li>Housing calculations use regional averages, not your specific rent/mortgage</li>
                             <li>Shrinkflation estimate extrapolates from packaged goods research to all groceries</li>

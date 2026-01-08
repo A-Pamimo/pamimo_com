@@ -1,6 +1,7 @@
 'use client';
 
 import styles from './Preamble.module.css';
+import Image from 'next/image';
 
 export default function Preamble() {
     return (
@@ -44,13 +45,17 @@ export default function Preamble() {
 
                 {/* Meme: The Frequency Bias Hook */}
                 <div className="max-w-sm mx-auto w-full border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] -rotate-1 mt-12 mb-4">
-                    <img
-                        src="/images/frequency_bias_meat_meme.jpg"
-                        alt="What inflation? A package of hamburger meat costs the same as it did last month meme"
-                        className="w-full"
-                    />
+                    <div className="relative w-full aspect-[4/3]">
+                        <Image
+                            src="/images/frequency_bias_meat_meme.jpg"
+                            alt="What inflation? A package of hamburger meat costs the same as it did last month meme"
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, 400px"
+                        />
+                    </div>
                     <div className="bg-black text-white p-3 text-center">
-                        <p className="text-sm font-bold uppercase tracking-wider">Your Brain: "Everything's Fine!"</p>
+                        <p className="text-sm font-bold uppercase tracking-wider">Your Brain: &quot;Everything&apos;s Fine!&quot;</p>
                         <p className="text-xs mt-1 opacity-80">When you see the same price but ignore the shrinking package</p>
                     </div>
                 </div>
