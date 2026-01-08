@@ -34,7 +34,7 @@ export default function TLDR({ children, inverted = false, source, sourceLink }:
                             {children}
                         </p>
                         {source && (
-                            <p className="mt-2 text-[10px] uppercase tracking-widest opacity-50 font-mono">
+                            <p className={`mt-2 text-[10px] uppercase tracking-widest opacity-50 font-mono ${inverted ? 'text-white' : ''}`}>
                                 Source: {sourceLink ? (
                                     <a href={sourceLink} target="_blank" rel="noopener noreferrer" className="hover:underline">
                                         {source}

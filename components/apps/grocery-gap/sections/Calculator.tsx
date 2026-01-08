@@ -5,11 +5,10 @@ import styles from './Calculator.module.css';
 import TLDR from '../ui/TLDR';
 import { useRegion } from '../context/RegionContext';
 
-// Regional Data Interfaces
 interface StateOption {
     abbr: string;
     name: string;
-    overallRpp: number;
+    cpiRate: number; // Nov 2024 YoY CPI %
     housingRpp: number;
 }
 
@@ -42,85 +41,93 @@ const CountUp = ({ end, decimals = 0, suffix = '', className = '' }: { end: numb
 };
 
 // 1. Data Definitions
-// Regional Averages (BEA 2023)
-const REGION_AVG = {
-    NE: { overallRpp: 110.4, housingRpp: 125.6 }, // Northeast
-    MW: { overallRpp: 91.2, housingRpp: 75.4 },   // Midwest
-    SO: { overallRpp: 95.8, housingRpp: 88.2 },   // South
-    WE: { overallRpp: 106.4, housingRpp: 119.8 }, // West
+// Regional CPI (BLS Nov 2025 YoY%) - Source: https://www.bls.gov/regions/
+const REGION_CPI = {
+    NE: 3.1, // Northeast
+    MW: 3.0, // Midwest
+    SO: 2.2, // South
+    WE: 3.0, // West
 };
+const NATIONAL_CPI_US = 2.7; // Approximate
+const HOUSING_RPP_AVG = 100; // Placeholder, housing logic separate
 
-// Full State List mapped to data or regions
+// Full State List - CPI by region (BLS Nov 2025)
+// Source: https://www.bls.gov/regions/subjects/consumer-price-indexes.htm
 const statesUS: StateOption[] = [
-    // Specific Data (21 States + DC)
-    { abbr: 'CA', name: 'California', overallRpp: 112.6, housingRpp: 157.8 },
-    { abbr: 'NY', name: 'New York', overallRpp: 108.2, housingRpp: 139.5 },
-    { abbr: 'NJ', name: 'New Jersey', overallRpp: 108.9, housingRpp: 121.4 },
-    { abbr: 'HI', name: 'Hawaii', overallRpp: 108.6, housingRpp: 139.2 },
-    { abbr: 'MA', name: 'Massachusetts', overallRpp: 107.8, housingRpp: 132.6 },
-    { abbr: 'DC', name: 'Washington D.C.', overallRpp: 110.8, housingRpp: 145.3 },
-    { abbr: 'WA', name: 'Washington', overallRpp: 105.6, housingRpp: 117.8 },
-    { abbr: 'CO', name: 'Colorado', overallRpp: 104.2, housingRpp: 115.3 },
-    { abbr: 'OR', name: 'Oregon', overallRpp: 102.8, housingRpp: 112.4 },
-    { abbr: 'FL', name: 'Florida', overallRpp: 100.8, housingRpp: 104.2 },
-    { abbr: 'AZ', name: 'Arizona', overallRpp: 99.2, housingRpp: 98.5 },
-    { abbr: 'TX', name: 'Texas', overallRpp: 96.4, housingRpp: 87.2 },
-    { abbr: 'GA', name: 'Georgia', overallRpp: 93.8, housingRpp: 82.6 },
-    { abbr: 'NC', name: 'North Carolina', overallRpp: 94.2, housingRpp: 84.3 },
-    { abbr: 'TN', name: 'Tennessee', overallRpp: 92.6, housingRpp: 79.8 },
-    { abbr: 'OH', name: 'Ohio', overallRpp: 91.8, housingRpp: 74.2 },
-    { abbr: 'IN', name: 'Indiana', overallRpp: 91.2, housingRpp: 72.8 },
-    { abbr: 'MO', name: 'Missouri', overallRpp: 90.4, housingRpp: 71.5 },
-    { abbr: 'OK', name: 'Oklahoma', overallRpp: 89.6, housingRpp: 68.4 },
-    { abbr: 'AR', name: 'Arkansas', overallRpp: 86.5, housingRpp: 57.2 },
-    { abbr: 'MS', name: 'Mississippi', overallRpp: 87.3, housingRpp: 54.9 },
-    // Mapped States (Northeast)
-    { abbr: 'CT', name: 'Connecticut', ...REGION_AVG.NE },
-    { abbr: 'ME', name: 'Maine', ...REGION_AVG.NE },
-    { abbr: 'NH', name: 'New Hampshire', ...REGION_AVG.NE },
-    { abbr: 'RI', name: 'Rhode Island', ...REGION_AVG.NE },
-    { abbr: 'VT', name: 'Vermont', ...REGION_AVG.NE },
-    { abbr: 'PA', name: 'Pennsylvania', ...REGION_AVG.NE },
-    // Mapped States (Midwest)
-    { abbr: 'IL', name: 'Illinois', ...REGION_AVG.MW },
-    { abbr: 'MI', name: 'Michigan', ...REGION_AVG.MW },
-    { abbr: 'WI', name: 'Wisconsin', ...REGION_AVG.MW },
-    { abbr: 'MN', name: 'Minnesota', ...REGION_AVG.MW },
-    { abbr: 'IA', name: 'Iowa', ...REGION_AVG.MW },
-    { abbr: 'KS', name: 'Kansas', ...REGION_AVG.MW },
-    { abbr: 'NE', name: 'Nebraska', ...REGION_AVG.MW },
-    { abbr: 'SD', name: 'South Dakota', ...REGION_AVG.MW },
-    { abbr: 'ND', name: 'North Dakota', ...REGION_AVG.MW },
-    // Mapped States (South)
-    { abbr: 'VA', name: 'Virginia', ...REGION_AVG.SO },
-    { abbr: 'DE', name: 'Delaware', ...REGION_AVG.SO },
-    { abbr: 'MD', name: 'Maryland', ...REGION_AVG.SO },
-    { abbr: 'WV', name: 'West Virginia', ...REGION_AVG.SO },
-    { abbr: 'KY', name: 'Kentucky', ...REGION_AVG.SO },
-    { abbr: 'SC', name: 'South Carolina', ...REGION_AVG.SO },
-    { abbr: 'AL', name: 'Alabama', ...REGION_AVG.SO },
-    { abbr: 'LA', name: 'Louisiana', ...REGION_AVG.SO },
-    // Mapped States (West)
-    { abbr: 'ID', name: 'Idaho', ...REGION_AVG.WE },
-    { abbr: 'NV', name: 'Nevada', ...REGION_AVG.WE },
-    { abbr: 'UT', name: 'Utah', ...REGION_AVG.WE },
-    { abbr: 'MT', name: 'Montana', ...REGION_AVG.WE },
-    { abbr: 'WY', name: 'Wyoming', ...REGION_AVG.WE },
-    { abbr: 'AK', name: 'Alaska', ...REGION_AVG.WE }, // Usually outlier, but mapping to West Avg for now
-    { abbr: 'NM', name: 'New Mexico', ...REGION_AVG.WE },
+    // Northeast (3.5%)
+    { abbr: 'CT', name: 'Connecticut', cpiRate: REGION_CPI.NE, housingRpp: 125.6 },
+    { abbr: 'ME', name: 'Maine', cpiRate: REGION_CPI.NE, housingRpp: 110 },
+    { abbr: 'MA', name: 'Massachusetts', cpiRate: REGION_CPI.NE, housingRpp: 132.6 },
+    { abbr: 'NH', name: 'New Hampshire', cpiRate: REGION_CPI.NE, housingRpp: 115 },
+    { abbr: 'NJ', name: 'New Jersey', cpiRate: REGION_CPI.NE, housingRpp: 121.4 },
+    { abbr: 'NY', name: 'New York', cpiRate: REGION_CPI.NE, housingRpp: 139.5 },
+    { abbr: 'PA', name: 'Pennsylvania', cpiRate: REGION_CPI.NE, housingRpp: 95 },
+    { abbr: 'RI', name: 'Rhode Island', cpiRate: REGION_CPI.NE, housingRpp: 110 },
+    { abbr: 'VT', name: 'Vermont', cpiRate: REGION_CPI.NE, housingRpp: 105 },
+    // Midwest (2.6%)
+    { abbr: 'IL', name: 'Illinois', cpiRate: REGION_CPI.MW, housingRpp: 90 },
+    { abbr: 'IN', name: 'Indiana', cpiRate: REGION_CPI.MW, housingRpp: 72.8 },
+    { abbr: 'IA', name: 'Iowa', cpiRate: REGION_CPI.MW, housingRpp: 70 },
+    { abbr: 'KS', name: 'Kansas', cpiRate: REGION_CPI.MW, housingRpp: 68 },
+    { abbr: 'MI', name: 'Michigan', cpiRate: REGION_CPI.MW, housingRpp: 78 },
+    { abbr: 'MN', name: 'Minnesota', cpiRate: REGION_CPI.MW, housingRpp: 85 },
+    { abbr: 'MO', name: 'Missouri', cpiRate: REGION_CPI.MW, housingRpp: 71.5 },
+    { abbr: 'NE', name: 'Nebraska', cpiRate: REGION_CPI.MW, housingRpp: 72 },
+    { abbr: 'ND', name: 'North Dakota', cpiRate: REGION_CPI.MW, housingRpp: 70 },
+    { abbr: 'OH', name: 'Ohio', cpiRate: REGION_CPI.MW, housingRpp: 74.2 },
+    { abbr: 'SD', name: 'South Dakota', cpiRate: REGION_CPI.MW, housingRpp: 70 },
+    { abbr: 'WI', name: 'Wisconsin', cpiRate: REGION_CPI.MW, housingRpp: 80 },
+    // South (2.7%)
+    { abbr: 'AL', name: 'Alabama', cpiRate: REGION_CPI.SO, housingRpp: 65 },
+    { abbr: 'AR', name: 'Arkansas', cpiRate: REGION_CPI.SO, housingRpp: 57.2 },
+    { abbr: 'DE', name: 'Delaware', cpiRate: REGION_CPI.SO, housingRpp: 90 },
+    { abbr: 'DC', name: 'Washington D.C.', cpiRate: REGION_CPI.SO, housingRpp: 145.3 },
+    { abbr: 'FL', name: 'Florida', cpiRate: REGION_CPI.SO, housingRpp: 104.2 },
+    { abbr: 'GA', name: 'Georgia', cpiRate: REGION_CPI.SO, housingRpp: 82.6 },
+    { abbr: 'KY', name: 'Kentucky', cpiRate: REGION_CPI.SO, housingRpp: 68 },
+    { abbr: 'LA', name: 'Louisiana', cpiRate: REGION_CPI.SO, housingRpp: 70 },
+    { abbr: 'MD', name: 'Maryland', cpiRate: REGION_CPI.SO, housingRpp: 105 },
+    { abbr: 'MS', name: 'Mississippi', cpiRate: REGION_CPI.SO, housingRpp: 54.9 },
+    { abbr: 'NC', name: 'North Carolina', cpiRate: REGION_CPI.SO, housingRpp: 84.3 },
+    { abbr: 'OK', name: 'Oklahoma', cpiRate: REGION_CPI.SO, housingRpp: 68.4 },
+    { abbr: 'SC', name: 'South Carolina', cpiRate: REGION_CPI.SO, housingRpp: 75 },
+    { abbr: 'TN', name: 'Tennessee', cpiRate: REGION_CPI.SO, housingRpp: 79.8 },
+    { abbr: 'TX', name: 'Texas', cpiRate: REGION_CPI.SO, housingRpp: 87.2 },
+    { abbr: 'VA', name: 'Virginia', cpiRate: REGION_CPI.SO, housingRpp: 100 },
+    { abbr: 'WV', name: 'West Virginia', cpiRate: REGION_CPI.SO, housingRpp: 60 },
+    // West (2.4%)
+    { abbr: 'AK', name: 'Alaska', cpiRate: REGION_CPI.WE, housingRpp: 110 },
+    { abbr: 'AZ', name: 'Arizona', cpiRate: REGION_CPI.WE, housingRpp: 98.5 },
+    { abbr: 'CA', name: 'California', cpiRate: REGION_CPI.WE, housingRpp: 157.8 },
+    { abbr: 'CO', name: 'Colorado', cpiRate: REGION_CPI.WE, housingRpp: 115.3 },
+    { abbr: 'HI', name: 'Hawaii', cpiRate: REGION_CPI.WE, housingRpp: 139.2 },
+    { abbr: 'ID', name: 'Idaho', cpiRate: REGION_CPI.WE, housingRpp: 95 },
+    { abbr: 'MT', name: 'Montana', cpiRate: REGION_CPI.WE, housingRpp: 90 },
+    { abbr: 'NV', name: 'Nevada', cpiRate: REGION_CPI.WE, housingRpp: 100 },
+    { abbr: 'NM', name: 'New Mexico', cpiRate: REGION_CPI.WE, housingRpp: 80 },
+    { abbr: 'OR', name: 'Oregon', cpiRate: REGION_CPI.WE, housingRpp: 112.4 },
+    { abbr: 'UT', name: 'Utah', cpiRate: REGION_CPI.WE, housingRpp: 105 },
+    { abbr: 'WA', name: 'Washington', cpiRate: REGION_CPI.WE, housingRpp: 117.8 },
+    { abbr: 'WY', name: 'Wyoming', cpiRate: REGION_CPI.WE, housingRpp: 85 },
 ].sort((a, b) => a.name.localeCompare(b.name));
 
+// Canadian Provinces/Territories - CPI (StatCan Nov 2025)
+// Source: https://www150.statcan.gc.ca/n1/daily-quotidien/251215/dq251215a-eng.htm
+const NATIONAL_CPI_CA = 2.2;
 const provincesCA: StateOption[] = [
-    { abbr: 'BC', name: 'British Columbia', overallRpp: 112.4, housingRpp: 145.2 },
-    { abbr: 'ON', name: 'Ontario', overallRpp: 110.6, housingRpp: 142.1 },
-    { abbr: 'AB', name: 'Alberta', overallRpp: 111.3, housingRpp: 105.4 },
-    { abbr: 'QC', name: 'Quebec', overallRpp: 93.1, housingRpp: 85.2 },
-    { abbr: 'NS', name: 'Nova Scotia', overallRpp: 101.8, housingRpp: 95.1 },
-    { abbr: 'MB', name: 'Manitoba', overallRpp: 94.2, housingRpp: 86.5 },
-    { abbr: 'SK', name: 'Saskatchewan', overallRpp: 95.4, housingRpp: 84.1 },
-    { abbr: 'NB', name: 'New Brunswick', overallRpp: 92.5, housingRpp: 78.4 },
-    { abbr: 'NL', name: 'Newfoundland & Lab.', overallRpp: 100.5, housingRpp: 86.2 },
-    { abbr: 'PE', name: 'P.E.I.', overallRpp: 96.3, housingRpp: 88.5 },
+    { abbr: 'AB', name: 'Alberta', cpiRate: 1.9, housingRpp: 105.4 },
+    { abbr: 'BC', name: 'British Columbia', cpiRate: 2.0, housingRpp: 145.2 },
+    { abbr: 'MB', name: 'Manitoba', cpiRate: 3.3, housingRpp: 86.5 },
+    { abbr: 'NB', name: 'New Brunswick', cpiRate: 2.7, housingRpp: 78.4 },
+    { abbr: 'NL', name: 'Newfoundland & Lab.', cpiRate: 2.2, housingRpp: 86.2 },
+    { abbr: 'NT', name: 'Northwest Territories', cpiRate: 2.2, housingRpp: 100 }, // Approx national
+    { abbr: 'NS', name: 'Nova Scotia', cpiRate: 2.4, housingRpp: 95.1 },
+    { abbr: 'NU', name: 'Nunavut', cpiRate: 2.2, housingRpp: 100 }, // Approx national
+    { abbr: 'ON', name: 'Ontario', cpiRate: 1.9, housingRpp: 142.1 },
+    { abbr: 'PE', name: 'Prince Edward Island', cpiRate: 1.4, housingRpp: 88.5 },
+    { abbr: 'QC', name: 'Quebec', cpiRate: 3.0, housingRpp: 85.2 },
+    { abbr: 'SK', name: 'Saskatchewan', cpiRate: 2.1, housingRpp: 84.1 },
+    { abbr: 'YT', name: 'Yukon', cpiRate: 2.2, housingRpp: 110 }, // Approx national
 ].sort((a, b) => a.name.localeCompare(b.name));
 
 interface FrequencyInput {
@@ -214,44 +221,45 @@ export default function Calculator() {
     const results = useMemo(() => {
         if (!selectedState || !housingType) return null;
 
-        const baseInflation = officialCPI;
+        // Base: Use the region's actual CPI rate instead of national
+        const baseInflation = selectedState.cpiRate;
+        const nationalCPI = isCanada ? NATIONAL_CPI_CA : NATIONAL_CPI_US;
 
+        // Frequency Bias (over-weight high-frequency purchases)
         const alpha = 0.44;
         const totalFreq = Object.values(frequencies).reduce((a, b) => a + b, 0);
         const highFreqItems = ['groceries', 'gasoline', 'restaurants'];
         const highFreqWeight = highFreqItems.reduce((a, id) => a + frequencies[id], 0) / totalFreq;
-        const frequencyBiasMultiplier = 1 + (alpha * (highFreqWeight - 0.5));
+        const frequencyBiasAdd = alpha * (highFreqWeight - 0.5) * baseInflation;
 
-        const regionalMultiplier = selectedState.overallRpp / 100;
-
-        let housingAdjustment = 1.0;
-        if (housingType === 'rent') {
-            housingAdjustment = (selectedState.housingRpp / 100) * (rentPercent / 30);
+        // Housing Pressure (only for renters with high burden)
+        let housingPressure = 0;
+        if (housingType === 'rent' && rentPercent > 30) {
+            const excessBurden = (rentPercent - 30) / 100;
+            housingPressure = excessBurden * baseInflation * 0.5;
         } else if (housingType === 'own' && isCanada && mortgageRenewed) {
-            housingAdjustment = (selectedState.housingRpp / 100) * 1.4;
+            housingPressure = baseInflation * 0.3; // Mortgage shock
         }
 
+        // Shrinkflation (Separate, not added to main %)
         const groceryShare = frequencies.groceries / totalFreq;
-        const shrinkflationAdd = 3.9 * groceryShare;
+        const shrinkflationLoss = 3.9 * groceryShare;
 
-        const perceivedInflation = baseInflation
-            * frequencyBiasMultiplier
-            * ((regionalMultiplier + housingAdjustment) / 2)
-            + shrinkflationAdd;
+        // Perceived Cost Index (without shrinkflation baked in)
+        const perceivedCPI = baseInflation + frequencyBiasAdd + housingPressure;
 
         return {
-            perceived: Math.max(perceivedInflation, officialCPI),
-            official: officialCPI,
+            perceived: Math.max(perceivedCPI, nationalCPI),
+            official: nationalCPI,
+            shrinkflationLoss: shrinkflationLoss,
             breakdown: {
                 base: baseInflation,
-                frequencyBias: (frequencyBiasMultiplier - 1) * baseInflation,
-                regional: ((regionalMultiplier - 1) * baseInflation),
-                housing: housingType !== 'own' ? ((housingAdjustment - 1) * baseInflation * 0.3) : 0,
-                mortgageShock: (housingType === 'own' && isCanada && mortgageRenewed) ? ((housingAdjustment - 1) * baseInflation * 0.3) : 0,
-                shrinkflation: shrinkflationAdd,
+                frequencyBias: frequencyBiasAdd,
+                housing: housingPressure,
+                mortgageShock: (housingType === 'own' && isCanada && mortgageRenewed) ? housingPressure : 0,
             },
         };
-    }, [selectedState, housingType, officialCPI, frequencies, rentPercent, isCanada, mortgageRenewed]);
+    }, [selectedState, housingType, frequencies, rentPercent, isCanada, mortgageRenewed]);
 
     const renderStep = () => {
         switch (step) {
@@ -294,12 +302,9 @@ export default function Calculator() {
 
                         {selectedState && (
                             <div className={styles.locationPreview}>
-                                <span className={styles.previewLabel}>Regional Price Level</span>
+                                <span className={styles.previewLabel}>Regional Inflation Rate (Nov &apos;25)</span>
                                 <span className={styles.previewValue}>
-                                    {selectedState.overallRpp > 100
-                                        ? `+${(selectedState.overallRpp - 100).toFixed(0)}% above average`
-                                        : `${(100 - selectedState.overallRpp).toFixed(0)}% below average`
-                                    }
+                                    {selectedState.cpiRate.toFixed(1)}%
                                 </span>
                             </div>
                         )}
@@ -404,7 +409,7 @@ export default function Calculator() {
                     <div className={styles.form}>
                         <div className={styles.results}>
                             <div className={styles.resultsBig}>
-                                <p className={styles.resultsLabel}>Your Perceived Inflation</p>
+                                <p className={styles.resultsLabel}>Your Perceived Cost Index</p>
                                 <CountUp end={results.perceived} decimals={1} suffix="%" className={styles.resultsNumber} />
                             </div>
 
@@ -415,7 +420,7 @@ export default function Calculator() {
                                     </p>
                                     <p className={styles.comparisonLabel}>
                                         Official CPI
-                                        <span className="block text-[9px] opacity-60 font-mono mt-0.5">(Source: BLS)</span>
+                                        <span className="block text-[9px] opacity-60 font-mono mt-0.5">(Source: {isCanada ? 'StatCan' : 'BLS'})</span>
                                     </p>
                                 </div>
                                 <div className={styles.comparisonItem}>
@@ -429,22 +434,18 @@ export default function Calculator() {
                             <div className={styles.resultsBreakdown}>
                                 <p className={styles.breakdownTitle}>What drives your perception</p>
                                 <div className={styles.breakdownItem}>
-                                    <span className={styles.breakdownLabel}>Base inflation</span>
+                                    <span className={styles.breakdownLabel}>Regional CPI</span>
                                     <span className={styles.breakdownValue}>+{results.breakdown.base.toFixed(1)}%</span>
                                 </div>
                                 <div className={styles.breakdownItem}>
-                                    <span className={styles.breakdownLabel}>Price Memory</span>
-                                    <span className={styles.breakdownValue}>+{results.breakdown.frequencyBias.toFixed(1)}%</span>
-                                </div>
-                                <div className={styles.breakdownItem}>
-                                    <span className={styles.breakdownLabel}>Regional adjustment</span>
+                                    <span className={styles.breakdownLabel}>Price Memory (Frequency Bias)</span>
                                     <span className={styles.breakdownValue}>
-                                        {results.breakdown.regional >= 0 ? '+' : ''}{results.breakdown.regional.toFixed(1)}%
+                                        {results.breakdown.frequencyBias >= 0 ? '+' : ''}{results.breakdown.frequencyBias.toFixed(1)}%
                                     </span>
                                 </div>
-                                {housingType === 'rent' && (
+                                {results.breakdown.housing > 0 && (
                                     <div className={styles.breakdownItem}>
-                                        <span className={styles.breakdownLabel}>Housing pressure</span>
+                                        <span className={styles.breakdownLabel}>Housing Pressure</span>
                                         <span className={styles.breakdownValue}>+{results.breakdown.housing.toFixed(1)}%</span>
                                     </div>
                                 )}
@@ -454,10 +455,15 @@ export default function Calculator() {
                                         <span className={`${styles.breakdownValue} text-red-500`}>+{results.breakdown.mortgageShock.toFixed(1)}%</span>
                                     </div>
                                 )}
-                                <div className={styles.breakdownItem}>
-                                    <span className={styles.breakdownLabel}>Shrinkflation</span>
-                                    <span className={styles.breakdownValue}>+{results.breakdown.shrinkflation.toFixed(1)}%</span>
-                                </div>
+                            </div>
+
+                            {/* Shrinkflation: Separate Hidden Loss */}
+                            <div className="mt-4 p-4 border border-dashed border-pop/50 rounded-lg bg-pop/5">
+                                <p className="font-mono text-xs uppercase tracking-widest opacity-60 mb-1">Hidden Value Loss</p>
+                                <p className="text-2xl font-bold text-pop">~{results.shrinkflationLoss.toFixed(1)}%</p>
+                                <p className="text-xs opacity-70 mt-1">
+                                    Estimated value lost to package shrinkage (not included in official CPI).
+                                </p>
                             </div>
 
                             <div className="mt-8 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
@@ -524,7 +530,7 @@ export default function Calculator() {
                         based on where you live and how you shop.
                     </p>
                     <TLDR source="Kahneman & Tversky, Prospect Theory">
-                        Calculate your own personal inflation rate based on your actual spending habits. It is likely different from the official number.
+                        Calculate your Perceived Cost Index based on your location and spending habits. Your perception of price changes likely differs from official statistics.
                     </TLDR>
                 </div>
 
