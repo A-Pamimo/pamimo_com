@@ -18,6 +18,8 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
     const noiseCtx = noiseCanvas.getContext('2d');
     if (!noiseCtx) return;
 
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
+
     const resizeNoise = () => {
       noiseCanvas.width = window.innerWidth;
       noiseCanvas.height = window.innerHeight;
@@ -28,9 +30,19 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
       }
       noiseCtx.putImageData(idata, 0, 0);
     };
+
+    // Debounce noise generation to avoid expensive pixel manipulation during resize
+    const handleResize = () => {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(resizeNoise, 200);
+    };
+
     resizeNoise();
-    window.addEventListener('resize', resizeNoise);
-    return () => window.removeEventListener('resize', resizeNoise);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+    };
   }, []);
 
   // --- GEO SHAPES (Normal Mode Only) ---
