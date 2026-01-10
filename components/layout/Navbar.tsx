@@ -155,8 +155,9 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="absolute top-6 right-6 text-cream text-2xl cursor-hoverable"
+                aria-label="Close menu"
               >
-                <IconClose className="w-8 h-8 pixel-icon" />
+                <IconClose className="w-8 h-8 pixel-icon" aria-hidden="true" />
               </button>
 
               <nav className="flex flex-col">
