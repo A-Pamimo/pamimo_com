@@ -19,9 +19,15 @@ const Footer: React.FC = () => {
               <input
                 type="email"
                 placeholder="ENTER EMAIL FOR UPDATES"
+                aria-label="Email address for updates"
                 className="w-full bg-transparent border-b border-white/20 py-3 text-xs font-mono placeholder:text-white/20 focus:outline-none focus:border-pop transition-colors pr-10 text-cream"
               />
-              <button type="submit" className="absolute right-0 top-2 opacity-50 group-hover:opacity-100 hover:text-pop transition-all">
+              <button
+                type="submit"
+                className="absolute right-0 top-2 opacity-50 group-hover:opacity-100 hover:text-pop transition-all"
+                aria-label="Subscribe"
+                title="Subscribe"
+              >
                 <IconArrow className="w-4 h-4 -rotate-45" />
               </button>
             </form>
