@@ -26,20 +26,35 @@ const highlightText = (text: string) => {
 };
 
 const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
+    // Handle body lock and escape key
     useEffect(() => {
         if (project) {
             document.body.style.overflow = 'hidden';
+
+            const handleEscape = (e: KeyboardEvent) => {
+                if (e.key === 'Escape') onClose();
+            };
+            window.addEventListener('keydown', handleEscape);
+
+            return () => {
+                document.body.style.overflow = '';
+                window.removeEventListener('keydown', handleEscape);
+            };
         } else {
             document.body.style.overflow = '';
         }
-        return () => { document.body.style.overflow = ''; };
-    }, [project]);
+    }, [project, onClose]);
 
     if (!project) return null;
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[9000] flex items-end justify-center pointer-events-none">
+            <div
+                className="fixed inset-0 z-[9000] flex items-end justify-center pointer-events-none"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+            >
 
                 {/* Backdrop - Blur & Fade */}
                 <motion.div
@@ -63,6 +78,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                     <div className="absolute top-6 right-6 z-50">
                         <button
                             onClick={onClose}
+                            aria-label="Close modal"
                             className="bg-ink text-cream dark:bg-white dark:text-ink w-12 h-12 rounded-none flex items-center justify-center hover:bg-pop hover:text-white dark:hover:bg-pop dark:hover:text-white transition-colors shadow-lg cursor-hoverable"
                         >
                             <IconClose className="w-5 h-5 pixel-icon" />
@@ -73,6 +89,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                     <div className="md:hidden absolute bottom-6 right-6 z-[60]">
                         <button
                             onClick={onClose}
+                            aria-label="Close modal"
                             className="bg-pop text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl active:scale-90 transition-transform"
                         >
                             <IconClose className="w-6 h-6" />
@@ -102,6 +119,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.2 }}
+                                            id="modal-title"
                                             className="font-display font-bold text-5xl md:text-7xl leading-[0.9] mb-4 tracking-tight"
                                         >
                                             {project.title}
