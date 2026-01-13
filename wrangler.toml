@@ -8,6 +8,9 @@ pages_build_output_dir = "out"
 # functions_dir = "functions"
 
 # Notes:
-# - Wrangler will read your API token from the CLOUDFLARE_API_TOKEN env var or
-#   use interactive login. Do NOT place tokens in this file.
 # - If your account/project differ, update account_id and project_name above.
+
+[[d1_databases]]
+binding = "DB" # Available in your Worker on env.DB
+database_name = "pamimo-db"
+database_id = "490072b2-4d2a-4239-b586-0c14e32a7ef6"

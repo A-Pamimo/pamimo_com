@@ -143,8 +143,11 @@ export default function AcademicAppendix() {
                                         </div>
 
                                         <div className="border-l-4 border-black dark:border-white pl-3">
-                                            <p className="text-xs font-bold">2. Measurement Gap (Shrinkflation)</p>
-                                            <p className="text-xs opacity-70">The 3.9pp figure from Rojas et al. (2024) is specific to <strong>packaged goods during 2012-2021</strong>. I extrapolate this proportionally based on your grocery share as an illustrative estimate.</p>
+                                            <p className="text-xs font-bold text-white">2. Measurement Gap (Shrinkflation)</p>
+                                            <div className="text-white space-y-2">
+                                                <p className="text-xs opacity-90">Research Note: The 3.9 percentage point welfare loss is specific to packaged goods during 2012-2021. This represents unmeasured value erosion, not perceived inflation. I apply it proportionally based on grocery shopping frequency as an illustrative estimate.</p>
+                                                <p className="text-xs italic opacity-80">&quot;I&apos;d tell you a joke about shrinkflation, but the punchline is getting smaller every year.&quot;</p>
+                                            </div>
                                         </div>
 
                                         <div className="border-l-4 border-black dark:border-white pl-3">

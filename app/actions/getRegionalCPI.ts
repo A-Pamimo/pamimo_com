@@ -43,7 +43,7 @@ export function useRegionalCPI() {
                     throw new Error(`Worker returned ${response.status}`);
                 }
 
-                const result = await response.json();
+                const result = await response.json() as RegionalCPIData;
                 setData(result);
                 setError(null);
             } catch (err) {

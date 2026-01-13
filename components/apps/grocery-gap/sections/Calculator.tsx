@@ -598,15 +598,52 @@ export default function Calculator() {
 
                             <div className="mt-8 pt-8 border-t border-ink/10 dark:border-white/10 text-center">
                                 <p className="text-sm font-bold mb-4">Get monthly economic insights</p>
-                                <form className="flex gap-2 max-w-sm mx-auto" onSubmit={(e) => { e.preventDefault(); alert('Thanks for subscribing!'); }}>
+                                <form className="flex gap-2 max-w-sm mx-auto" onSubmit={async (e) => {
+                                    e.preventDefault();
+                                    const form = e.currentTarget;
+                                    const input = form.elements.namedItem('email') as HTMLInputElement;
+                                    const button = form.querySelector('button');
+
+                                    if (!input.value) return;
+
+                                    if (button) {
+                                        button.disabled = true;
+                                        button.textContent = '...';
+                                    }
+
+                                    try {
+                                        const res = await fetch('/api/subscribe', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ email: input.value, source: 'grocery-gap-calculator' })
+                                        });
+
+                                        const data = await res.json();
+
+                                        if (res.ok) {
+                                            alert(data.message || 'Thanks for subscribing!');
+                                            input.value = '';
+                                        } else {
+                                            alert('Error: ' + (data.error || 'Something went wrong'));
+                                        }
+                                    } catch (err) {
+                                        alert('Connection error. Please try again.');
+                                    } finally {
+                                        if (button) {
+                                            button.disabled = false;
+                                            button.textContent = 'JOIN';
+                                        }
+                                    }
+                                }}>
                                     <input
                                         type="email"
+                                        name="email"
                                         placeholder="email@example.com"
                                         className="flex-1 bg-white dark:bg-black border border-ink/20 px-3 py-2 text-sm font-mono"
                                         required
                                         aria-label="Email address for newsletter"
                                     />
-                                    <button type="submit" className="bg-ink text-white dark:bg-white dark:text-ink px-4 py-2 text-xs font-bold uppercase tracking-widest hover:opacity-80">
+                                    <button type="submit" className="bg-ink text-white dark:bg-white dark:text-ink px-4 py-2 text-xs font-bold uppercase tracking-widest hover:opacity-80 disabled:opacity-50">
                                         Join
                                     </button>
                                 </form>
