@@ -16,13 +16,13 @@ export default function MethodologyModal({ isOpen, onClose }: MethodologyModalPr
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 <button className={styles.closeButton} onClick={onClose}>×</button>
 
-                <h2 className={styles.title}>How We Calculate Your Personal Cost Index</h2>
+                <h2 className={styles.title}>How We Calculate Your Perceived Inflation Index</h2>
 
                 <div className={styles.content}>
                     <section className={styles.section}>
                         <h3 className={styles.sectionTitle}>The Formula</h3>
                         <div className={styles.formula}>
-                            <span className="font-bold text-pop">PCI</span> =
+                            <span className="font-bold text-pop">PII</span> =
                             <span className="italic opacity-80"> Regional_CPI</span> +
                             <span className="italic opacity-80"> Freq_Bias</span> +
                             <span className="italic opacity-80"> Housing_Pressure</span>
@@ -105,7 +105,7 @@ export default function MethodologyModal({ isOpen, onClose }: MethodologyModalPr
                             of roughly ±0.5pp around your final result.
                         </p>
                         <div className={styles.example}>
-                            <strong>Example:</strong> If your PCI is 4.2%, the 95% confidence interval is approximately 3.7% - 4.7%
+                            <strong>Example:</strong> If your PII is 4.2%, the 95% confidence interval is approximately 3.7% - 4.7%
                         </div>
                     </section>
 

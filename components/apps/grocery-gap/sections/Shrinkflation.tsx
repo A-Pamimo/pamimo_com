@@ -41,7 +41,7 @@ const shrinkProductsCA: ShrinkProduct[] = [
 
 export const hiddenCosts = [
     {
-        title: 'Per-Unit Fallacy',
+        title: 'Package Confusion Effect',
         description: 'BLS assumes you perfectly calculate price-per-ounce while rushing through the aisle. Spoiler: you don\'t.',
     },
     {
@@ -73,7 +73,7 @@ export default function Shrinkflation() {
                         <h2 className={styles.title}>Shrinkflation</h2>
                         <p className={styles.subtitle}>
                             Same package, same price, less product. The BLS tracks strict price-per-ounce,
-                            but they miss the <strong>loss of trust</strong>. That is the invisible tax.
+                            but they miss the <strong>loss of trust</strong>. That cognitive load is real.
                         </p>
                         {showLiveIndicator && (
                             <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
@@ -142,7 +142,7 @@ export default function Shrinkflation() {
                 </div>
 
                 <div className={styles.hiddenCosts}>
-                    <h3 className={styles.hiddenCostsTitle}>What the BLS Misses</h3>
+                    <h3 className={styles.hiddenCostsTitle}>What Creates the Perception Gap</h3>
                     <div className={styles.costsList}>
                         {hiddenCosts.map((cost) => (
                             <div key={cost.title} className={styles.costItem}>

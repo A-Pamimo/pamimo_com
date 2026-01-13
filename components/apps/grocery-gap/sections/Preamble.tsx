@@ -37,9 +37,9 @@ export default function Preamble() {
                         </dl>
                     </div>
 
-                    This distortion field creates an <strong>Invisible Tax</strong>.
-                    It represents the <em>loss of trust</em> - the mental energy spent verifying prices, switching brands, and managing the anxiety of &quot;getting ripped off.&quot;
-                    It is not paid to the government, but paid in stress and cognitive load.
+                    This distortion field creates a <strong>Cognitive Load Burden</strong>.
+                    It represents the mental energy spent verifying prices, switching brands, and managing the anxiety of &quot;getting ripped off.&quot;
+                    It is not paid to the government, but paid in stress and decision fatigue.
                     Every time you see a price that defies your expectations, you pay this tax.
                 </div>
 

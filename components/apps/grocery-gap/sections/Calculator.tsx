@@ -284,7 +284,7 @@ export default function Calculator() {
         const groceryShare = frequencies.groceries / totalFreq;
         const shrinkflationLoss = 3.9 * groceryShare;
 
-        // Perceived Cost Index (without shrinkflation baked in)
+        // Perceived Inflation Index (without shrinkflation baked in)
         const perceivedCPI = baseInflation + frequencyBiasAdd + housingPressure;
 
         // Confidence interval based on alpha standard error (±0.15)
@@ -486,14 +486,14 @@ export default function Calculator() {
                 <div className={styles.container}>
                     <div className={styles.header}>
                         <p className={styles.eyebrow}>Your Results</p>
-                        <h2 className={styles.title}>Your Personal Cost Index</h2>
+                        <h2 className={styles.title}>Your Perceived Inflation Index</h2>
                         <p className="text-xs opacity-60 mt-2">(Behavioral Economics Model)</p>
                     </div>
 
                     <div className={styles.form}>
                         <div className={styles.results}>
                             <div className={styles.resultsBig}>
-                                <p className={styles.resultsLabel}>Your Personal Cost Index</p>
+                                <p className={styles.resultsLabel}>Your Perceived Inflation Index</p>
                                 <CountUp end={results.perceived} decimals={1} suffix="%" className={styles.resultsNumber} />
                                 <p className="text-xs opacity-50 mt-2 font-mono">
                                     95% Confidence: {results.confidenceInterval.low.toFixed(1)}% - {results.confidenceInterval.high.toFixed(1)}%
@@ -554,7 +554,7 @@ export default function Calculator() {
                                 <p className="font-mono text-xs uppercase tracking-widest opacity-60 mb-1">Hidden Value Loss</p>
                                 <p className="text-2xl font-bold text-pop">~{results.shrinkflationLoss.toFixed(1)}%</p>
                                 <p className="text-xs opacity-70 mt-1">
-                                    Estimated value lost to package shrinkage (not included in official CPI).
+                                    Estimated value lost to package shrinkage (based on Rojas et al. 2024, packaged goods 2012-2021).
                                 </p>
                             </div>
 
@@ -668,11 +668,11 @@ export default function Calculator() {
                     <p className={styles.eyebrow}>Personal Calculator</p>
                     <h2 className={styles.title}>What&apos;s Your Grocery Gap?</h2>
                     <p className={styles.subtitle}>
-                        Answer a few questions to estimate your personal cost index
+                        Answer a few questions to estimate your perceived inflation index
                         based on where you live and how you shop.
                     </p>
                     <TLDR source="Kahneman & Tversky, Prospect Theory">
-                        Calculate your Perceived Cost Index based on your location and spending habits. Your perception of price changes likely differs from official statistics.
+                        Calculate your Perceived Inflation Index based on your location and spending habits. Your perception of price changes likely differs from official statistics.
                     </TLDR>
                 </div>
 
@@ -726,7 +726,7 @@ export default function Calculator() {
                         </button>
                     </div>
                     <p className="text-center text-[10px] opacity-50 mt-4 max-w-xs mx-auto">
-                        Your inputs are processed locally to generate your Personal Cost Index. No personal financial data is stored.
+                        Your inputs are processed locally to generate your Perceived Inflation Index. No personal financial data is stored.
                     </p>
 
                     <button

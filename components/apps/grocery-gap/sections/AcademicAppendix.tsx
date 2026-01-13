@@ -23,6 +23,16 @@ export default function AcademicAppendix() {
 
                 {isOpen && (
                     <div className={styles.content}>
+                        {/* Economist Disclaimer */}
+                        <div className="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 p-4 mb-6 text-sm">
+                            <p className="font-bold text-amber-800 dark:text-amber-200 mb-1">📐 Note for Economists</p>
+                            <p className="text-amber-700 dark:text-amber-300 opacity-90">
+                                This tool measures <strong>perceived inflation</strong> based on psychological factors (frequency bias, cognitive load),
+                                not a normative cost-of-living index. It explains the gap between official CPI and consumer sentiment,
+                                not to replace COLI methodology. All parameters are illustrative, not individually calibrated.
+                            </p>
+                        </div>
+
                         <div className={styles.grid}>
                             <div className={styles.column}>
                                 <h3 className={styles.columnTitle}>Primary Research</h3>
@@ -86,12 +96,12 @@ export default function AcademicAppendix() {
                             </div>
 
                             <div className={styles.column}>
-                                <h3 className={styles.columnTitle}>Perceived Cost Index (PCI)</h3>
+                                <h3 className={styles.columnTitle}>Perceived Inflation Index (PII)</h3>
                                 <div className={styles.modelNote}>
-                                    <p className="mb-2">The <strong>Perceived Cost Index</strong> (<span className="font-mono font-bold text-sm">PCI</span>) is calculated as:</p>
+                                    <p className="mb-2">The <strong>Perceived Inflation Index</strong> (<span className="font-mono font-bold text-sm">PII</span>) is calculated as:</p>
 
                                     <div className={styles.codeBlock}>
-                                        <span className="font-bold text-pop">PCI</span> = <span className="italic opacity-80">Regional_CPI</span> + <span className="italic opacity-80">Freq_Bias</span> + <span className="italic opacity-80">Housing_Pressure</span>
+                                        <span className="font-bold text-pop">PII</span> = <span className="italic opacity-80">Regional_CPI</span> + <span className="italic opacity-80">Freq_Bias</span> + <span className="italic opacity-80">Housing_Pressure</span>
                                     </div>
 
                                     <p className="text-sm opacity-80 mt-3 mb-2 font-bold">Component Breakdown:</p>
@@ -121,7 +131,7 @@ export default function AcademicAppendix() {
                                     </p>
 
                                     <p className="text-xs opacity-60 mt-3 italic">
-                                        Note: PCI measures perceived cost pressure, not official inflation. Shrinkflation is shown separately as a &quot;Hidden Loss&quot; because it represents value erosion, not price increases.
+                                        Note: PII measures perceived inflation pressure, not official statistics. Shrinkflation is shown separately as a &quot;Hidden Loss&quot; because it represents value erosion, not price increases.
                                     </p>
                                 </div>
                             </div>
@@ -132,7 +142,7 @@ export default function AcademicAppendix() {
                                     <p className="text-sm font-bold mb-2 text-pop">Important: This is a stylized educational model</p>
 
                                     <p className="text-xs opacity-80 leading-relaxed mb-3">
-                                        The Personal Cost Index illustrates <strong>why perception differs from measurement</strong>, not which is &quot;more correct.&quot;
+                                        The Perceived Inflation Index illustrates <strong>why perception differs from measurement</strong>, not which is &quot;more correct.&quot;
                                         It combines three distinct phenomena:
                                     </p>
 
@@ -145,8 +155,8 @@ export default function AcademicAppendix() {
                                         <div className="border-l-4 border-black dark:border-white pl-3">
                                             <p className="text-xs font-bold text-white">2. Measurement Gap (Shrinkflation)</p>
                                             <div className="text-white space-y-2">
-                                                <p className="text-xs opacity-90">Research Note: The 3.9 percentage point welfare loss is specific to packaged goods during 2012-2021. This represents unmeasured value erosion, not perceived inflation. I apply it proportionally based on grocery shopping frequency as an illustrative estimate.</p>
-                                                <p className="text-xs italic opacity-80">&quot;I&apos;d tell you a joke about shrinkflation, but the punchline is getting smaller every year.&quot;</p>
+                                                <p className="text-xs text-white opacity-90">Research Note: The 3.9 percentage point welfare loss is specific to packaged goods during 2012-2021. This represents unmeasured value erosion, not perceived inflation. I apply it proportionally based on grocery shopping frequency as an illustrative estimate.</p>
+                                                <p className="text-xs text-white italic opacity-80">&quot;I&apos;d tell you a joke about shrinkflation, but the punchline is getting smaller every year.&quot;</p>
                                             </div>
                                         </div>
 
@@ -157,13 +167,47 @@ export default function AcademicAppendix() {
                                     </div>
 
                                     <p className="text-xs opacity-70 leading-relaxed mb-2">
-                                        <strong>Key Assumptions:</strong>
+                                        <strong>Comparison of Measures:</strong>
                                     </p>
-                                    <ul className="text-xs opacity-70 space-y-1 list-disc list-inside">
-                                        <li>α = 0.44 applies universally (it varies by person; std error ±0.15)</li>
-                                        <li>Shelter inflation estimated at 1.5x general CPI (regional variation exists)</li>
-                                        <li>Shrinkflation rate extrapolated from packaged goods to all groceries</li>
-                                        <li>Results are <strong>illustrative</strong>, showing concepts rather than precise predictions</li>
+                                    <div className="overflow-x-auto mb-4">
+                                        <table className="text-xs w-full border-collapse">
+                                            <thead>
+                                                <tr className="border-b-2 border-black dark:border-white">
+                                                    <th className="text-left py-1 pr-2">Measure</th>
+                                                    <th className="text-left py-1 pr-2">What It Tracks</th>
+                                                    <th className="text-left py-1">Best For</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="opacity-80">
+                                                <tr className="border-b border-gray-300 dark:border-gray-600">
+                                                    <td className="py-1 pr-2 font-bold">Official CPI</td>
+                                                    <td className="py-1 pr-2">Objective price changes (fixed basket)</td>
+                                                    <td className="py-1">Policy, wage indexing</td>
+                                                </tr>
+                                                <tr className="border-b border-gray-300 dark:border-gray-600">
+                                                    <td className="py-1 pr-2 font-bold">Personal COLI</td>
+                                                    <td className="py-1 pr-2">Your actual expenditure basket</td>
+                                                    <td className="py-1">True welfare impact</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="py-1 pr-2 font-bold text-pop">This Tool (PII)</td>
+                                                    <td className="py-1 pr-2">Psychological perception of inflation</td>
+                                                    <td className="py-1">Understanding sentiment gap</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <p className="text-xs opacity-70 leading-relaxed mb-2">
+                                        <strong>Limitations:</strong>
+                                    </p>
+                                    <ul className="text-xs opacity-70 space-y-1 list-disc list-inside mb-3">
+                                        <li>Measures psychological <em>perception</em>, not economic welfare</li>
+                                        <li>α = 0.44 is illustrative, not individually calibrated (std error ±0.15)</li>
+                                        <li>Does not account for <strong>substitution effects</strong> (you switch to cheaper goods)</li>
+                                        <li>Regional adjustments may overlap with CPI&apos;s existing regional weights</li>
+                                        <li>Shrinkflation rate extrapolated from packaged goods only (2012-2021)</li>
+                                        <li>Results are <strong>illustrative</strong>, not precise predictions</li>
                                     </ul>
 
                                     <p className="text-xs opacity-60 mt-3 italic">

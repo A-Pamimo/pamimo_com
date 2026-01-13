@@ -67,7 +67,7 @@ export default function Hero({ isBusinessMode = false }: HeroProps) {
                                 <p className="text-sm md:text-base max-w-prose">
                                     New research highlights a &quot;Grocery Gap&quot; between official data and consumer reality.
                                     While the CPI tracks average prices, your brain tracks <em>frequency</em> and <em>loss</em>.
-                                    This tool helps you calculate your <strong>Personal Cost Index</strong> based on these psychological factors.
+                                    This tool helps you calculate your <strong>Perceived Inflation Index</strong> based on these psychological factors.
                                 </p>
                             </div>
                         </>

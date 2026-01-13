@@ -106,17 +106,19 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
             </div>
           )}
 
-          {/* Theme Toggle - Updated for clarity */}
-          <button
-            onClick={toggleTheme}
-            className="group flex items-center gap-2 border border-ink bg-white dark:bg-zinc text-ink dark:text-white px-3 py-1.5 hover:bg-pop hover:border-pop hover:text-white transition-all shadow-hard active:translate-y-1 active:shadow-none cursor-hoverable"
-            aria-label="Toggle Theme"
-          >
-            {theme === 'dark' ? <IconSun className="w-4 h-4 pixel-icon" /> : <IconMoon className="w-4 h-4 pixel-icon" />}
-            <span className="font-mono text-xs font-bold">
-              {theme === 'dark' ? 'LIGHT' : 'DARK'}
-            </span>
-          </button>
+          {/* Theme Toggle - Hidden on blog variant */}
+          {variant !== 'blog' && (
+            <button
+              onClick={toggleTheme}
+              className="group flex items-center gap-2 border border-ink bg-white dark:bg-zinc text-ink dark:text-white px-3 py-1.5 hover:bg-pop hover:border-pop hover:text-white transition-all shadow-hard active:translate-y-1 active:shadow-none cursor-hoverable"
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? <IconSun className="w-4 h-4 pixel-icon" /> : <IconMoon className="w-4 h-4 pixel-icon" />}
+              <span className="font-mono text-xs font-bold">
+                {theme === 'dark' ? 'LIGHT' : 'DARK'}
+              </span>
+            </button>
+          )}
 
           {/* Hire Me (Desktop) */}
           <a
