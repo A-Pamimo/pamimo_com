@@ -6,7 +6,14 @@ export const metadata: Metadata = {
     openGraph: {
         title: 'The Grocery Gap',
         description: 'Why your grocery bill feels higher than the CPI says. Interactive data visualization and personal inflation calculator.',
-        images: ['/grocery-gap-og.jpg'], // Placeholder, but good to have
+        images: [
+            {
+                url: '/grocery-gap-og.jpg',
+                width: 1200,
+                height: 900,
+                alt: 'The Grocery Gap: Frequency Bias Meme',
+            },
+        ],
     },
 };
 
