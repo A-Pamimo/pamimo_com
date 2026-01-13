@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface BackgroundCanvasProps {
   simulationMode: boolean;
@@ -9,28 +9,25 @@ interface BackgroundCanvasProps {
 
 const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, simulationPreview }) => {
   const geoCanvasRef = useRef<HTMLCanvasElement>(null);
-  const noiseCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [noiseDataUrl, setNoiseDataUrl] = useState('');
 
   // --- NOISE ---
+  // Performance optimization: Generate a small 128x128 noise pattern once and tile it via CSS.
+  // This avoids a full-screen canvas and expensive pixel manipulation on resize.
   useEffect(() => {
-    const noiseCanvas = noiseCanvasRef.current;
-    if (!noiseCanvas) return;
-    const noiseCtx = noiseCanvas.getContext('2d');
-    if (!noiseCtx) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const resizeNoise = () => {
-      noiseCanvas.width = window.innerWidth;
-      noiseCanvas.height = window.innerHeight;
-      const idata = noiseCtx.createImageData(noiseCanvas.width, noiseCanvas.height);
-      const buffer32 = new Uint32Array(idata.data.buffer);
-      for (let i = 0; i < buffer32.length; i++) {
-        if (Math.random() < 0.5) buffer32[i] = 0xff000000;
-      }
-      noiseCtx.putImageData(idata, 0, 0);
-    };
-    resizeNoise();
-    window.addEventListener('resize', resizeNoise);
-    return () => window.removeEventListener('resize', resizeNoise);
+    const idata = ctx.createImageData(canvas.width, canvas.height);
+    const buffer32 = new Uint32Array(idata.data.buffer);
+    for (let i = 0; i < buffer32.length; i++) {
+      if (Math.random() < 0.5) buffer32[i] = 0xff000000;
+    }
+    ctx.putImageData(idata, 0, 0);
+    setNoiseDataUrl(canvas.toDataURL());
   }, []);
 
   // --- GEO SHAPES (Normal Mode Only) ---
@@ -161,7 +158,10 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
 
   return (
     <>
-      <canvas ref={noiseCanvasRef} className="fixed inset-0 z-[-1] opacity-[0.05] pointer-events-none" />
+      <div
+        className="fixed inset-0 z-[-1] opacity-[0.05] pointer-events-none"
+        style={{ backgroundImage: `url(${noiseDataUrl})` }}
+      />
 
       {/* Simulation Preview Grid Overlay - High Contrast Neon */}
       <div
