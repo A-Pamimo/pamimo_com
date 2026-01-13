@@ -618,7 +618,7 @@ export default function Calculator() {
                                             body: JSON.stringify({ email: input.value, source: 'grocery-gap-calculator' })
                                         });
 
-                                        const data = await res.json();
+                                        const data = await res.json() as { message?: string; error?: string };
 
                                         if (res.ok) {
                                             alert(data.message || 'Thanks for subscribing!');
