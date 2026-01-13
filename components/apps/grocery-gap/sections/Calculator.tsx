@@ -171,17 +171,32 @@ export default function Calculator() {
     const [alpha, setAlpha] = useState(0.44);
 
     // Persistence
+    const CURRENT_VERSION = 2; // Increment to force clear old state
+
     useEffect(() => {
         const saved = localStorage.getItem('groceryGap_calcState');
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
+
+                // Version check: Invalidates old data automatically
+                if (parsed.version !== CURRENT_VERSION) {
+                    localStorage.removeItem('groceryGap_calcState');
+                    return;
+                }
+
                 if (parsed.selectedState) setSelectedState(parsed.selectedState);
-                if (parsed.frequencies) setFrequencies(parsed.frequencies);
+                // Safe merge for frequencies to ensure defaults exist
+                if (parsed.frequencies) {
+                    setFrequencies(prev => ({ ...prev, ...parsed.frequencies }));
+                }
                 if (parsed.housingType) setHousingType(parsed.housingType);
                 if (parsed.rentPercent) setRentPercent(parsed.rentPercent);
+                if (parsed.alpha) setAlpha(parsed.alpha);
+                if (parsed.advancedMode !== undefined) setAdvancedMode(parsed.advancedMode);
             } catch (e) {
-                console.error('Failed to load saved state');
+                console.error('Failed to load saved state', e);
+                localStorage.removeItem('groceryGap_calcState');
             }
         }
     }, []);
@@ -189,13 +204,16 @@ export default function Calculator() {
     useEffect(() => {
         if (selectedState || housingType) {
             localStorage.setItem('groceryGap_calcState', JSON.stringify({
+                version: CURRENT_VERSION,
                 selectedState,
                 frequencies,
                 housingType,
-                rentPercent
+                rentPercent,
+                alpha,
+                advancedMode
             }));
         }
-    }, [selectedState, frequencies, housingType, rentPercent]);
+    }, [selectedState, frequencies, housingType, rentPercent, alpha, advancedMode]);
 
     const frequencyItems: FrequencyInput[] = [
         { id: 'groceries', label: 'Groceries', baseWeight: 13.5, value: frequencies.groceries },
