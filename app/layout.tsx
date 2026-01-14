@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     siteName: 'Pamimo Akinjide Portfolio',
     images: [
       {
-        url: '/og-image.png', // You'll need to create this
+        url: 'https://pamimoakinjide.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Pamimo Akinjide | Product Management | Strategy | Building'
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Pamimo Akinjide | Product Management | Strategy | Building',
     description: 'Award-winning strategist at the intersection of AI, data, and community. RBC Amplify winner | WFP Researcher | Systems Builder',
-    images: ['/og-image.png'],
+    images: ['https://pamimoakinjide.com/og-image.png'],
     creator: '@pamimo' // Replace with your actual Twitter handle if you have one
   },
   robots: {

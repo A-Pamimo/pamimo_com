@@ -8,12 +8,18 @@ export const metadata: Metadata = {
         description: 'Why your grocery bill feels higher than the CPI says. Interactive data visualization and personal inflation calculator.',
         images: [
             {
-                url: 'https://pamimoakinjide.com/grocery-gap-og.jpg',
+                url: 'https://pamimoakinjide.com/images/frequency_bias_meat_meme.jpg',
                 width: 1200,
-                height: 900,
+                height: 630,
                 alt: 'The Grocery Gap: Frequency Bias Meme',
             },
         ],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'The Grocery Gap',
+        description: 'Why your grocery bill feels higher than the CPI says. Interactive data visualization and personal inflation calculator.',
+        images: ['https://pamimoakinjide.com/images/frequency_bias_meat_meme.jpg'],
     },
 };
 
