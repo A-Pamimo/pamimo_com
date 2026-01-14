@@ -64,6 +64,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                         <button
                             onClick={onClose}
                             className="bg-ink text-cream dark:bg-white dark:text-ink w-12 h-12 rounded-none flex items-center justify-center hover:bg-pop hover:text-white dark:hover:bg-pop dark:hover:text-white transition-colors shadow-lg cursor-hoverable"
+                            aria-label="Close modal"
                         >
                             <IconClose className="w-5 h-5 pixel-icon" />
                         </button>
@@ -74,6 +75,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                         <button
                             onClick={onClose}
                             className="bg-pop text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl active:scale-90 transition-transform"
+                            aria-label="Close modal"
                         >
                             <IconClose className="w-6 h-6" />
                         </button>
