@@ -112,7 +112,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`scroll-smooth ${inter.variable} ${syne.variable} ${jetbrains.variable}`}>
       <head>
-        <link rel="canonical" href="https://pamimoakinjide.com" />
         <meta name="author" content="Pamimo Akinjide" />
         <meta name="geo.region" content="CA-ON" />
         <meta name="geo.placename" content="Toronto" />
