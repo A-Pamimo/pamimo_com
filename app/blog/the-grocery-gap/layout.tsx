@@ -8,7 +8,7 @@ export const metadata: Metadata = {
         description: 'Why your grocery bill feels higher than the CPI says. Interactive data visualization and personal inflation calculator.',
         images: [
             {
-                url: '/grocery-gap-og.jpg',
+                url: 'https://pamimoakinjide.com/grocery-gap-og.jpg',
                 width: 1200,
                 height: 900,
                 alt: 'The Grocery Gap: Frequency Bias Meme',

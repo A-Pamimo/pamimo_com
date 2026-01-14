@@ -120,12 +120,26 @@ export default function Shrinkflation() {
                                     <span className={styles.productCategory}>{product.category}</span>
                                 </div>
 
-                                <div className={styles.progressContainer}>
-                                    <div
-                                        className={styles.progressBar}
-                                        style={{ width: `${(product.newSize / product.oldSize) * 100}%` }}
-                                    />
-                                    <div className={styles.progressBarBackground} />
+                                {/* Box Chart: Visual comparison of old vs new size */}
+                                <div className="flex items-end justify-center gap-3 h-24 my-4">
+                                    {/* Old Size Box */}
+                                    <div className="flex flex-col items-center">
+                                        <div
+                                            className="w-12 bg-gray-300 border-2 border-gray-400 transition-all"
+                                            style={{ height: '100%' }}
+                                            title={`Old: ${product.oldSize} ${product.unit}`}
+                                        />
+                                        <span className="text-[10px] font-mono mt-1 opacity-60">OLD</span>
+                                    </div>
+                                    {/* New Size Box */}
+                                    <div className="flex flex-col items-center">
+                                        <div
+                                            className="w-12 bg-red-400 border-2 border-red-500 transition-all"
+                                            style={{ height: `${(product.newSize / product.oldSize) * 100}%` }}
+                                            title={`New: ${product.newSize} ${product.unit}`}
+                                        />
+                                        <span className="text-[10px] font-mono mt-1 text-red-500 font-bold">NEW</span>
+                                    </div>
                                 </div>
 
                                 <div className={styles.cardFooter}>
