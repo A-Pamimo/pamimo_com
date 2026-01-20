@@ -1,8 +1,36 @@
-﻿
-import React from 'react';
+﻿'use client';
+
+import React, { useState } from 'react';
 import { IconMail, IconArrow } from '../ui/Icons';
 
 const Footer: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setStatus('loading');
+    try {
+      // Updated to use the Cloudflare Functions path
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!res.ok) throw new Error('Failed');
+
+      setStatus('success');
+      setEmail('');
+    } catch (error) {
+      console.error(error);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
+    }
+  };
+
   return (
     <footer className="bg-ink dark:bg-black text-cream py-24 px-4 md:px-12 relative overflow-hidden transition-colors">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
@@ -14,15 +42,31 @@ const Footer: React.FC = () => {
           </a>
 
           <div className="mt-12 max-w-sm">
-            <p className="font-mono text-[10px] uppercase tracking-widest mb-2 opacity-40">Or keep in touch</p>
-            <form className="relative group" onSubmit={(e) => e.preventDefault()}>
+            <p className="font-mono text-xs uppercase tracking-widest mb-2 opacity-40">Or keep in touch</p>
+            <form className="relative group" onSubmit={handleSubscribe}>
               <input
                 type="email"
-                placeholder="ENTER EMAIL FOR UPDATES"
-                className="w-full bg-transparent border-b border-white/20 py-3 text-xs font-mono placeholder:text-white/20 focus:outline-none focus:border-pop transition-colors pr-10 text-cream"
+                placeholder={status === 'success' ? 'SUBSCRIBED!' : status === 'error' ? 'ERROR. TRY AGAIN.' : "ENTER EMAIL FOR UPDATES"}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={status === 'loading' || status === 'success'}
+                className={`w-full bg-transparent border-b py-3 text-xs font-mono placeholder:text-white/20 focus:outline-none transition-colors pr-10 text-cream
+                    ${status === 'error' ? 'border-red-500 text-red-500' : 'border-white/20 focus:border-pop'}
+                    ${status === 'success' ? 'border-green-500 text-green-500' : ''}
+                `}
               />
-              <button type="submit" className="absolute right-0 top-2 opacity-50 group-hover:opacity-100 hover:text-pop transition-all">
-                <IconArrow className="w-4 h-4 -rotate-45" />
+              <button
+                type="submit"
+                disabled={status === 'loading' || status === 'success'}
+                className="absolute right-0 top-2 opacity-50 group-hover:opacity-100 hover:text-pop transition-all disabled:opacity-30"
+              >
+                {status === 'loading' ? (
+                  <span className="animate-spin block">⟳</span>
+                ) : status === 'success' ? (
+                  <span className="text-green-500">✓</span>
+                ) : (
+                  <IconArrow className="w-4 h-4 -rotate-45" />
+                )}
               </button>
             </form>
           </div>
@@ -46,4 +90,3 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
-

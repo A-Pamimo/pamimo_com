@@ -34,7 +34,6 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
   const navVariants = {
     visible: {
       y: 0,
-      backgroundColor: isScrolled ? 'rgba(245, 245, 240, 0.8)' : 'rgba(0, 0, 0, 0)',
       transition: { type: "spring", stiffness: 260, damping: 20 }
     },
     hidden: {
@@ -47,11 +46,11 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
     <>
       <motion.nav
         variants={navVariants}
-        animate={scrollDirection === 'down' && !mobileMenuOpen ? 'hidden' : 'visible'}
+        animate={(scrollDirection === 'down' && isScrolled && !mobileMenuOpen) ? 'hidden' : 'visible'}
         className={`fixed top-0 w-full z-50 px-6 flex justify-between items-center transition-colors duration-500
           ${isScrolled
             ? 'py-4 backdrop-blur-md border-b border-ink/5 dark:border-white/5 shadow-sm bg-cream/80 dark:bg-charcoal/80'
-            : 'py-6 bg-transparent border-transparent'
+            : 'py-6 backdrop-blur-md bg-transparent border-transparent'
           }
         `}
       >
