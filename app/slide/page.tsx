@@ -266,9 +266,9 @@ const SlidePage: React.FC = () => {
                 </ul>
               </div>
 
-              {/* Niagara Falls Image */}
-              <div className="absolute bottom-[0.4cqw] right-[0.4cqw] w-[5cqw] h-[5cqw] border-[0.15cqw] border-black bg-[#87CEEB] transform rotate-3 shadow-[0.3cqw_0.3cqw_0px_0px_rgba(0,0,0,1)] flex items-center justify-center z-40 hover:scale-150 hover:rotate-0 hover:z-50 transition-all duration-300">
-                <img src="/slide-assets/travel-falls.jpg" alt="Travel" className="w-full h-full object-cover" />
+              {/* Header Smile - Replaced Falls */}
+              <div className="absolute bottom-[0.4cqw] right-[0.4cqw] w-[5cqw] h-[5cqw] border-[0.15cqw] border-black bg-[#FFD700] transform rotate-3 shadow-[0.3cqw_0.3cqw_0px_0px_rgba(0,0,0,1)] flex items-center justify-center z-40 hover:scale-150 hover:rotate-0 hover:z-50 transition-all duration-300">
+                <img src="/slide-assets/header-smile.png" alt="Smile" className="w-full h-full object-cover" />
                 <div className="absolute -top-[0.5cqw] -left-[0.5cqw] bg-black text-white text-[0.5cqw] px-[0.3cqw] font-black transform -rotate-3">NEXT</div>
               </div>
             </div>

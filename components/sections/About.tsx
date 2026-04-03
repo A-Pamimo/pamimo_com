@@ -1,4 +1,5 @@
-﻿import React from 'react';
+import React from 'react';
+import Image from 'next/image';
 import { IconCheck } from '../ui/Icons';
 
 const About: React.FC = () => {
@@ -6,16 +7,14 @@ const About: React.FC = () => {
     <section id="about" className="py-32 px-4 md:px-12 bg-cream dark:bg-charcoal border-t border-ink dark:border-zinc-800 transition-colors">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         {/* Image */}
-        <div className="relative group cursor-hoverable">
+        <div className="relative group cursor-hoverable w-full">
           <div className="absolute inset-0 bg-pop translate-x-2 translate-y-2 border border-ink dark:border-white transition-transform duration-300 group-hover:translate-x-4 group-hover:translate-y-4"></div>
-          <div className="relative bg-white dark:bg-zinc border border-ink dark:border-white p-2 aspect-[4/5] overflow-hidden">
-            <video
-              className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-              src="/IMG_3961.mov"
-              autoPlay      // Required to start automatically
-              loop          // Required to repeat
-              muted         // CRITICAL: Browsers block autoplay if this is missing
-              playsInline   // CRITICAL: Prevents iOS from forcing full-screen
+          <div className="relative bg-white dark:bg-zinc border border-ink dark:border-white p-2 aspect-[4/5] w-full overflow-hidden">
+            <Image
+              src="/slide-assets/header-smile.png"
+              alt="About Portrait"
+              fill
+              className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
             />
             <div className="absolute bottom-0 left-0 w-full p-4 bg-ink/90 text-cream backdrop-blur-sm transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
               <p className="font-mono text-xs">LOC: TORONTO, CA</p>
