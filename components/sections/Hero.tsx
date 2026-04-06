@@ -14,7 +14,7 @@ const Hero: React.FC = () => {
   const lineTwo = ["SCALING,", "IMPACT."];
 
   return (
-    <section className="h-[100dvh] flex flex-col justify-center px-4 md:px-12 relative pt-20 md:pt-28 overflow-hidden">
+    <section className="min-h-[100dvh] flex flex-col justify-start pb-20 px-4 md:px-12 relative pt-32 md:pt-40 overflow-hidden">
       <div className="max-w-[90rem] mx-auto w-full z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
