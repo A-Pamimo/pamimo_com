@@ -14,11 +14,11 @@ const GameA11yOverlay: React.FC<GameA11yOverlayProps> = ({ objects, onInteract, 
         obj.type === 'project' || obj.type === 'portal' || obj.id === 'contact' || obj.id === 'about'
     );
 
-    if (!active) return null;
+    if (!active || interactiveObjects.length === 0) return null;
 
 
     return (
-        <div className="absolute top-4 left-4 z-[1000] pointer-events-none">
+        <div className="absolute top-4 left-4 z-[1000] pointer-events-none opacity-0 focus-within:opacity-100">
             <div className="sr-only focus-within:not-sr-only focus-within:block bg-black/90 p-4 border border-white/50 text-white rounded-lg shadow-xl pointer-events-auto">
                 <h3 className="font-bold mb-2 text-sm uppercase tracking-wider text-yellow-400">Keyboard Navigation Active</h3>
                 <p className="text-xs mb-3 text-gray-300">Use <kbd className="bg-gray-700 px-1 rounded">Tab</kbd> to select terminals. <kbd className="bg-gray-700 px-1 rounded">Enter</kbd> to access.</p>
