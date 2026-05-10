@@ -8,12 +8,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Logo from '../ui/Logo';
 import { CONTACT_EMAIL } from '../../constants';
 
-interface NavbarProps {
-  simulationMode?: boolean;
-  toggleSimulation?: () => void;
-  setSimulationPreview?: (active: boolean) => void;
-}
-
 import { useScrollDirection } from '../../hooks/useScrollDirection';
 import RegionToggle from '../apps/grocery-gap/ui/RegionToggle';
 
@@ -78,12 +72,6 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
         )}
 
         <div className={`flex items-center gap-6 ${linkClasses}`}>
-          {/* Duplicate div close for variant logic separation, wait, structure needs to be cleaner. 
-              The 'flex items-center gap-6' wrapper above was for Links. 
-              The wrapper on line 74 wraps links AND controls.
-              Refactoring structure slightly for clarity.
-          */}
-
           {/* Gamification Toggle (Renamed to XP.MODE) */}
           {toggleSimulation && (
             <div className="hidden md:flex">
@@ -95,8 +83,10 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
                 title="Enable Interactive Game Mode (Experimental)"
               >
                 <div className="relative z-10 flex items-center gap-2">
-                  <span className="group-hover:hidden">{simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}</span>
-                  <span className="hidden group-hover:block font-mono tracking-widest">
+                  <span className="group-hover:opacity-0 group-hover:absolute">
+                    {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
+                  </span>
+                  <span className="hidden group-hover:inline-block font-mono tracking-widest">
                     {simulationMode ? 'EXIT SYSTEM' : 'PRESS START >'}
                   </span>
                   {simulationMode && <span className="w-2 h-2 bg-white rounded-none animate-ping" />}
@@ -136,11 +126,8 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
           >
             {mobileMenuOpen ? 'CLOSE' : 'MENU'}
           </button>
-
-          {/* Mobile Sticky CTA (Persistent Bottom Right) */}
-
         </div>
-      </motion.nav >
+      </motion.nav>
 
       {/* Mobile Menu */}
       <AnimatePresence>

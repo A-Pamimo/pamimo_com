@@ -20,17 +20,13 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-4 flex items-center justify-between relative z-0"
+          className="mb-4"
         >
           <div className="flex items-center gap-3">
             <span className="w-2 h-2 bg-pop animate-pulse"></span>
             <span className="font-mono text-xs md:text-sm uppercase tracking-widest opacity-60">
               Product Management | Strategy | Building
             </span>
-          </div>
-          <div className="hidden md:flex items-center gap-2 font-mono text-xs opacity-40 shrink-0">
-            <span>📍</span>
-            <span className="whitespace-nowrap">SASKATOON, SK</span>
           </div>
         </motion.div>
 
