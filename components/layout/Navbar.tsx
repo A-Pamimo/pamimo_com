@@ -91,7 +91,10 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
                 onClick={toggleSimulation}
                 onMouseEnter={() => setSimulationPreview && setSimulationPreview(true)}
                 onMouseLeave={() => setSimulationPreview && setSimulationPreview(false)}
-                className="group relative font-mono font-bold text-xs border border-ink dark:border-white px-4 py-2 transition-all hover:bg-black hover:text-green-400 hover:border-green-400 overflow-hidden"
+                onFocus={() => setSimulationPreview && setSimulationPreview(true)}
+                onBlur={() => setSimulationPreview && setSimulationPreview(false)}
+                aria-pressed={simulationMode}
+                className="group relative font-mono font-bold text-xs border border-ink dark:border-white px-4 py-2 transition-all hover:bg-black hover:text-green-400 hover:border-green-400 focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:outline-none overflow-hidden"
                 title="Enable Interactive Game Mode (Experimental)"
               >
                 <div className="relative z-10 flex items-center gap-2">
@@ -155,7 +158,8 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
             >
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="absolute top-6 right-6 text-cream text-2xl cursor-hoverable"
+                className="absolute top-6 right-6 text-cream text-2xl cursor-hoverable focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pop rounded-sm"
+                aria-label="Close Menu"
               >
                 <IconClose className="w-8 h-8 pixel-icon" />
               </button>
