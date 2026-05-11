@@ -177,30 +177,32 @@ const BackgroundCanvas: React.FC<BackgroundCanvasProps> = ({ simulationMode, sim
       <canvas ref={noiseCanvasRef} className="fixed inset-0 z-[-1] opacity-[0.05] pointer-events-none" />
 
       {/* Simulation Preview Grid Overlay - High Contrast Neon */}
-      <div
-        className={`fixed inset-0 z-[-1.5] pointer-events-none transition-opacity duration-300 bg-black flex items-center justify-center ${simulationPreview ? 'opacity-100' : 'opacity-0'}`}
-        style={{
-          backgroundImage: `
+      {simulationPreview && (
+        <div
+          className="fixed inset-0 z-[0] pointer-events-none transition-opacity duration-300 bg-black/80 flex items-center justify-center"
+          style={{
+            backgroundImage: `
                 linear-gradient(rgba(0, 255, 65, 0.2) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 255, 65, 0.2) 1px, transparent 1px)
             `,
-          backgroundSize: '40px 40px',
-          boxShadow: 'inset 0 0 100px rgba(0, 255, 65, 0.1)'
-        }}
-      >
-        {/* Animated Scanline */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,255,65,0.1)_50%)] bg-[length:100%_4px] animate-scanlines opacity-50" />
+            backgroundSize: '40px 40px',
+            boxShadow: 'inset 0 0 100px rgba(0, 255, 65, 0.1)'
+          }}
+        >
+          {/* Animated Scanline */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,255,65,0.1)_50%)] bg-[length:100%_4px] animate-scanlines opacity-50" />
 
-        {/* Hint Text */}
-        <div className="text-center">
-          <h2 className="text-6xl font-black text-transparent stroke-text-green tracking-tighter opacity-20">
-            SYSTEM DETECTED
-          </h2>
-          <div className="text-green-500 font-mono text-sm mt-4 animate-pulse">
-            &gt; INITIALIZING NEURAL LINK...
+          {/* Hint Text */}
+          <div className="text-center">
+            <h2 className="text-6xl font-black text-transparent stroke-text-green tracking-tighter opacity-20">
+              SYSTEM DETECTED
+            </h2>
+            <div className="text-green-500 font-mono text-sm mt-4 animate-pulse">
+              &gt; HOVER TO PREVIEW XP.MODE
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Standard Mode Canvas: Background */}
       <canvas
