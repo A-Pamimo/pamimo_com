@@ -103,7 +103,10 @@ export const useGamePhysics = ({ active, onInteract, onDraw, onExit, currentView
             uos_research: '#06B6D4',  // Cyan (Ice/Climate)
             sctc: '#EC4899',          // Pink
             pasa: '#6366f1',          // Indigo
-            ess: '#84CC16'            // Lime
+            ess: '#84CC16',           // Lime
+            tt_migrate: '#EF4444',    // Red (Hardware/AI)
+            macro_monitor: '#0EA5E9', // Light Blue (Data/Dashboard)
+            impact100: '#F59E0B'      // Amber (Ranking/Index)
         };
 
         // 1. Deco (Labels)

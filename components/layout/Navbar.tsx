@@ -82,17 +82,21 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
                 onFocus={() => setSimulationPreview && setSimulationPreview(true)}
                 onBlur={() => setSimulationPreview && setSimulationPreview(false)}
                 aria-pressed={simulationMode}
-                className="group relative font-mono font-bold text-xs border border-ink dark:border-white px-4 py-2 transition-all hover:bg-black hover:text-green-400 hover:border-green-400 focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:outline-none overflow-hidden"
+                className="group relative font-mono font-bold text-sm bg-pop text-white border-2 border-pop px-5 py-2.5 shadow-hard transition-all hover:bg-black hover:text-green-400 hover:border-green-400 hover:shadow-none hover:translate-y-1 focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:outline-none overflow-hidden"
                 title="Enable Interactive Game Mode (Experimental)"
               >
                 <div className="relative z-10 flex items-center gap-2">
                   <span className="group-hover:opacity-0 group-hover:absolute">
                     {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
                   </span>
-                  <span className="hidden group-hover:inline-block font-mono tracking-widest">
+                  <span className="hidden group-hover:inline-block font-mono tracking-widest animate-pulse">
                     {simulationMode ? 'EXIT SYSTEM' : 'PRESS START >'}
                   </span>
-                  {simulationMode && <span className="w-2 h-2 bg-white rounded-none animate-ping" />}
+                  {simulationMode ? (
+                    <span className="w-2 h-2 bg-white rounded-none animate-ping" />
+                  ) : (
+                    <span className="w-2 h-2 bg-white rounded-none animate-pulse group-hover:bg-green-400" />
+                  )}
                 </div>
               </button>
             </div>
@@ -176,9 +180,9 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
                       setMobileMenuOpen(false);
                       toggleSimulation();
                     }}
-                    className="text-left font-mono text-xl font-bold mb-8 flex items-center gap-3 text-pop hover:text-white transition-colors cursor-hoverable"
+                    className={`text-left font-mono text-xl font-bold mb-8 flex items-center gap-3 transition-colors cursor-hoverable p-4 border-2 shadow-hard hover:shadow-none hover:translate-y-1 ${simulationMode ? 'bg-black text-green-400 border-green-400' : 'bg-pop text-white border-pop hover:bg-black hover:text-green-400 hover:border-green-400'}`}
                   >
-                    <span className={`w-3 h-3 rounded-full ${simulationMode ? 'bg-white' : 'bg-pop'}`}></span>
+                    <span className={`w-3 h-3 rounded-none ${simulationMode ? 'bg-white animate-ping' : 'bg-white animate-pulse'}`}></span>
                     {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
                   </button>
                 )}
