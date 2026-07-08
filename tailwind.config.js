@@ -33,20 +33,33 @@ module.exports = {
       boxShadow: {
         'hard': '4px 4px 0px 0px currentColor',
         'hard-hover': '6px 6px 0px 0px currentColor',
+        'hard-lg': '8px 8px 0px 0px currentColor',
       },
       animation: {
         'marquee': 'marquee 60s linear infinite',
+        'marquee-reverse': 'marquee-reverse 60s linear infinite',
         'scanlines': 'scanlines 2s linear infinite',
+        'flicker': 'flicker 4s linear infinite',
       },
       keyframes: {
         marquee: {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-100%)' },
         },
+        'marquee-reverse': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(0%)' },
+        },
         scanlines: {
           '0%': { backgroundPosition: '0 0' },
           '100%': { backgroundPosition: '0 100px' },
-        }
+        },
+        flicker: {
+          '0%, 96%, 100%': { opacity: '1' },
+          '97%': { opacity: '0.82' },
+          '98%': { opacity: '1' },
+          '99%': { opacity: '0.88' },
+        },
       }
     }
   },

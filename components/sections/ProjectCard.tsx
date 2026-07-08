@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Project } from '../../types';
-import { IconArrow, IconBrain, IconGlobe, IconGov, IconUsers, IconChart, IconTrophy } from '../ui/Icons';
+import { IconArrow, IconBrain, IconGlobe, IconGov, IconUsers, IconChart } from '../ui/Icons';
 
 interface ProjectCardProps {
   project: Project;
@@ -37,6 +37,47 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
     }
   };
 
+  // Flagship variant — driven by `featured`, not hardcoded id (xuexi, Sangyin, ...)
+  if (project.featured) {
+    const statusLabel =
+      project.id === 'sangyin' ? 'OPEN SOURCE' :
+      project.status === 'shipped' ? 'LIVE' :
+      (project.status ?? 'PROJECT').toUpperCase();
+
+    return (
+      <motion.div
+        onClick={() => onClick(project)}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformStyle: 'preserve-3d' }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className={`project-card ${className} relative overflow-hidden border-2 border-ink dark:border-white/30 p-8 group bg-cream dark:bg-black cursor-hoverable cursor-pointer transition-all hover:shadow-hard-lg hover:-translate-x-1 hover:-translate-y-1 active:scale-[0.98]`}
+      >
+        <div className="h-full flex flex-col justify-between pointer-events-none">
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <span className="font-mono text-xs bg-ink text-cream dark:bg-white dark:text-ink px-2 py-1 uppercase tracking-wider">{project.tag}</span>
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-xs text-pop-ink dark:text-pop font-bold">● {statusLabel}</span>
+                <IconArrow className="w-6 h-6 text-pop group-hover:translate-x-1 transition-transform pixel-icon" />
+              </div>
+            </div>
+            <h3 className="font-display font-extrabold text-4xl md:text-5xl leading-[0.95] tracking-tight mb-3">{project.title}</h3>
+            <p className="font-mono text-sm text-pop-ink dark:text-pop font-bold mb-5">{project.subtitle}</p>
+            <p className="opacity-80 leading-relaxed max-w-xl">{project.context}</p>
+          </div>
+          <div className="mt-8 flex flex-wrap gap-2">
+            {project.stack.slice(0, 5).map(s => (
+              <span key={s} className="border border-current/40 px-2 py-1 text-xs font-mono">{s}</span>
+            ))}
+          </div>
+        </div>
+        {/* hover accent bar */}
+        <div className="absolute bottom-0 left-0 w-full h-1.5 bg-pop origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+      </motion.div>
+    );
+  }
+
   // Special layouts based on card type to match visual parity
   if (project.id === 'nova') {
     return (
@@ -63,9 +104,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }
               <p className="opacity-70 max-w-md">{project.context}</p>
             </div>
             <div className="mt-8">
-              <span className="bg-gold text-ink text-xs font-bold px-3 py-1 inline-flex items-center gap-2 mb-2 shadow-sm w-fit uppercase tracking-wider">
-                <IconTrophy className="w-4 h-4 pixel-icon" /> <span className="text-pop font-black">$20K</span> BEST BUSINESS VALUE PRIZE
-              </span>
               <div className="flex gap-2">
                 {project.stack.slice(0, 3).map(s => (
                   <span key={s} className="border border-current opacity-30 px-2 py-1 text-xs font-mono">{s}</span>
