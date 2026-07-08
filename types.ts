@@ -60,6 +60,10 @@ export interface Project {
   category: ('strategy' | 'product' | 'tech')[];
   featured?: boolean;
   status?: ProjectStatus;
+  // Card presentation — data-driven, replacing hardcoded id checks in ProjectCard.
+  // Defaults derive from `featured` / media presence when omitted.
+  cardVariant?: 'flagship' | 'wide' | 'standard';
+  span?: number; // lg grid column span (out of 12)
   year: number;
   // Structured PM case study — when present, drives the new modal layout.
   case?: CaseStudy;

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { IconMenu, IconClose, IconMoon, IconSun } from '../ui/Icons';
 import { useTheme } from '../../hooks/useTheme';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import Logo from '../ui/Logo';
 import { CONTACT_EMAIL } from '../../constants';
 
@@ -23,6 +23,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
   const { scrollDirection, isScrolled } = useScrollDirection();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const linkClasses = 'pointer-events-auto';
+  const reduce = useReducedMotion();
 
   // Motion Variants for fluid header (Apple Standard)
   const navVariants = {
@@ -40,10 +41,10 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
     <>
       <motion.nav
         variants={navVariants}
-        animate={(scrollDirection === 'down' && isScrolled && !mobileMenuOpen) ? 'hidden' : 'visible'}
+        animate={(!reduce && scrollDirection === 'down' && isScrolled && !mobileMenuOpen) ? 'hidden' : 'visible'}
         className={`fixed top-0 w-full z-50 px-6 flex justify-between items-center transition-colors duration-500
           ${isScrolled
-            ? 'py-4 backdrop-blur-md border-b border-ink/5 dark:border-white/5 shadow-sm bg-cream/80 dark:bg-charcoal/80'
+            ? 'py-4 backdrop-blur-md border-b border-ink/5 dark:border-white/5 shadow-sm bg-bg/80'
             : 'py-6 backdrop-blur-md bg-transparent border-transparent'
           }
         `}
@@ -68,6 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
             <Link href="/#about" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">ABOUT ME</Link>
             <Link href="/#work" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">INDEX</Link>
             <Link href="/blog" className="text-sm font-medium hover:underline decoration-pop underline-offset-4 text-ink dark:text-cream">WRITING</Link>
+            <Link href="/resume" className="text-sm font-bold hover:underline decoration-pop underline-offset-4 text-pop-ink dark:text-pop">RÉSUMÉ</Link>
           </div>
         )}
 
@@ -82,22 +84,13 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
                 onFocus={() => setSimulationPreview && setSimulationPreview(true)}
                 onBlur={() => setSimulationPreview && setSimulationPreview(false)}
                 aria-pressed={simulationMode}
-                className="group relative font-mono font-bold text-sm bg-pop text-white border-2 border-pop px-5 py-2.5 shadow-hard transition-all hover:bg-black hover:text-green-400 hover:border-green-400 hover:shadow-none hover:translate-y-1 focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:outline-none overflow-hidden"
-                title="Enable Interactive Game Mode (Experimental)"
+                className="group font-mono font-bold text-xs uppercase tracking-widest border border-ink/30 dark:border-cream/30 text-ink/70 dark:text-cream/70 px-3 py-2 transition-colors hover:border-pop hover:text-pop-ink dark:hover:text-pop focus-visible:ring-2 focus-visible:ring-pop-ink focus-visible:outline-none cursor-hoverable"
+                title="Interactive game mode (experimental)"
               >
-                <div className="relative z-10 flex items-center gap-2">
-                  <span className="group-hover:opacity-0 group-hover:absolute">
-                    {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
-                  </span>
-                  <span className="hidden group-hover:inline-block font-mono tracking-widest animate-pulse">
-                    {simulationMode ? 'EXIT SYSTEM' : 'PRESS START >'}
-                  </span>
-                  {simulationMode ? (
-                    <span className="w-2 h-2 bg-white rounded-none animate-ping" />
-                  ) : (
-                    <span className="w-2 h-2 bg-white rounded-none animate-pulse group-hover:bg-green-400" />
-                  )}
-                </div>
+                <span className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-pop motion-safe:animate-pulse" aria-hidden="true" />
+                  {simulationMode ? 'EXIT XP.MODE' : 'XP.MODE'}
+                </span>
               </button>
             </div>
           )}
@@ -159,7 +152,8 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
                 {[
                   { label: 'About Me', href: '/#about' },
                   { label: 'Index', href: '/#work' },
-                  { label: 'Writing', href: '/blog' }
+                  { label: 'Writing', href: '/blog' },
+                  { label: 'Résumé', href: '/resume' }
                 ].map((item, i) => (
                   <motion.a
                     key={item.label}
@@ -180,10 +174,10 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
                       setMobileMenuOpen(false);
                       toggleSimulation();
                     }}
-                    className={`text-left font-mono text-xl font-bold mb-8 flex items-center gap-3 transition-colors cursor-hoverable p-4 border-2 shadow-hard hover:shadow-none hover:translate-y-1 ${simulationMode ? 'bg-black text-green-400 border-green-400' : 'bg-pop text-white border-pop hover:bg-black hover:text-green-400 hover:border-green-400'}`}
+                    className="text-left font-mono text-sm uppercase tracking-widest mb-8 flex items-center gap-3 text-cream/60 hover:text-pop transition-colors cursor-hoverable"
                   >
-                    <span className={`w-3 h-3 rounded-none ${simulationMode ? 'bg-white animate-ping' : 'bg-white animate-pulse'}`}></span>
-                    {simulationMode ? 'EXIT XP.MODE' : 'ENTER XP.MODE'}
+                    <span className="w-2 h-2 rounded-none bg-pop motion-safe:animate-pulse"></span>
+                    {simulationMode ? 'EXIT XP.MODE' : 'XP.MODE (Experimental)'}
                   </button>
                 )}
 

@@ -7,6 +7,7 @@ import Navbar from '../components/layout/Navbar';
 import Hero from '../components/sections/Hero';
 import About from '../components/sections/About';
 import WorkIndex from '../components/sections/WorkIndex';
+import WritingCallout from '../components/sections/WritingCallout';
 import Footer from '../components/layout/Footer';
 import BackgroundCanvas from '../components/ui/BackgroundCanvas';
 import ProjectModal from '../components/sections/ProjectModal';
@@ -55,7 +56,7 @@ export default function Home() {
       <Preloader onComplete={() => setIsLoading(false)} />
       <div className={`${simulationMode ? 'font-mono tracking-tight' : ''} ${simulationPreview ? 'dark' : ''}`}>
         {/* Base Background Layer - Moved here to respect local dark mode & z-indexing */}
-        <div className="fixed inset-0 z-[-50] bg-cream dark:bg-charcoal transition-colors duration-500 pointer-events-none" />
+        <div className="fixed inset-0 z-[-50] bg-bg transition-colors duration-500 pointer-events-none" />
 
         <BackgroundCanvas simulationMode={simulationMode} simulationPreview={simulationPreview} />
 
@@ -70,6 +71,7 @@ export default function Home() {
           <Hero />
           <WorkIndex onSelectProject={setSelectedProject} />
           <About />
+          <WritingCallout />
           <Footer />
         </main>
 
@@ -96,12 +98,10 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {selectedProject && (
-          <ProjectModal
-            project={selectedProject}
-            onClose={() => setSelectedProject(null)}
-          />
-        )}
+        <ProjectModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
       </div>
     </>
   );

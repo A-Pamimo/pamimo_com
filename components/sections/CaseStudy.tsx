@@ -12,10 +12,12 @@ const METRIC_LABEL: Record<string, string> = {
 };
 
 const StepHead: React.FC<{ n: number; label: string }> = ({ n, label }) => (
-    <h3 className="font-mono text-xs text-pop-ink dark:text-pop font-bold mb-4 uppercase tracking-widest flex items-center gap-3">
-        <span className="w-2 h-2 bg-pop shrink-0" aria-hidden="true" />
-        {String(n).padStart(2, '0')}. {label}
-    </h3>
+    <div className="flex items-baseline gap-4 mb-5">
+        <span aria-hidden="true" className="font-display font-extrabold text-[3.5rem] md:text-[5rem] leading-none text-pop/15 dark:text-pop/25 select-none shrink-0">
+            {String(n).padStart(2, '0')}
+        </span>
+        <h3 className="font-mono text-label text-pop-ink dark:text-pop font-bold uppercase">{label}</h3>
+    </div>
 );
 
 const Fact: React.FC<{ k: string; v: string }> = ({ k, v }) => (
@@ -81,7 +83,7 @@ const CaseStudy: React.FC<{ project: Project }> = ({ project }) => {
             {/* 4. Result — honest metric type */}
             <li>
                 <StepHead n={4} label="What moved" />
-                <div className="bg-ink text-cream dark:bg-white dark:text-ink p-8 md:p-10 shadow-hard">
+                <div className="bg-ink text-cream dark:bg-cream dark:text-ink p-8 md:p-10 shadow-hard-lg">
                     <p className="font-display text-2xl md:text-4xl font-bold leading-tight">{c.result.metric}</p>
                     <p className="font-mono text-xs uppercase tracking-widest mt-4 opacity-70">
                         {METRIC_LABEL[c.result.metricType] ?? c.result.metricType}
