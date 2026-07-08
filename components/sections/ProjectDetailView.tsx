@@ -81,18 +81,15 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
                                 </div>
                             </div>
 
-                            <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:400ms]">
-                                <h3 className="font-display font-bold text-xl mb-4 flex items-center gap-3">
-                                    <span className="w-2 h-2 bg-ink dark:bg-white rounded-none"></span>
-                                    STATS
-                                </h3>
-                                <div className="space-y-3 font-mono text-sm">
-                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Strategy</span><span>{project.stats?.strategy}%</span></div>
-                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Tech</span><span>{project.stats?.tech}%</span></div>
-                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Product</span><span>{project.stats?.product}%</span></div>
-                                    <div className="flex justify-between border-b border-current/10 pb-1"><span>Leadership</span><span>{project.stats?.leadership}%</span></div>
+                            {project.status && (
+                                <div className="opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] [animation-delay:400ms]">
+                                    <h3 className="font-display font-bold text-xl mb-4 flex items-center gap-3">
+                                        <span className="w-2 h-2 bg-ink dark:bg-white rounded-none"></span>
+                                        STATUS
+                                    </h3>
+                                    <span className="font-mono text-sm uppercase tracking-widest border border-current px-3 py-1 inline-block">{project.status}</span>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
                         {/* Main Content */}

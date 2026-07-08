@@ -21,6 +21,8 @@ module.exports = {
         charcoal: '#1A1A1A',
         zinc: '#27272a',
         pop: 'var(--color-pop)',
+        // AA-contrast variant of pop for small/body text on cream (pop itself only passes for large text)
+        'pop-ink': '#C43500',
         gold: '#eab308',
         term: {
           accent: 'var(--term-accent)',

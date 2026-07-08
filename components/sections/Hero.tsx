@@ -1,102 +1,66 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
-
+import Link from 'next/link';
+import { motion, useReducedMotion } from 'framer-motion';
 
 const Hero: React.FC = () => {
-  // Base text repeated to ensure it covers wide screens before looping
-  const baseText = "PRODUCT LEAD // ECONOMIST // FOUNDER // COMPUTER SCIENTIST // AGENTIC AI // 0-TO-1 // PRODUCT STRATEGY // FULL STACK // ECONOMIC SYSTEMS // ";
-  const marqueeContent = baseText.repeat(2);
-
-  // Grouped for better visual flow
-  const lineOne = ["BUILDING,", " "];
-  const lineTwo = ["SCALING,", "IMPACT."];
+  const reduce = useReducedMotion();
+  const fade = reduce
+    ? {}
+    : {
+        initial: { opacity: 0, y: 16 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as const },
+      };
 
   return (
-    <section className="min-h-[100dvh] flex flex-col justify-start pb-20 px-4 md:px-12 relative pt-32 md:pt-40 overflow-hidden">
-      <div className="max-w-[90rem] mx-auto w-full z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-4"
+    <section className="min-h-[100dvh] flex items-center px-4 md:px-12 relative pt-32 pb-20 overflow-hidden">
+      <div className="max-w-5xl mx-auto w-full z-10">
+        {/* Eyebrow — honest level, recruiter keywords */}
+        <motion.p
+          {...fade}
+          className="font-mono text-xs md:text-sm uppercase tracking-widest text-pop-ink dark:text-pop font-bold mb-6 flex items-center gap-3"
         >
-          <div className="flex items-center gap-3">
-            <span className="w-2 h-2 bg-pop animate-pulse"></span>
-            <span className="font-mono text-xs md:text-sm uppercase tracking-widest opacity-60">
-              Product Management | Strategy | Building
-            </span>
-          </div>
-        </motion.div>
+          <span className="w-2 h-2 bg-pop shrink-0" aria-hidden="true" />
+          Product Manager — Product &amp; Strategy · Toronto · Open to early-career roles
+        </motion.p>
 
-        {/* Refactored Typography: Grouped lines for tighter, less awkward spacing */}
-        <div className="font-display font-extrabold text-[10vw] leading-[0.9] mb-6 tracking-tighter space-y-2">
-          <div className="flex flex-wrap gap-x-12 md:gap-x-24">
-            {lineOne.map((text, i) => (
-              <motion.div
-                key={text}
-                initial={{ y: '100%' }}
-                animate={{ y: '0%' }}
-                transition={{ duration: 1, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="overflow-hidden"
-              >
-                <span className="inline-block">
-                  {text}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-x-12 md:gap-x-24">
-            {lineTwo.map((text, i) => (
-              <motion.div
-                key={text}
-                initial={{ y: '100%' }}
-                animate={{ y: '0%' }}
-                transition={{ duration: 1, delay: 0.3 + (i * 0.1), ease: [0.16, 1, 0.3, 1] }}
-                className="overflow-hidden"
-              >
-                <span className={`inline-block ${i === 0 ? 'text-pop' : ''}`}>
-                  {text}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="grid grid-cols-1 md:grid-cols-12 gap-8"
+        {/* H1 — the one claim */}
+        <motion.h1
+          {...fade}
+          className="font-display font-extrabold text-5xl sm:text-6xl md:text-8xl leading-[0.95] tracking-tight mb-6"
         >
+          I ship products that turn messy data into{' '}
+          <span className="text-pop">decisions people make.</span>
+        </motion.h1>
 
+        {/* Spine — one sentence */}
+        <motion.p
+          {...fade}
+          className="text-lg md:text-xl font-sans leading-relaxed max-w-2xl mb-10 border-l-2 border-pop pl-6"
+        >
+          Economics + engineering background. I find a real user problem, make the hard
+          prioritization call, ship it, and measure what moved — most recently{' '}
+          <span className="font-bold">xuexi</span> (a Mandarin-learning app) and{' '}
+          <span className="font-bold">Sangyin</span> (an open-source audio reader).
+        </motion.p>
 
-          {/* RIGHT COLUMN: Bio & Identity */}
-          <div className="md:col-span-7 md:col-start-6 lg:col-start-7 order-1 md:order-2">
-            {/* Identity Specs / Traits */}
-            <div className="flex flex-wrap gap-y-2 gap-x-4 mb-6 font-mono text-xs md:text-sm text-pop uppercase tracking-wider font-bold">
-              <span>[HIGH_AGENCY]</span>
-              <span>[COMMUNITY_BUILDER]</span>
-              <span>[SYSTEMS_THINKER]</span>
-            </div>
-
-            <p className="text-lg md:text-xl font-sans leading-relaxed opacity-80 border-l-2 border-pop pl-6">
-              I operate at the intersection of Strategy, Data, and Community. A builder translating complex theory into systems that actually work for people.
-            </p>
-
-
-          </div>
+        {/* Two CTAs — high-ability triggers */}
+        <motion.div {...fade} className="flex flex-wrap gap-4">
+          <a
+            href="#work"
+            className="inline-flex items-center gap-2 bg-ink text-cream dark:bg-cream dark:text-ink font-bold px-8 py-4 text-lg shadow-hard hover:bg-pop hover:text-white hover:shadow-none hover:translate-y-1 transition-all focus-visible:ring-2 focus-visible:ring-pop-ink focus-visible:outline-none cursor-hoverable"
+          >
+            Read my flagship case study →
+          </a>
+          <Link
+            href="/resume"
+            className="inline-flex items-center gap-2 border-2 border-ink dark:border-cream px-8 py-4 text-lg font-bold hover:bg-ink hover:text-cream dark:hover:bg-cream dark:hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-pop-ink focus-visible:outline-none cursor-hoverable"
+          >
+            View résumé
+          </Link>
         </motion.div>
-      </div>
-
-      <div className="absolute bottom-0 left-0 w-full bg-ink dark:bg-white text-cream dark:text-ink py-3 overflow-hidden flex border-t-4 border-pop z-20">
-        <div className="animate-marquee whitespace-nowrap font-mono text-sm tracking-wider font-bold shrink-0">
-          {marqueeContent}
-        </div>
-        <div className="animate-marquee whitespace-nowrap font-mono text-sm tracking-wider font-bold shrink-0">
-          {marqueeContent}
-        </div>
       </div>
     </section>
   );

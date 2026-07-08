@@ -68,8 +68,8 @@ export default function Home() {
         {/* Performance: blur only on desktop (md:), opacity-only on mobile */}
         <main className={`transition-all duration-500 ${simulationMode ? 'md:blur-md opacity-20 pointer-events-none' : 'opacity-100'}`}>
           <Hero />
-          <About />
           <WorkIndex onSelectProject={setSelectedProject} />
+          <About />
           <Footer />
         </main>
 

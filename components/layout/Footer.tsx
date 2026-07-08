@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
         <div>
           <h2 className="font-display font-bold text-5xl md:text-7xl mb-6 leading-none">READY TO<br /><span className="text-transparent" style={{ WebkitTextStroke: '1px #fff', cursor: 'pointer' }}>BUILD.</span></h2>
-          <p className="font-mono text-sm opacity-50 mb-8 max-w-sm">Currently available for Product & Strategy roles. Let&apos;s discuss how we can scale your impact.</p>
+          <p className="font-mono text-sm opacity-70 mb-8 max-w-sm">Currently targeting Product Manager (Product &amp; Strategy) roles in Toronto — new-grad / early-career. Let&apos;s talk.</p>
           <a href="mailto:oluwapamimoakinjide@gmail.com" className="inline-flex items-center bg-cream text-ink font-bold px-8 py-4 text-lg hover:bg-pop hover:text-white transition-colors shadow-hard hover:shadow-hard-hover cursor-hoverable">
             <IconMail className="w-5 h-5 mr-2 pixel-icon" /> INITIATE CONTACT
           </a>
@@ -72,13 +72,14 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <div className="flex flex-col justify-end items-start md:items-end">
-          <div className="flex gap-6 text-2xl mb-8">
+          <div className="flex flex-wrap gap-6 text-2xl mb-8">
+            <a href="/resume" className="hover:text-pop transition-colors font-mono cursor-hoverable">RÉSUMÉ</a>
             <a href="https://www.linkedin.com/in/pamimo" target="_blank" rel="noopener noreferrer" className="hover:text-pop transition-colors font-mono cursor-hoverable">LINKEDIN</a>
             <a href="https://github.com/A-Pamimo/" target="_blank" rel="noopener noreferrer" className="hover:text-pop transition-colors font-mono cursor-hoverable">GITHUB</a>
           </div>
           <div className="text-right">
-            <p className="font-mono text-xs opacity-30">TORONTO, ON</p>
-            <p className="font-mono text-xs opacity-30">&copy; 2026 PAMIMO AKINJIDE</p>
+            <p className="font-mono text-xs opacity-70">TORONTO, ON</p>
+            <p className="font-mono text-xs opacity-70">&copy; 2026 PAMIMO AKINJIDE</p>
           </div>
         </div>
       </div>

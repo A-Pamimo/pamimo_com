@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Project } from '../../types';
 import { IconClose, IconTrophy, IconCheck } from '../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
+import CaseStudy from './CaseStudy';
 
 interface ProjectModalProps {
     project: Project | null;
@@ -92,7 +93,12 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                                             className="flex flex-wrap gap-2 mb-6"
                                         >
                                             <span className="font-mono text-xs font-bold bg-pop text-white px-3 py-1 rounded-none uppercase tracking-wider">CASE STUDY</span>
-                                            {project.id === 'nova' && (
+                                            {project.status && (
+                                                <span className="font-mono text-xs font-bold border border-current px-3 py-1 rounded-none uppercase tracking-wider">
+                                                    {project.status}
+                                                </span>
+                                            )}
+                                            {(project.id === 'nova' || project.case?.result.metricType === 'award') && (
                                                 <span className="font-mono text-xs font-bold bg-gold text-ink px-3 py-1 rounded-none inline-flex items-center gap-2 uppercase tracking-wider">
                                                     <IconTrophy className="w-3 h-3 pixel-icon" /> AWARD WINNER
                                                 </span>
@@ -194,44 +200,75 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                                             ))}
                                         </div>
                                     </motion.div>
+
+                                    {((project.links && project.links.length > 0) || project.link) && (
+                                        <motion.div
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.55 }}
+                                        >
+                                            <h3 className="font-display font-bold text-xl mb-4 flex items-center gap-3">
+                                                <span className="w-2 h-2 bg-pop rounded-none"></span>
+                                                LINKS
+                                            </h3>
+                                            <div className="flex flex-col gap-2">
+                                                {(project.links ?? (project.link ? [{ label: 'View project', url: project.link }] : [])).map(l => (
+                                                    <a
+                                                        key={l.url}
+                                                        href={l.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="font-mono text-sm font-bold text-pop-ink dark:text-pop hover:underline inline-flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-pop-ink focus-visible:outline-none"
+                                                    >
+                                                        {l.label} ↗
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        </motion.div>
+                                    )}
                                 </div>
 
                                 {/* Main Content */}
                                 <div className="lg:col-span-2 space-y-12 lg:pl-8 lg:border-l border-ink/10 dark:border-white/10">
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.4 }}
-                                    >
-                                        <h3 className="font-mono text-xs text-pop font-bold mb-3 uppercase tracking-widest">01. What I Built</h3>
-                                        <p className="font-display text-3xl font-bold leading-tight">{project.what}</p>
-                                    </motion.div>
+                                    {project.case ? (
+                                        <CaseStudy project={project} />
+                                    ) : (
+                                        <>
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: 0.4 }}
+                                            >
+                                                <h3 className="font-mono text-xs text-pop-ink dark:text-pop font-bold mb-3 uppercase tracking-widest">01. What I Built</h3>
+                                                <p className="font-display text-3xl font-bold leading-tight">{project.what}</p>
+                                            </motion.div>
 
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.5 }}
-                                    >
-                                        <h3 className="font-mono text-xs text-pop font-bold mb-3 uppercase tracking-widest">02. How It Works</h3>
-                                        <div className="prose prose-xl dark:prose-invert font-sans opacity-90 leading-relaxed">
-                                            <p>{project.how}</p>
-                                        </div>
-                                    </motion.div>
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: 0.5 }}
+                                            >
+                                                <h3 className="font-mono text-xs text-pop-ink dark:text-pop font-bold mb-3 uppercase tracking-widest">02. How It Works</h3>
+                                                <div className="prose prose-xl dark:prose-invert font-sans opacity-90 leading-relaxed">
+                                                    <p>{project.how}</p>
+                                                </div>
+                                            </motion.div>
 
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: 0.6 }}
-                                        className="bg-ink text-cream dark:bg-white dark:text-ink p-8 md:p-10 rounded-none shadow-xl relative overflow-hidden group"
-                                    >
-                                        <div className="absolute inset-0 bg-pop opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
-                                        <div className="relative z-10">
-                                            <h3 className="font-mono text-xs text-pop font-bold mb-4 uppercase flex items-center gap-2">
-                                                <IconCheck className="w-4 h-4" /> The Outcome
-                                            </h3>
-                                            <p className="font-display text-2xl md:text-3xl font-bold">{highlightText(project.impact)}</p>
-                                        </div>
-                                    </motion.div>
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.95 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ delay: 0.6 }}
+                                                className="bg-ink text-cream dark:bg-white dark:text-ink p-8 md:p-10 rounded-none shadow-xl relative overflow-hidden"
+                                            >
+                                                <div className="relative z-10">
+                                                    <h3 className="font-mono text-xs text-pop font-bold mb-4 uppercase flex items-center gap-2">
+                                                        <IconCheck className="w-4 h-4" /> The Outcome
+                                                    </h3>
+                                                    <p className="font-display text-2xl md:text-3xl font-bold">{highlightText(project.impact)}</p>
+                                                </div>
+                                            </motion.div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>

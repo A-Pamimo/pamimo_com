@@ -61,8 +61,8 @@ const WorkIndex: React.FC<WorkIndexProps> = ({ onSelectProject }) => {
                 transition={{ duration: 0.3 }}
                 key={project.id}
                 className={`
-                  ${project.id === 'nova' ? 'lg:col-span-8' :
-                    project.id === 'weg' ? 'lg:col-span-8' : 'lg:col-span-4'}
+                  ${project.featured ? 'lg:col-span-6' :
+                    project.id === 'nova' ? 'lg:col-span-8' : 'lg:col-span-4'}
                 `}
               >
                 <ProjectCard project={project} onClick={onSelectProject} className="h-full" />
