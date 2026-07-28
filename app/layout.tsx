@@ -116,7 +116,7 @@ export default function RootLayout({
         <meta name="geo.region" content="CA-ON" />
         <meta name="geo.placename" content="Toronto" />
       </head>
-      <body className="text-ink dark:text-cream antialiased overflow-x-hidden selection:bg-pop selection:text-white">
+      <body className="text-ink dark:text-cream antialiased overflow-x-hidden selection:bg-pop selection:text-white" suppressHydrationWarning>
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[9999] focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-pop focus:text-white focus:font-bold focus:shadow-lg focus:outline-none">
           Skip to Content
         </a>
