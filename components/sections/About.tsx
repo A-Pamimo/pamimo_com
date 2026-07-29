@@ -56,8 +56,7 @@ const About: React.FC = () => {
         <motion.div {...fade}>
           <h2 className="font-display font-extrabold text-display-1 mb-8">HOW I<br />WORK<span className="text-pop">.</span></h2>
           <p className="font-sans text-body-lg opacity-80 mb-10 max-w-lg">
-            I&apos;m an economist who became a product manager. The through-line: find the real
-            constraint, make the hard call, ship it, and measure what actually moved.
+            I&apos;m an economist who became a product manager. Hi...
           </p>
 
           <div className="space-y-6">
