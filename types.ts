@@ -8,6 +8,45 @@ export interface ProjectStats {
   leadership: number;
 }
 
+// How honest is the headline metric? Guards against passing a prize off as product impact.
+export type MetricType = 'product' | 'usability' | 'analyst' | 'award' | 'concept';
+
+export type ProjectStatus = 'shipped' | 'prototype' | 'concept' | 'research' | 'archived';
+
+// The PM case-study arc: problem -> the call (with the tradeoff) -> shipped -> what moved -> reflection.
+export interface CaseStudy {
+  problem: {
+    statement: string;
+    users: string;
+    validation: string;   // how you know the problem is real
+    successMetric: string; // defined up front
+  };
+  decision: {
+    options?: string[];
+    chosen?: string;
+    rationale: string;
+    tradeoff: string;      // what you cut, and why — the PM signal
+  };
+  shipped: {
+    summary: string;
+    scope?: string[];
+  };
+  result: {
+    metric: string;
+    metricType: MetricType;
+    evidence?: string;
+  };
+  reflection: {
+    gotWrong: string;
+    next: string;
+  };
+}
+
+export interface ProjectLink {
+  label: string;
+  url: string;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -20,8 +59,17 @@ export interface Project {
   impact: string;
   category: ('strategy' | 'product' | 'tech')[];
   featured?: boolean;
+  status?: ProjectStatus;
+  // Card presentation — data-driven, replacing hardcoded id checks in ProjectCard.
+  // Defaults derive from `featured` / media presence when omitted.
+  cardVariant?: 'flagship' | 'wide' | 'standard';
+  span?: number; // lg grid column span (out of 12)
   year: number;
-  stats: ProjectStats;
+  // Structured PM case study — when present, drives the new modal layout.
+  case?: CaseStudy;
+  links?: ProjectLink[];
+  // Deprecated: self-scored vanity metrics. Optional so entries can drop them.
+  stats?: ProjectStats;
   blog?: string;
   image?: string;
   imageCaption?: string;

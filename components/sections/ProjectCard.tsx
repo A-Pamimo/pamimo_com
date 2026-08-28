@@ -1,8 +1,11 @@
+'use client';
+
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Project } from '../../types';
-import { IconArrow, IconBrain, IconGlobe, IconGov, IconUsers, IconChart, IconTrophy } from '../ui/Icons';
+import { IconArrow, IconBrain, IconGlobe, IconGov, IconUsers, IconChart } from '../ui/Icons';
+import { SPRING } from '../../lib/motion';
 
 interface ProjectCardProps {
   project: Project;
@@ -10,154 +13,137 @@ interface ProjectCardProps {
   className?: string;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }) => {
-  const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
+type Variant = 'flagship' | 'wide' | 'standard';
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+// Variant + span are data-driven (replacing the old hardcoded id branches).
+export const resolveVariant = (p: Project): Variant =>
+  p.cardVariant ?? (p.featured ? 'flagship' : p.image ? 'wide' : 'standard');
+
+// Static class map so Tailwind's JIT can see every span used.
+const SPAN_CLASS: Record<number, string> = {
+  4: 'lg:col-span-4', 5: 'lg:col-span-5', 6: 'lg:col-span-6',
+  7: 'lg:col-span-7', 8: 'lg:col-span-8', 12: 'lg:col-span-12',
+};
+export const spanClass = (p: Project): string => {
+  const span = p.span ?? ({ flagship: 6, wide: 8, standard: 4 } as const)[resolveVariant(p)];
+  return SPAN_CLASS[span] ?? 'lg:col-span-4';
+};
+
+const statusLabel = (p: Project): string =>
+  p.id === 'sangyin' ? 'OPEN SOURCE' :
+  p.status === 'shipped' ? 'LIVE' :
+  (p.status ?? 'PROJECT').toUpperCase();
+
+const iconFor = (p: Project) => {
+  switch (p.id) {
+    case 'nova': return <IconBrain className="w-24 h-24 text-pop opacity-80 pixel-icon" />;
+    case 'weg': return <IconGlobe className="w-24 h-24 text-pop opacity-30 pixel-icon" />;
+    case 'city': return <IconGov className="w-24 h-24 opacity-20 pixel-icon" />;
+    case 'pasa':
+    case 'ess': return <IconUsers className="w-24 h-24 text-pop opacity-30 pixel-icon" />;
+    default:
+      if (p.category.includes('strategy')) return <IconChart className="w-24 h-24 opacity-20 pixel-icon" />;
+      if (p.category.includes('product')) return <IconBrain className="w-24 h-24 text-pop opacity-30 pixel-icon" />;
+      return <IconGlobe className="w-24 h-24 opacity-20 pixel-icon" />;
+  }
+};
+
+const Tag: React.FC<{ children: React.ReactNode; variant?: 'solid' | 'outline' }> = ({ children, variant = 'solid' }) => (
+  <span className={`font-mono text-label px-2 py-1 uppercase inline-block ${
+    variant === 'solid' ? 'bg-ink text-cream dark:bg-cream dark:text-ink' : 'border border-edge opacity-70'
+  }`}>{children}</span>
+);
+
+const StackChips: React.FC<{ stack: string[]; n: number }> = ({ stack, n }) => (
+  <div className="flex flex-wrap gap-2">
+    {stack.slice(0, n).map(s => (
+      <span key={s} className="border border-current/30 px-2 py-1 text-xs font-mono">{s}</span>
+    ))}
+  </div>
+);
+
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, className }) => {
+  const reduce = useReducedMotion();
+  const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
+  const variant = resolveVariant(project);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (reduce) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left - rect.width / 2) / 25;
     const y = (e.clientY - rect.top - rect.height / 2) / 25;
     setTilt({ rotateX: -y, rotateY: x });
   };
+  const handleMouseLeave = () => setTilt({ rotateX: 0, rotateY: 0 });
 
-  const handleMouseLeave = () => {
-    setTilt({ rotateX: 0, rotateY: 0 });
-  };
-
-  const getIcon = (id: string) => {
-    switch (id) {
-      case 'nova': return <IconBrain className="w-32 h-32 text-pop relative z-10 opacity-80 pixel-icon" />;
-      case 'wfp': return <IconGlobe className="w-6 h-6 opacity-50 pixel-icon" />;
-      case 'city': return <IconGov className="w-24 h-24 opacity-20 self-end mt-4 pixel-icon" />;
-      case 'pasa': return <IconUsers className="w-6 h-6 text-pop pixel-icon" />;
-      case 'ess': return <IconUsers className="w-6 h-6 opacity-50 pixel-icon" />;
-      case 'weg': return <IconGlobe className="w-24 h-24 text-pop opacity-20 pixel-icon" />;
-      case 'sctc': return <IconChart className="w-24 h-24 text-ink/10 dark:text-white/10 pixel-icon" />;
-      default: return null;
-    }
-  };
-
-  // Special layouts based on card type to match visual parity
-  if (project.id === 'nova') {
-    return (
-      <motion.div
-        onClick={() => onClick(project)}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformStyle: 'preserve-3d' }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className={`project-card ${className} border border-ink dark:border-white/20 p-8 group hover:shadow-hard transform transition-shadow active:scale-[0.98] bg-cream dark:bg-black cursor-hoverable cursor-pointer`}
-      >
-        <div className="h-full flex flex-col md:flex-row pointer-events-none">
-          <div className="flex-1 flex flex-col justify-between">
+  return (
+    <motion.button
+      type="button"
+      onClick={() => onClick(project)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      aria-label={`Open case study: ${project.title}`}
+      style={reduce ? undefined : { rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformStyle: 'preserve-3d' }}
+      transition={SPRING}
+      className={`project-card ${className ?? ''} group relative w-full text-left overflow-hidden border-2 border-edge bg-surface p-6 md:p-8 cursor-hoverable transition-all hover:shadow-hard-lg hover:-translate-x-1 hover:-translate-y-1 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pop-ink`}
+    >
+      <div className="pointer-events-none h-full">
+        {variant === 'flagship' && (
+          <div className="flex flex-col h-full justify-between">
             <div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="font-mono text-xs bg-ink text-cream dark:bg-white dark:text-ink px-2 py-1">{project.tag.toUpperCase()}</span>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs text-pop font-bold animate-pulse">● LIVE</span>
+              <div className="flex justify-between items-center mb-6">
+                <Tag>{project.tag}</Tag>
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-label text-pop-ink dark:text-pop font-bold">● {statusLabel(project)}</span>
                   <IconArrow className="w-6 h-6 text-pop group-hover:translate-x-1 transition-transform pixel-icon" />
                 </div>
               </div>
-              <h3 className="font-display font-bold text-3xl mb-2">{project.title}</h3>
-              <p className="text-sm font-mono text-pop mb-4">{project.subtitle}</p>
-              <p className="opacity-70 max-w-md">{project.context}</p>
+              <h3 className="font-display font-extrabold text-display-2 mb-3">{project.title}</h3>
+              <p className="font-mono text-sm text-pop-ink dark:text-pop font-bold mb-5">{project.subtitle}</p>
+              <p className="opacity-80 leading-relaxed max-w-xl">{project.context}</p>
             </div>
-            <div className="mt-8">
-              <span className="bg-gold text-ink text-xs font-bold px-3 py-1 inline-flex items-center gap-2 mb-2 shadow-sm w-fit uppercase tracking-wider">
-                <IconTrophy className="w-4 h-4 pixel-icon" /> <span className="text-pop font-black">$20K</span> BEST BUSINESS VALUE PRIZE
-              </span>
-              <div className="flex gap-2">
-                {project.stack.slice(0, 3).map(s => (
-                  <span key={s} className="border border-current opacity-30 px-2 py-1 text-xs font-mono">{s}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="w-full md:w-1/3 bg-ink dark:bg-zinc-800 flex items-center justify-center relative overflow-hidden p-8 md:p-0">
-            <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#FF4400 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-            {getIcon('nova')}
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
-
-  // WEG Prominent layout
-  if (project.id === 'weg') {
-    return (
-      <motion.div
-        onClick={() => onClick(project)}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformStyle: 'preserve-3d' }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className={`project-card ${className} border border-ink dark:border-white/20 p-8 group hover:shadow-hard transform transition-shadow active:scale-[0.98] cursor-hoverable cursor-pointer bg-white dark:bg-charcoal flex flex-col justify-between overflow-hidden`}
-      >
-        <div className="flex flex-col md:flex-row gap-8 h-full pointer-events-none">
-          <div className="flex-1 flex flex-col justify-between min-w-0">
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="font-mono text-xs bg-ink text-cream dark:bg-white dark:text-ink px-2 py-1">ENTREPRENEURSHIP</span>
-              </div>
-              <h3 className="font-display font-bold text-3xl mb-2 break-words">{project.title}</h3>
-              <p className="text-sm font-mono opacity-50 mb-4">{project.subtitle}</p>
-              <p className="opacity-70 max-w-lg">{project.context}</p>
-            </div>
-            <div className="mt-6 flex gap-2 flex-wrap">
-              {project.stack.map(s => (
-                <span key={s} className="border border-current opacity-30 px-2 py-1 text-xs font-mono">{s}</span>
-              ))}
-            </div>
-          </div>
-          <div className="md:w-1/3 flex-shrink-0 flex items-center justify-center bg-cream dark:bg-zinc-800/50 p-4 border border-ink/5 dark:border-white/5 overflow-hidden">
-            {project.image ? (
-              <Image src={project.image} alt={project.title} width={400} height={300} className="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500" />
-            ) : (
-              getIcon('weg')
-            )}
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
-
-  // Fallback generic card structure customized per item to match HTML structure
-  return (
-    <div onClick={() => onClick(project)} className={`project-card ${className} border border-ink dark:border-white/20 p-6 group hover:shadow-hard transform transition-all active:scale-[0.98] cursor-hoverable cursor-pointer flex flex-col justify-between ${project.id === 'city' ? 'bg-pop text-white' : 'bg-white dark:bg-charcoal'}`}>
-      <div className={`h-full flex flex-col ${project.id === 'sctc' ? 'md:flex-row gap-6' : 'justify-between'} pointer-events-none`}>
-        <div className={project.id === 'sctc' ? 'flex-1' : ''}>
-          {project.id === 'wfp' && <div className="flex justify-between items-center mb-4"><span className="font-mono text-xs border border-current px-2 py-1 opacity-60">RESEARCH</span></div>}
-          {project.id === 'city' && <span className="font-mono text-xs bg-white text-pop px-2 py-1 inline-block mb-4">STRATEGY</span>}
-          {project.id === 'pasa' && <div className="flex justify-between items-start mb-4"><h3 className="font-display font-bold text-2xl">{project.title}</h3>{getIcon('pasa')}</div>}
-          {project.id === 'ess' && <div className="flex justify-between items-start mb-4"><h3 className="font-display font-bold text-2xl leading-tight">{project.title}</h3>{getIcon('ess')}</div>}
-
-          {project.id === 'sctc' && <span className="font-mono text-xs bg-ink text-cream dark:bg-white dark:text-ink px-2 py-1 mb-4 inline-block">DATA ANALYSIS</span>}
-
-          {(project.id !== 'pasa' && project.id !== 'ess') && <h3 className="font-display font-bold text-2xl mb-1">{project.title}</h3>}
-
-          {project.id === 'pasa' && <p className="text-sm font-mono text-pop mt-1">LEADERSHIP</p>}
-          {project.id === 'ess' && <p className="text-sm font-mono opacity-50 mt-1">CO-FOUNDER</p>}
-
-          {(project.id !== 'pasa' && project.id !== 'ess') && <p className="text-sm font-mono opacity-50 mb-4">{project.subtitle}</p>}
-
-          <p className="text-sm opacity-70">
-            {project.context}
-          </p>
-        </div>
-
-        {project.id === 'wfp' && (
-          <div className="mt-6 pt-4 border-t border-dashed border-current opacity-30 flex justify-end">
-            {/* Cleaner visual without code snippet */}
-            {project.image ? (
-              <Image src={project.image} alt={project.title} width={48} height={48} className="w-12 h-12 object-cover rounded-sm border border-current opacity-80" />
-            ) : (
-              getIcon('wfp')
-            )}
+            <div className="mt-8"><StackChips stack={project.stack} n={5} /></div>
           </div>
         )}
-        {project.id === 'sctc' && <div className="flex items-end">{getIcon('sctc')}</div>}
+
+        {variant === 'wide' && (
+          <div className="flex flex-col md:flex-row gap-8 h-full">
+            <div className="flex-1 flex flex-col justify-between min-w-0">
+              <div>
+                <Tag>{project.tag}</Tag>
+                <h3 className="font-display font-bold text-display-3 mt-4 mb-2 break-words">{project.title}</h3>
+                <p className="text-sm font-mono opacity-60 mb-4">{project.subtitle}</p>
+                <p className="opacity-80 max-w-lg">{project.context}</p>
+              </div>
+              <div className="mt-6"><StackChips stack={project.stack} n={4} /></div>
+            </div>
+            <div className="md:w-1/3 shrink-0 flex items-center justify-center bg-ink/5 dark:bg-white/5 border border-edge overflow-hidden aspect-video md:aspect-auto">
+              {project.image ? (
+                <Image src={project.image} alt={project.title} width={400} height={300} className="w-full h-full object-cover" />
+              ) : iconFor(project)}
+            </div>
+          </div>
+        )}
+
+        {variant === 'standard' && (
+          <div className="flex flex-col h-full justify-between">
+            <div>
+              <div className="flex justify-between items-start mb-4">
+                <Tag variant="outline">{project.tag}</Tag>
+                <IconArrow className="w-5 h-5 text-pop opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all pixel-icon" />
+              </div>
+              <h3 className="font-display font-bold text-display-3 mb-1">{project.title}</h3>
+              <p className="text-sm font-mono opacity-60 mb-4">{project.subtitle}</p>
+              <p className="text-sm opacity-80">{project.context}</p>
+            </div>
+            <div className="mt-6"><StackChips stack={project.stack} n={3} /></div>
+          </div>
+        )}
       </div>
-    </div>
+
+      {/* shared hover accent bar */}
+      <div className="absolute bottom-0 left-0 w-full h-1.5 bg-pop origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+    </motion.button>
   );
 };
 
