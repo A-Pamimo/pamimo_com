@@ -30,10 +30,10 @@ export const site = {
     name: 'Pamimo Akinjide',
 
     hero: {
-        positioning: 'I work where economics, Asia and Africa trade, and applied artificial intelligence meet.',
+        positioning: 'My work sits where economics, Asia and Africa trade, and applied artificial intelligence meet.',
         intro: [
-            "I'm a Product Manager on the Hybrid Cloud team at the Royal Bank of Canada (RBC) in Toronto, and the founder of World's Edge Group, an economics consulting and artificial intelligence (AI) advisory firm.",
-            'I grew up in Nigeria and moved to Canada for university in 2022. I studied Economics at the University of Saskatchewan, with a Computer Science minor, and graduated with First Class Honours.',
+            "These days I'm a Product Manager on the Hybrid Cloud team at the Royal Bank of Canada (RBC) in Toronto, and the founder of World's Edge Group, an economics consulting and artificial intelligence (AI) advisory firm.",
+            'Originally from Nigeria, I moved to Canada for university in 2022 and studied Economics at the University of Saskatchewan, graduating with First Class Honours and a Computer Science minor.',
         ],
         portrait: {
             // [CONFIRM] headshot: reusing the photo from the current site
@@ -50,9 +50,9 @@ export const site = {
             place: 'Toronto',
             dates: 'September 2026 to present',
             points: [
-                "I own product direction for the bank's enterprise Kubernetes platform portfolio: on-premises OpenShift, Azure Kubernetes Service (AKS), Amazon Elastic Kubernetes Service (EKS), and an Argo CD control plane that manages deployments through Git (GitOps).",
-                'I sit between internal application teams and platform engineering, translating what those teams need into platform priorities.',
-                "I drive the use of AI within the team's own work, including an AI-driven software development lifecycle (AI SDLC), the end-to-end process of planning, building, testing and releasing software.",
+                "Own product direction for the bank's enterprise Kubernetes platform portfolio: on-premises OpenShift, Azure Kubernetes Service (AKS), Amazon Elastic Kubernetes Service (EKS), and an Argo CD control plane that manages deployments through Git (GitOps).",
+                'Sit between internal application teams and platform engineering, translating what those teams need into platform priorities.',
+                "Drive the use of AI within the team's own work, including an AI-driven software development lifecycle (AI SDLC), the end-to-end process of planning, building, testing and releasing software.",
             ],
         },
         {
@@ -62,9 +62,9 @@ export const site = {
             place: null,
             dates: 'Summer 2025',
             points: [
-                'I was the Product Owner on NOVA, an agentic AI automation platform projected to save around 40,000 hours of work a year across the bank.',
+                'Product Owner on NOVA, an agentic AI automation platform projected to save around 40,000 hours of work a year across the bank.',
                 'Our team won the Best Business Value Award, which came with a $20,000 prize.',
-                'A patent is pending on the work.',
+                'The work now has a patent pending.',
             ],
         },
         {
@@ -74,8 +74,8 @@ export const site = {
             place: null,
             dates: 'July 2024 to April 2025',
             points: [
-                "I worked on strategic planning, strategy execution, research, mapping and stakeholder engagement for the City's organizational strategy function.",
-                'I wrote a white paper on aligning strategy with municipal budgeting and business planning, drawing on practice in Toronto, Vancouver, Edmonton and Calgary.',
+                "Worked on strategic planning, strategy execution, research, mapping and stakeholder engagement for the City's organizational strategy function.",
+                'Wrote a white paper on aligning strategy with municipal budgeting and business planning, drawing on practice in Toronto, Vancouver, Edmonton and Calgary.',
                 // [ADD] any other City of Saskatoon deliverables
             ],
         },
@@ -88,7 +88,7 @@ export const site = {
                 title: 'Cansbridge Fellow, 2026 cohort',
                 meta: 'Peking University, Beijing',
                 body: [
-                    "My fellowship placed me at Peking University's Institute of New Structural Economics (INSE) in Beijing for a research placement. I was the second University of Saskatchewan student ever selected for the fellowship.",
+                    "My fellowship placed me at Peking University's Institute of New Structural Economics (INSE) in Beijing for a research placement. Only one University of Saskatchewan student had been selected for it before me.",
                     'My main project compared the patent filing rates of Chinese innovators before and after they returned to China.',
                 ],
             },
@@ -99,14 +99,14 @@ export const site = {
                 body: [
                     'My thesis tests whether phone surveys measure food insecurity the same way face-to-face interviews do, using experimental data from the World Food Programme (WFP).',
                     'Dr. Sabine Liebenehm of the University of Saskatchewan supervised the thesis, and Dr. Alirah Weyori of the WFP co-supervised it.',
-                    'I presented the paper at the Canadian Economics Association (CEA) 2026 Undergraduate Poster Competition, as one of ten undergraduates selected nationally.',
+                    'At the Canadian Economics Association (CEA) 2026 Undergraduate Poster Competition, I presented the paper as one of ten undergraduates selected nationally.',
                 ],
             },
             {
                 id: 'assistant',
                 title: 'Research assistant and teaching assistant',
                 meta: 'University of Saskatchewan, 2025',
-                body: ['I worked as both a research assistant and a teaching assistant at the University of Saskatchewan in 2025.'],
+                body: ['In 2025, I also worked as both a research assistant and a teaching assistant at the University of Saskatchewan.'],
             },
         ] as Entry[],
         interests:
@@ -114,7 +114,7 @@ export const site = {
     },
 
     building: {
-        body: "I founded World's Edge Group, an economics consulting and AI advisory firm. The firm's own website covers its work in more detail.",
+        body: "World's Edge Group is the economics consulting and AI advisory firm I founded. Its own website covers the firm's work in more detail.",
         link: { label: "Visit World's Edge Group", href: 'https://worldsedgegroup.com' } as Link,
     },
 
@@ -123,19 +123,19 @@ export const site = {
             id: 'ess',
             title: 'Co-founder and first President, Economics Students Society',
             meta: 'University of Saskatchewan',
-            body: ['I co-founded the society less than nine months after moving to Canada, served as its first President, and later stayed on as an advisor.'],
+            body: ['Less than nine months after moving to Canada, I co-founded the society, served as its first President, and later stayed on as an advisor.'],
         },
         {
             id: 'pasa',
             title: 'President, Pan-African Students Association (PASA)',
             meta: 'University of Saskatchewan',
-            body: ['I served as Vice President Finance before becoming President, and I held the presidency at the same time as my Economics Students Society role.'],
+            body: ['After a term as Vice President Finance, I became President, holding the role at the same time as the Economics Students Society presidency.'],
         },
         {
             id: 'nigeria',
             title: 'Software engineer and community service team lead',
             meta: 'Nigeria, before university',
-            body: ['I spent roughly two to three years working in Nigeria before university, as a software engineer and as a community service team lead managing people.'],
+            body: ['Before university, I spent roughly two to three years working in Nigeria as a software engineer and as a community service team lead managing people.'],
         },
     ] as Entry[],
 
@@ -147,31 +147,31 @@ export const site = {
 
     beyond: {
         // [ADD] any other interests
-        interests: 'Outside of work, I spend my time on mentorship, economics and agriculture.',
+        interests: 'Outside of work, my time goes to mentorship, economics and agriculture.',
         writing: {
-            text: 'I also write, and you can read my longer pieces on my writing page.',
+            text: 'My longer pieces of writing all live on my writing page.',
             link: { label: 'Read my writing', href: '/blog' } as Link,
         },
         video: {
-            text: 'I documented my Cansbridge summer travelling through Asia in a short video.',
+            text: 'A short video documents my Cansbridge summer travelling through Asia.',
             // [ADD] YouTube or Vimeo link for the Cansbridge video recap
             url: null as string | null,
             title: 'My Cansbridge summer in Asia',
         },
-        watches: 'And on a lighter note, I have a real soft spot for watches.',
+        watches: 'And on a lighter note, watches are a real soft spot of mine.',
     },
 
     contact: {
-        text: "Email is the best way to reach me, and I'm always happy to connect on LinkedIn too.",
+        text: "Email is the best way to reach me, and LinkedIn works well too.",
         // [CONFIRM] email and LinkedIn: reusing the values from the current site
         email: 'oluwapamimoakinjide@gmail.com',
         linkedin: { label: 'LinkedIn', href: 'https://www.linkedin.com/in/pamimo' } as Link,
         newsletter: {
-            text: 'If you want to know when I publish something new, leave your email below.',
+            text: 'Leave your email below to hear about new writing when it comes out.',
             label: 'Email address',
             button: 'Subscribe',
             loading: 'Subscribing you now',
-            success: "You're subscribed, so new writing will come straight to your inbox.",
+            success: "Thanks, you're now subscribed to new writing.",
             error: "That didn't go through, so please check the address and try again.",
         },
         // [ADD] CV file, if you want one downloadable
