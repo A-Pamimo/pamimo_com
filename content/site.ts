@@ -170,6 +170,13 @@ export const site = {
         // Carried over from the old site's About section
         askMe: 'Ask me about why I hate American milk or my Chinese language progress.',
         photos: [
+            // Cansbridge summer in China
+            { src: '/slide-assets/cansbridge-yungang.jpg', width: 900, height: 1200, alt: 'Pamimo looking up at a giant Buddha carved into a sandstone cliff at the Yungang Grottoes', caption: 'Yungang Grottoes' },
+            { src: '/slide-assets/cansbridge-name-painting.jpg', width: 1200, height: 900, alt: 'Pamimo and a street artist holding a painting of the name Pamimo, with letters made from bamboo, lanterns and palm leaves', caption: 'My name, painted by a street artist' },
+            { src: '/slide-assets/cansbridge-canal.jpg', width: 1200, height: 900, alt: 'A quiet canal lined with white buildings, curved tile roofs and glowing lantern signs', caption: 'A canal lined with lantern-lit restaurants' },
+            { src: '/slide-assets/cansbridge-noodles.jpg', width: 900, height: 1200, alt: 'Pamimo pulling a face over a blue and white bowl of spicy noodles', caption: 'Noodle research, continued' },
+            { src: '/slide-assets/cansbridge-bridge.jpg', width: 1200, height: 900, alt: 'Pamimo smiling in the rain on a stone bridge leading to a temple, with visitors carrying umbrellas in the background', caption: 'The rain did not stop the sightseeing' },
+            // From the previous site
             { src: '/slide-assets/travel-falls.jpg', width: 768, height: 1024, alt: 'Pamimo smiling in a red rain poncho on a boat in a waterfall gorge', caption: 'A very wet boat tour' },
             { src: '/slide-assets/group-ess.jpg', width: 1024, height: 835, alt: 'Pamimo with five members of the Economics Students Society in front of a University of Saskatchewan sign', caption: 'Economics Students Society, University of Saskatchewan' },
             { src: '/slide-assets/group-cup.jpg', width: 1024, height: 659, alt: 'Pamimo and three teammates holding a second-place trophy in front of a $1.5K prize screen', caption: 'Second place, with the team' },
