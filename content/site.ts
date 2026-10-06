@@ -19,6 +19,14 @@ export interface Role {
     points: string[];
 }
 
+export interface Photo {
+    src: string;
+    width: number;
+    height: number;
+    alt: string;
+    caption: string;
+}
+
 export interface Entry {
     id: string;
     title: string;
@@ -159,6 +167,15 @@ export const site = {
             title: 'My Cansbridge summer in Asia',
         },
         watches: 'And on a lighter note, watches are a real soft spot of mine.',
+        // Carried over from the old site's About section
+        askMe: 'Ask me about why I hate American milk or my Chinese language progress.',
+        photos: [
+            { src: '/slide-assets/travel-falls.jpg', width: 768, height: 1024, alt: 'Pamimo smiling in a red rain poncho on a boat in a waterfall gorge', caption: 'A very wet boat tour' },
+            { src: '/slide-assets/group-ess.jpg', width: 1024, height: 835, alt: 'Pamimo with five members of the Economics Students Society in front of a University of Saskatchewan sign', caption: 'Economics Students Society, University of Saskatchewan' },
+            { src: '/slide-assets/group-cup.jpg', width: 1024, height: 659, alt: 'Pamimo and three teammates holding a second-place trophy in front of a $1.5K prize screen', caption: 'Second place, with the team' },
+            { src: '/slide-assets/ramen.jpg', width: 768, height: 1024, alt: 'A bowl of spicy ramen with chashu, a soft egg and fish cake', caption: 'Ramen research' },
+            { src: '/slide-assets/food-kbbq.jpg', width: 1024, height: 768, alt: 'A Korean barbecue spread with cold noodles on a red table', caption: 'Korean barbecue night' },
+        ] as Photo[],
     },
 
     contact: {

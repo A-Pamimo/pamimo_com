@@ -117,13 +117,30 @@ export default function Home() {
                                 {beyond.writing.link.label} <ArrowRight />
                             </a>
                         </p>
+                        <div className="photos" role="region" aria-label="Photos" tabIndex={0}>
+                            {beyond.photos.map(photo => (
+                                <figure key={photo.src} className="photos__item">
+                                    <Image
+                                        src={photo.src}
+                                        alt={photo.alt}
+                                        width={photo.width}
+                                        height={photo.height}
+                                        loading="lazy"
+                                        sizes="(max-width: 48rem) 70vw, 20rem"
+                                        style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
+                                    />
+                                    <figcaption>{photo.caption}</figcaption>
+                                </figure>
+                            ))}
+                        </div>
                         {beyond.video.url && (
                             <>
                                 <p>{beyond.video.text}</p>
                                 <VideoFacade url={beyond.video.url} title={beyond.video.title} />
                             </>
                         )}
-                        <p style={{ marginTop: beyond.video.url ? '1.5rem' : undefined }}>{beyond.watches}</p>
+                        <p style={{ marginTop: '1.5rem' }}>{beyond.watches}</p>
+                        <p>{beyond.askMe}</p>
                     </section>
 
                     <section className="chapter" id="contact" aria-labelledby="contact-title">
