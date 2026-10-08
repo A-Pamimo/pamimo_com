@@ -1,0 +1,619 @@
+/*
+ * Home page styles, scoped to .site so the blog keeps its own look.
+ * Layout: one left-aligned reading column with a narrow left gutter and a wide
+ * right gutter. The PA ribbon travels through the gutters and never crosses text.
+ * Palette follows the visitor's time of day (data-daypart on <html>).
+ */
+
+.site {
+  /* Morning is the default palette and the no-JS fallback */
+  --bg: #eef1ec;
+  --ink: #17201b;
+  --mute: #4f5a53;
+  --ribbon: #1f4fd8;
+  --link: #1b44bd;
+  --rule: rgba(23, 32, 27, 0.14);
+  --field: #f7f9f6;
+  --focus: #1f4fd8;
+  --select: rgba(31, 79, 216, 0.18);
+
+  --display: var(--font-display), 'Bricolage Grotesque', Georgia, serif;
+  --text: var(--font-text), 'Source Serif 4', Georgia, serif;
+  --hand: var(--font-hand), 'Reenie Beanie', cursive;
+
+  --column: 42.5rem;
+  --gutter-left: 1.25rem;
+  --gap: 5rem;
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+  caret-color: var(--ribbon);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-daypart='dusk'] .site {
+  --bg: #e8e3ef;
+  --ink: #221a2e;
+  --mute: #564c63;
+  --ribbon: #d23d14;
+  --link: #a52f0d;
+  --rule: rgba(34, 26, 46, 0.14);
+  --field: #f3f0f7;
+  --focus: #a52f0d;
+  --select: rgba(210, 61, 20, 0.18);
+}
+
+:root[data-daypart='night'] .site {
+  --bg: #0f1626;
+  --ink: #e6e9f0;
+  --mute: #a3abbd;
+  --ribbon: #f2c94c;
+  --link: #f2c94c;
+  --rule: rgba(230, 233, 240, 0.16);
+  --field: #172036;
+  --focus: #f2c94c;
+  --select: rgba(242, 201, 76, 0.24);
+  color-scheme: dark;
+}
+
+/* Page ground outside the wrapper (overscroll, short pages) matches the palette */
+html:has(.site) {
+  background: var(--page-bg, #eef1ec);
+}
+:root[data-daypart='dusk']:has(.site) { --page-bg: #e8e3ef; }
+:root[data-daypart='night']:has(.site) { --page-bg: #0f1626; }
+
+/* --- Browser surfaces ---------------------------------------------------- */
+.site ::selection {
+  background: var(--select);
+  color: var(--ink);
+}
+
+.site :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+html:has(.site) {
+  scrollbar-color: var(--mute) transparent;
+  scroll-padding-top: 5.5rem;
+}
+
+/* --- Shell --------------------------------------------------------------- */
+.site-shell {
+  max-width: 75rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter-left) 1.25rem;
+}
+
+.site-column {
+  max-width: var(--column);
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 64rem) {
+  .site {
+    --gutter-left: 8rem;
+    --gap: 9rem;
+  }
+}
+
+/* --- Header -------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+  transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-header .site-shell {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 4rem;
+}
+
+.site-header__mark {
+  flex: none;
+  display: block;
+  width: 3.25rem;
+  color: var(--ribbon);
+  border-radius: 4px;
+}
+
+.site-nav {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+  mask-image: linear-gradient(90deg, #000 85%, transparent);
+}
+.site-nav::-webkit-scrollbar { display: none; }
+
+.site-nav ul {
+  display: flex;
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 2rem 0.25rem 0;
+  white-space: nowrap;
+}
+
+/* Specificity matches .site a so section links stay plain */
+.site .site-nav a {
+  font-family: var(--display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--mute);
+  text-decoration: none;
+  transition: color 200ms;
+}
+.site .site-nav a:hover { color: var(--ink); }
+
+@media (min-width: 64rem) {
+  .site-nav { -webkit-mask-image: none; mask-image: none; }
+}
+
+.mode-toggle {
+  flex: none;
+  font-family: var(--display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 200ms, background-color 200ms;
+}
+.mode-toggle:hover { border-color: var(--ink); }
+
+@media (max-width: 47.99rem) {
+  .site-header .site-shell {
+    flex-wrap: wrap;
+    row-gap: 0;
+    padding-block: 0.5rem 0;
+  }
+  .site-nav { order: 3; flex-basis: 100%; padding-bottom: 0.5rem; }
+  .mode-toggle { margin-left: auto; }
+}
+
+/* --- Type ------------------------------------------------------------------ */
+.site h1,
+.site h2,
+.site h3 {
+  font-family: var(--display);
+  color: var(--ink);
+  text-wrap: balance;
+  margin: 0;
+}
+
+.site h1 {
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.site h2 {
+  font-size: clamp(1.875rem, 3.4vw, 2.625rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.75rem;
+}
+
+.site h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.38;
+  letter-spacing: -0.005em;
+}
+
+.site p {
+  margin: 0 0 1rem;
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+.site .meta {
+  font-style: italic;
+  color: var(--mute);
+  font-variant-numeric: tabular-nums lining-nums;
+  margin: 0.15rem 0 0.75rem;
+}
+
+.site a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--ribbon);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-thickness 160ms, color 160ms;
+}
+.site a:hover { text-decoration-thickness: 3px; }
+
+.site .link-accent {
+  color: var(--link);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.0625rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.site .icon {
+  width: 0.9em;
+  height: 0.9em;
+  flex: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.site ul.points {
+  margin: 0;
+  padding-left: 1.1rem;
+  max-width: 68ch;
+}
+.site ul.points li { margin-bottom: 0.6rem; padding-left: 0.25rem; }
+.site ul.points li::marker { color: var(--ribbon); }
+
+/* --- Chapters --------------------------------------------------------------- */
+.chapter {
+  margin-top: var(--gap);
+  scroll-margin-top: 5.5rem;
+}
+
+.chapter__list > * + * {
+  margin-top: 2.75rem;
+}
+
+.chapter__item-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.75rem;
+}
+
+.chapter__org {
+  font-family: var(--display);
+  font-weight: 400;
+  color: var(--mute);
+}
+
+/* --- Hero ------------------------------------------------------------------ */
+.hero {
+  padding-top: 2.5rem;
+}
+
+.pa-mark {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  color: var(--ribbon);
+}
+
+.hero__mark {
+  max-width: 34rem;
+  margin: 0 0 1.25rem -0.75rem;
+}
+
+.hero__body {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 48rem) {
+  .hero__body {
+    grid-template-columns: minmax(0, 1fr) 9.5rem;
+    align-items: start;
+  }
+}
+
+.hero__positioning {
+  font-family: var(--display);
+  font-size: clamp(1.3rem, 2.3vw, 1.625rem);
+  line-height: 1.38;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 1.25rem 0 1.5rem;
+  max-width: 30ch;
+  text-wrap: balance;
+}
+
+.hero__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+  margin-top: 1.5rem;
+}
+
+.hero__portrait {
+  width: 9.5rem;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px -12px rgba(15, 22, 38, 0.35);
+}
+
+@media (max-width: 47.99rem) {
+  .hero__portrait { width: 7.5rem; order: -1; }
+}
+
+/* --- PA mark animation --------------------------------------------------------
+ * The pre-paint script sets data-intro on <html>: play (first visit this session),
+ * quick (returning visitor) or nothing (already drawn). Default state is drawn,
+ * so without JavaScript or under reduced motion the mark is simply there.
+ */
+.pa-stroke,
+.pa-tail {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+:root[data-intro='play'] .pa-mark--animated .pa-stroke,
+:root[data-intro='quick'] .pa-mark--animated .pa-stroke,
+:root[data-intro='play'] .pa-mark--animated .pa-tail,
+:root[data-intro='quick'] .pa-mark--animated .pa-tail {
+  animation: pa-draw calc(var(--dur) * var(--speed, 1)) cubic-bezier(0.32, 0, 0.18, 1) calc(var(--delay) * var(--speed, 1)) both;
+}
+
+:root[data-intro='quick'] .pa-mark--animated { --speed: 0.4; }
+
+@keyframes pa-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root .pa-mark--animated .pa-stroke,
+  :root .pa-mark--animated .pa-tail {
+    animation: none !important;
+  }
+}
+
+/* --- Ribbon -------------------------------------------------------------------- */
+.ribbon {
+  position: absolute;
+  inset: 0 auto auto 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  :root[data-mode='full'] .ribbon { display: block; }
+}
+
+/* Waits for the PA to finish writing before the line continues down the page */
+:root[data-intro='play'] .ribbon { animation: ribbon-in 600ms ease-out 2.8s both; }
+:root[data-intro='quick'] .ribbon { animation: ribbon-in 400ms ease-out 1.15s both; }
+
+@keyframes ribbon-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Simple mode: a calm single column; the mark is drawn, the ribbon is gone */
+:root[data-mode='simple'] .site .chapter {
+  border-top: 1px solid var(--rule);
+  padding-top: calc(var(--gap) * 0.5);
+  margin-top: calc(var(--gap) * 0.5);
+}
+:root[data-mode='simple'] .site .hero { border-top: 0; }
+
+/* --- Research interests, building, education --------------------------------- */
+.lede {
+  font-size: 1.3125rem;
+  line-height: 1.5;
+}
+
+.education__degree {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin-bottom: 0.25rem;
+}
+
+/* --- Video facade ------------------------------------------------------------- */
+.video {
+  margin-top: 1.5rem;
+  max-width: var(--column);
+}
+
+.video__frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--field);
+  box-shadow: 0 18px 40px -24px rgba(15, 22, 38, 0.45);
+}
+
+.video__frame iframe,
+.video__frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+
+.video__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--bg);
+}
+
+.video__play span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1rem;
+  background: var(--ink);
+  border-radius: 999px;
+  padding: 0.8rem 1.3rem;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.video__play:hover span { transform: scale(1.04); }
+.video__play svg { width: 1rem; height: 1rem; fill: currentColor; }
+
+/* --- Contact and newsletter --------------------------------------------------- */
+.contact__email {
+  font-family: var(--display);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+}
+
+.contact__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem 1.75rem;
+  margin: 0.5rem 0 3rem;
+}
+
+.newsletter {
+  border-top: 1px solid var(--rule);
+  padding-top: 2rem;
+}
+
+.newsletter__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  max-width: 34rem;
+}
+
+.newsletter label {
+  display: block;
+  font-family: var(--display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.newsletter input {
+  flex: 1 1 14rem;
+  min-width: 0;
+  font: inherit;
+  font-size: 1.0625rem;
+  color: var(--ink);
+  background: var(--field);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  transition: border-color 200ms;
+}
+.newsletter input::placeholder { color: var(--mute); opacity: 1; }
+.newsletter input:hover { border-color: var(--mute); }
+.newsletter input[aria-invalid='true'] { border-color: var(--link); }
+
+.newsletter button {
+  flex: none;
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+  transition: opacity 200ms, transform 160ms;
+}
+.newsletter button:hover { transform: translateY(-1px); }
+.newsletter button:disabled { opacity: 0.55; cursor: progress; transform: none; }
+
+.newsletter__status {
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  min-height: 1.6em;
+  color: var(--mute);
+}
+.newsletter__status[data-state='error'] { color: var(--link); }
+.newsletter__status[data-state='success'] { color: var(--ink); }
+
+/* --- Footer ------------------------------------------------------------------ */
+.site-footer {
+  margin-top: var(--gap);
+  padding-block: 2rem 3rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9375rem;
+  color: var(--mute);
+}
+.site .hero { margin-top: 0; }
+
+/* --- Photo strip (Beyond work) -------------------------------------------------
+ * One row at natural aspect ratios, so widths vary; scrolls sideways inside the
+ * reading column and snaps to each photo. */
+.photos {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.75rem;
+  scrollbar-width: thin;
+}
+
+.photos__item {
+  flex: none;
+  margin: 0;
+  scroll-snap-align: start;
+}
+
+.photos__item img {
+  display: block;
+  height: 15rem;
+  width: auto;
+  border-radius: 6px;
+  background: var(--field);
+}
+
+.photos__item figcaption {
+  margin-top: 0.5rem;
+  max-width: 18rem;
+  font-style: italic;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--mute);
+}
+
+@media (max-width: 47.99rem) {
+  .photos__item img { height: 12rem; }
+}
