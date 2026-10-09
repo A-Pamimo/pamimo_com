@@ -60,8 +60,7 @@ export const site = {
             place: 'Toronto',
             dates: 'September 2026 to present',
             story: [
-                "These days my job is keeping the bank's Kubernetes platforms happy: on-premises OpenShift, Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS), with Argo CD making sure whatever lives in Git is what actually runs (GitOps). Most of it is translating what application teams need into platform priorities, ideally before anyone has to restart a pod at 2 a.m.",
-                'Everything here is infrastructure as code (IaC), so even the servers need a pull request before they change their minds. My other favourite project is bringing AI into how we plan, build, test and ship software, so the robots get the boring parts first.',
+                "Currently managing a few of the bank's Kubernetes platforms, including OpenShift, Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It's a lot of infrastructure as code (IaC), and some days the whole fix is one missing space. Also figuring out where AI fits into how we build software.",
             ],
         },
         {
@@ -71,7 +70,7 @@ export const site = {
             place: null,
             dates: 'Summer 2025',
             story: [
-                "Over the summer I built NOVA, a patent-pending agentic AI platform projected to save the bank around 40,000 hours of work a year. Our team took home the Best Business Value Award and its $20,000 prize. Honestly, the best part was pitching it to RBC's C-suite, the bank's most senior executives, which was a lot more fun than it sounds.",
+                "Built NOVA, a patent-pending agentic AI platform, won $20,000 with the team, and had a lot of fun pitching it to RBC's C-suite.",
             ],
         },
         {
