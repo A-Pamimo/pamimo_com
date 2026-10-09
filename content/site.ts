@@ -60,7 +60,7 @@ export const site = {
             place: 'Toronto',
             dates: 'September 2026 to present',
             story: [
-                "Currently managing a few of the bank's Kubernetes platforms, including OpenShift, Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It's a lot of infrastructure as code (IaC), and some days the whole fix is one missing space. Also figuring out where AI fits into how we build software.",
+                "Currently managing a few of the bank's Kubernetes platforms, including OpenShift, Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It's a lot of infrastructure as code (IaC), and on the rough days it's mostly `kubectl rollout restart deployment/my-sanity`. Also figuring out where AI fits into how we build software.",
             ],
         },
         {
@@ -70,7 +70,7 @@ export const site = {
             place: null,
             dates: 'Summer 2025',
             story: [
-                "Built NOVA, a patent-pending agentic AI platform, won $20,000 with the team, and had a lot of fun pitching it to RBC's C-suite.",
+                "Built a patent-pending agentic AI platform, won $20,000 with the team, and had a lot of fun pitching it to RBC's C-suite.",
             ],
         },
         {

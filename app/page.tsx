@@ -74,7 +74,12 @@ export default function Home() {
                                     </div>
                                     <p className="meta">{[role.place, role.dates].filter(Boolean).join(', ')}</p>
                                     {role.story ? (
-                                        role.story.map((para, i) => <p key={i}>{para}</p>)
+                                        role.story.map((para, i) => (
+                                            <p key={i}>
+                                                {/* Text between backticks renders as inline code */}
+                                                {para.split('`').map((part, j) => (j % 2 ? <code key={j}>{part}</code> : part))}
+                                            </p>
+                                        ))
                                     ) : (
                                         <ul className="points">
                                             {role.points?.map((point, i) => (
