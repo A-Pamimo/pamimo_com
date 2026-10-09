@@ -58,9 +58,10 @@ export const site = {
             place: 'Toronto',
             dates: 'September 2026 to present',
             points: [
-                "Own product direction for the bank's enterprise Kubernetes platform portfolio: on-premises OpenShift, Azure Kubernetes Service (AKS), Amazon Elastic Kubernetes Service (EKS), and an Argo CD control plane that manages deployments through Git (GitOps).",
-                'Sit between internal application teams and platform engineering, translating what those teams need into platform priorities.',
-                "Drive the use of AI within the team's own work, including an AI-driven software development lifecycle (AI SDLC), the end-to-end process of planning, building, testing and releasing software.",
+                "Currently managing the bank's enterprise Kubernetes platforms: on-premises OpenShift, Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS), with Argo CD keeping every deployment in sync with Git (GitOps).",
+                'Translating what application teams need into platform priorities, and the occasional pod restart into a learning moment.',
+                'Treating infrastructure as code (IaC), which means even the servers need a pull request before they can change their minds.',
+                'Bringing AI into how the team plans, builds, tests and ships software, so the robots get the boring parts first.',
             ],
         },
         {
@@ -70,9 +71,9 @@ export const site = {
             place: null,
             dates: 'Summer 2025',
             points: [
-                'Product Owner on NOVA, an agentic AI automation platform projected to save around 40,000 hours of work a year across the bank.',
-                'Our team won the Best Business Value Award, which came with a $20,000 prize.',
-                'The work now has a patent pending.',
+                'Built NOVA, a patent-pending agentic AI platform projected to save around 40,000 hours of work a year across the bank.',
+                'Took home the Best Business Value Award and its $20,000 prize with the team.',
+                "Had a genuinely great time pitching it to the bank's C-suite, its most senior executives.",
             ],
         },
         {
