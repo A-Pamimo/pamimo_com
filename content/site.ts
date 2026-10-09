@@ -70,7 +70,7 @@ export const site = {
             place: null,
             dates: 'Summer 2025',
             story: [
-                "Built a patent-pending agentic AI platform, won $20,000 with the team, and had a lot of fun pitching it to RBC's C-suite.",
+                "Built a patent-pending agentic AI platform, won $20,000 with the team, and had a lot of fun pitching it to RBC's C-suite. Most of the summer was `crew.kickoff()` and hoping the agents agreed with each other.",
             ],
         },
         {
@@ -79,9 +79,8 @@ export const site = {
             org: 'City of Saskatoon',
             place: null,
             dates: 'July 2024 to April 2025',
-            points: [
-                "Worked on strategic planning, strategy execution, research, mapping and stakeholder engagement for the City's organizational strategy function.",
-                'Wrote a white paper on aligning strategy with municipal budgeting and business planning, drawing on practice in Toronto, Vancouver, Edmonton and Calgary.',
+            story: [
+                "Helped the City with its strategy work: planning, research, mapping and a lot of stakeholder meetings. Also wrote a white paper on lining strategy up with the budget, borrowing ideas from Toronto, Vancouver, Edmonton and Calgary. Plenty of it lived in Excel, where `=XLOOKUP()` quietly did more strategy than anyone admits.",
                 // [ADD] any other City of Saskatoon deliverables
             ],
         },
@@ -112,7 +111,7 @@ export const site = {
                 id: 'assistant',
                 title: 'Research assistant and teaching assistant',
                 meta: 'University of Saskatchewan, 2025',
-                body: ['In 2025, I also worked as both a research assistant and a teaching assistant at the University of Saskatchewan.'],
+                body: ["Spent 2025 as both a research assistant and a teaching assistant at the University of Saskatchewan. Research work is mostly cleaning data, which mostly means `df.dropna()` and a quiet apology to the dataset."],
             },
         ] as Entry[],
         interests:
@@ -141,7 +140,7 @@ export const site = {
             id: 'nigeria',
             title: 'Software engineer and community service team lead',
             meta: 'Nigeria, before university',
-            body: ['Before university, I spent roughly two to three years working in Nigeria as a software engineer and as a community service team lead managing people.'],
+            body: ['Spent two or three years in Nigeria before university, writing software and leading a community service team. Back then `git push --force` still felt like a reasonable life choice.'],
         },
     ] as Entry[],
 
