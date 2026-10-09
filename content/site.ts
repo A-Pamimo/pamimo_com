@@ -16,7 +16,9 @@ export interface Role {
     org: string;
     place: string | null;
     dates: string;
-    points: string[];
+    /** Narrative paragraphs; shown instead of points when present */
+    story?: string[];
+    points?: string[];
 }
 
 export interface Photo {
@@ -57,11 +59,9 @@ export const site = {
             org: 'RBC',
             place: 'Toronto',
             dates: 'September 2026 to present',
-            points: [
-                "Currently managing the bank's enterprise Kubernetes platforms: on-premises OpenShift, Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS), with Argo CD keeping every deployment in sync with Git (GitOps).",
-                'Translating what application teams need into platform priorities, and the occasional pod restart into a learning moment.',
-                'Treating infrastructure as code (IaC), which means even the servers need a pull request before they can change their minds.',
-                'Bringing AI into how the team plans, builds, tests and ships software, so the robots get the boring parts first.',
+            story: [
+                "These days my job is keeping the bank's Kubernetes platforms happy: on-premises OpenShift, Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS), with Argo CD making sure whatever lives in Git is what actually runs (GitOps). Most of it is translating what application teams need into platform priorities, ideally before anyone has to restart a pod at 2 a.m.",
+                'Everything here is infrastructure as code (IaC), so even the servers need a pull request before they change their minds. My other favourite project is bringing AI into how we plan, build, test and ship software, so the robots get the boring parts first.',
             ],
         },
         {
@@ -70,10 +70,8 @@ export const site = {
             org: 'RBC Amplify',
             place: null,
             dates: 'Summer 2025',
-            points: [
-                'Built NOVA, a patent-pending agentic AI platform projected to save around 40,000 hours of work a year across the bank.',
-                'Took home the Best Business Value Award and its $20,000 prize with the team.',
-                "Had a genuinely great time pitching it to the bank's C-suite, its most senior executives.",
+            story: [
+                "Over the summer I built NOVA, a patent-pending agentic AI platform projected to save the bank around 40,000 hours of work a year. Our team took home the Best Business Value Award and its $20,000 prize. Honestly, the best part was pitching it to RBC's C-suite, the bank's most senior executives, which was a lot more fun than it sounds.",
             ],
         },
         {

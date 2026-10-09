@@ -73,11 +73,15 @@ export default function Home() {
                                         <span className="chapter__org">{role.org}</span>
                                     </div>
                                     <p className="meta">{[role.place, role.dates].filter(Boolean).join(', ')}</p>
-                                    <ul className="points">
-                                        {role.points.map((point, i) => (
-                                            <li key={i}>{point}</li>
-                                        ))}
-                                    </ul>
+                                    {role.story ? (
+                                        role.story.map((para, i) => <p key={i}>{para}</p>)
+                                    ) : (
+                                        <ul className="points">
+                                            {role.points?.map((point, i) => (
+                                                <li key={i}>{point}</li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </article>
                             ))}
                         </div>
