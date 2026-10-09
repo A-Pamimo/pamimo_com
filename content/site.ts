@@ -16,7 +16,9 @@ export interface Role {
     org: string;
     place: string | null;
     dates: string;
-    points: string[];
+    /** Narrative paragraphs; shown instead of points when present */
+    story?: string[];
+    points?: string[];
 }
 
 export interface Photo {
@@ -57,10 +59,8 @@ export const site = {
             org: 'RBC',
             place: 'Toronto',
             dates: 'September 2026 to present',
-            points: [
-                "Own product direction for the bank's enterprise Kubernetes platform portfolio: on-premises OpenShift, Azure Kubernetes Service (AKS), Amazon Elastic Kubernetes Service (EKS), and an Argo CD control plane that manages deployments through Git (GitOps).",
-                'Sit between internal application teams and platform engineering, translating what those teams need into platform priorities.',
-                "Drive the use of AI within the team's own work, including an AI-driven software development lifecycle (AI SDLC), the end-to-end process of planning, building, testing and releasing software.",
+            story: [
+                "Currently managing a few of the bank's Kubernetes platforms, including OpenShift, Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It's a lot of infrastructure as code (IaC), and on the rough days it's mostly `kubectl rollout restart deployment/my-sanity`. Also figuring out where AI fits into how we build software.",
             ],
         },
         {
@@ -69,10 +69,8 @@ export const site = {
             org: 'RBC Amplify',
             place: null,
             dates: 'Summer 2025',
-            points: [
-                'Product Owner on NOVA, an agentic AI automation platform projected to save around 40,000 hours of work a year across the bank.',
-                'Our team won the Best Business Value Award, which came with a $20,000 prize.',
-                'The work now has a patent pending.',
+            story: [
+                "Built a patent-pending agentic AI platform, won $20,000 with the team, and had a lot of fun pitching it to RBC's C-suite. Most of the summer was `crew.kickoff()` and hoping the agents agreed with each other.",
             ],
         },
         {
@@ -81,9 +79,8 @@ export const site = {
             org: 'City of Saskatoon',
             place: null,
             dates: 'July 2024 to April 2025',
-            points: [
-                "Worked on strategic planning, strategy execution, research, mapping and stakeholder engagement for the City's organizational strategy function.",
-                'Wrote a white paper on aligning strategy with municipal budgeting and business planning, drawing on practice in Toronto, Vancouver, Edmonton and Calgary.',
+            story: [
+                "Helped the City with its strategy work: planning, research, mapping and a lot of stakeholder meetings. Also wrote a white paper on lining strategy up with the budget, borrowing ideas from Toronto, Vancouver, Edmonton and Calgary. Plenty of it lived in Excel, where `=XLOOKUP()` quietly did more strategy than anyone admits.",
                 // [ADD] any other City of Saskatoon deliverables
             ],
         },
@@ -114,7 +111,7 @@ export const site = {
                 id: 'assistant',
                 title: 'Research assistant and teaching assistant',
                 meta: 'University of Saskatchewan, 2025',
-                body: ['In 2025, I also worked as both a research assistant and a teaching assistant at the University of Saskatchewan.'],
+                body: ["Spent 2025 as both a research assistant and a teaching assistant at the University of Saskatchewan. Research work is mostly cleaning data, which mostly means `df.dropna()` and a quiet apology to the dataset."],
             },
         ] as Entry[],
         interests:
@@ -143,7 +140,7 @@ export const site = {
             id: 'nigeria',
             title: 'Software engineer and community service team lead',
             meta: 'Nigeria, before university',
-            body: ['Before university, I spent roughly two to three years working in Nigeria as a software engineer and as a community service team lead managing people.'],
+            body: ['Spent two or three years in Nigeria before university, writing software and leading a community service team. Back then `git push --force` still felt like a reasonable life choice.'],
         },
     ] as Entry[],
 

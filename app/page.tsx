@@ -10,6 +10,10 @@ import { ArrowRight, ArrowUpRight } from '../components/site/Icons';
 import { site, type Entry } from '../content/site';
 import './site.css';
 
+/** Text between backticks renders as inline code */
+const withCode = (text: string) =>
+    text.split('`').map((part, i) => (i % 2 ? <code key={i}>{part}</code> : part));
+
 const EntryList: React.FC<{ entries: Entry[] }> = ({ entries }) => (
     <div className="chapter__list">
         {entries.map(entry => (
@@ -17,7 +21,7 @@ const EntryList: React.FC<{ entries: Entry[] }> = ({ entries }) => (
                 <h3>{entry.title}</h3>
                 {entry.meta && <p className="meta">{entry.meta}</p>}
                 {entry.body.map((para, i) => (
-                    <p key={i}>{para}</p>
+                    <p key={i}>{withCode(para)}</p>
                 ))}
             </article>
         ))}
@@ -73,11 +77,17 @@ export default function Home() {
                                         <span className="chapter__org">{role.org}</span>
                                     </div>
                                     <p className="meta">{[role.place, role.dates].filter(Boolean).join(', ')}</p>
-                                    <ul className="points">
-                                        {role.points.map((point, i) => (
-                                            <li key={i}>{point}</li>
-                                        ))}
-                                    </ul>
+                                    {role.story ? (
+                                        role.story.map((para, i) => (
+                                            <p key={i}>{withCode(para)}</p>
+                                        ))
+                                    ) : (
+                                        <ul className="points">
+                                            {role.points?.map((point, i) => (
+                                                <li key={i}>{point}</li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </article>
                             ))}
                         </div>
