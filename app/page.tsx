@@ -7,7 +7,7 @@ import Newsletter from '../components/site/Newsletter';
 import VideoFacade from '../components/site/VideoFacade';
 import VisitTracker from '../components/site/VisitTracker';
 import ClockPalette from '../components/site/ClockPalette';
-import FoldCorners from '../components/site/origami/FoldCorners';
+import DogEar from '../components/site/origami/DogEar';
 import MarginOrigami from '../components/site/origami/MarginOrigami';
 import { ArrowRight, ArrowUpRight } from '../components/site/Icons';
 import { site, type Entry } from '../content/site';
@@ -38,7 +38,6 @@ export default function Home() {
         <div className="site" id="top">
             <VisitTracker />
             <ClockPalette />
-            <FoldCorners />
             <Header />
 
             <main className="site-shell">
@@ -73,6 +72,7 @@ export default function Home() {
                     </section>
 
                     <section className="chapter" id="experience" aria-labelledby="experience-title">
+                        <DogEar />
                         <h2 id="experience-title">Experience</h2>
                         <div className="chapter__list">
                             {experience.map(role => (
@@ -99,12 +99,14 @@ export default function Home() {
                     </section>
 
                     <section className="chapter" id="research" aria-labelledby="research-title">
+                        <DogEar />
                         <h2 id="research-title">Research</h2>
                         <EntryList entries={research.entries} />
                         <p className="lede" style={{ marginTop: '2.75rem' }}>{research.interests}</p>
                     </section>
 
                     <section className="chapter" id="building" aria-labelledby="building-title">
+                        <DogEar />
                         <h2 id="building-title">Building</h2>
                         <p className="lede">{building.body}</p>
                         <a href={building.link.href} className="link-accent" target="_blank" rel="noopener noreferrer">
@@ -113,17 +115,20 @@ export default function Home() {
                     </section>
 
                     <section className="chapter" id="leadership" aria-labelledby="leadership-title">
+                        <DogEar />
                         <h2 id="leadership-title">Leadership</h2>
                         <EntryList entries={leadership} />
                     </section>
 
                     <section className="chapter" id="education" aria-labelledby="education-title">
+                        <DogEar />
                         <h2 id="education-title">Education</h2>
                         <p className="education__degree">{education.degree}</p>
                         <p className="meta">{education.details}, {education.school}</p>
                     </section>
 
                     <section className="chapter" id="beyond" aria-labelledby="beyond-title">
+                        <DogEar />
                         <h2 id="beyond-title">Beyond work</h2>
                         <p>{beyond.interests}</p>
                         <p>
@@ -159,6 +164,7 @@ export default function Home() {
                     </section>
 
                     <section className="chapter" id="contact" aria-labelledby="contact-title">
+                        <DogEar />
                         <h2 id="contact-title">Contact</h2>
                         <p>{contact.text}</p>
                         <a href={`mailto:${contact.email}`} className="contact__email">{contact.email}</a>

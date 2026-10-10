@@ -2,6 +2,8 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getSessionSeed, mulberry32 } from '../../lib/visit';
+import { foldingCrane } from '../../lib/origami';
+import Figure from './origami/Figure';
 
 /**
  * The thin line that leaves the PA mark and follows the reader down the page.
@@ -35,7 +37,8 @@ const Ribbon: React.FC = () => {
     const svgRef = useRef<SVGSVGElement>(null);
     const pathRef = useRef<SVGPathElement>(null);
     const headRef = useRef<SVGCircleElement>(null);
-    const craneRef = useRef<SVGGElement>(null);
+    const [folded, setFolded] = useState(false);
+    const foldedRef = useRef(false);
     const [geo, setGeo] = useState<Geometry | null>(null);
     const [narrow, setNarrow] = useState(false);
     const geoRef = useRef<Geometry | null>(null);
@@ -188,8 +191,12 @@ const Ribbon: React.FC = () => {
         const pt = path.getPointAtLength(drawn);
         head.setAttribute('cx', pt.x.toFixed(1));
         head.setAttribute('cy', pt.y.toFixed(1));
-        // When the line arrives at its end, the square of paper there folds into a crane
-        craneRef.current?.toggleAttribute('data-folded', drawn / g.total > 0.985);
+        // When the line arrives at its end, the paper there folds into a crane
+        const arrived = drawn / g.total > 0.985;
+        if (arrived !== foldedRef.current) {
+            foldedRef.current = arrived;
+            setFolded(arrived);
+        }
     }, []);
 
     useEffect(() => {
@@ -255,18 +262,10 @@ const Ribbon: React.FC = () => {
                     />
                     <circle ref={headRef} r={narrow ? 2.5 : 3.5} fill="var(--ribbon)" />
                     <g
-                        ref={craneRef}
                         className="ribbon-crane"
-                        transform={`translate(${(geo.crane.x - geo.crane.size / 2).toFixed(1)} ${(geo.crane.y - geo.crane.size * 0.8).toFixed(1)}) scale(${(geo.crane.size / 48).toFixed(3)})`}
+                        transform={`translate(${(geo.crane.x - geo.crane.size / 2).toFixed(1)} ${(geo.crane.y - geo.crane.size * 0.75).toFixed(1)}) scale(${(geo.crane.size / 64).toFixed(3)})`}
                     >
-                        {/* Flat paper, then the crane's facets, on a 48x48 grid */}
-                        <polygon className="origami-face crane-paper" points="24,12 40,28 24,44 8,28" />
-                        <polygon className="origami-face origami-face--back crane-part" points="15,31 24,25 33,31 24,37" />
-                        <polygon className="origami-face crane-part" points="24,27 12,5 21,30" />
-                        <polygon className="origami-face origami-face--back crane-part" points="24,27 37,8 27,30" />
-                        <polygon className="origami-face crane-part" points="16,31 5,16 18,32" />
-                        <polygon className="origami-face crane-part" points="5,16 1,20 7,19" />
-                        <polygon className="origami-face crane-part" points="32,31 45,23 33,33" />
+                        <Figure model={foldingCrane} size={64} frames={18} target={folded ? 1 : 0} />
                     </g>
                 </>
             )}
