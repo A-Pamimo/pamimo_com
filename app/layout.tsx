@@ -1,9 +1,11 @@
-// Added missing React import for React.ReactNode type
 import React from 'react';
 import type { Metadata } from 'next';
-import { Inter, Syne, JetBrains_Mono } from 'next/font/google';
+import { Inter, Syne, JetBrains_Mono, Bricolage_Grotesque, Source_Serif_4, Reenie_Beanie } from 'next/font/google';
+import { LazyMotion, domAnimation } from 'framer-motion';
+import { PREPAINT_SCRIPT } from '../lib/visit';
 import './globals.css';
 
+// Fonts used by the blog and the Grocery Gap app
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -23,56 +25,78 @@ const jetbrains = JetBrains_Mono({
   display: 'swap',
 });
 
+// Fonts for the home page: headings, reading text and the hand-written PA
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+  weight: ['400', '600', '700'],
+});
+
+const sourceSerif = Source_Serif_4({
+  subsets: ['latin'],
+  variable: '--font-text',
+  display: 'swap',
+  weight: ['400', '600'],
+  style: ['normal', 'italic'],
+});
+
+const reenie = Reenie_Beanie({
+  subsets: ['latin'],
+  variable: '--font-hand',
+  display: 'block',
+  weight: '400',
+});
+
+const DESCRIPTION =
+  "Pamimo Akinjide is a Product Manager at the Royal Bank of Canada and the founder of World’s Edge Group, working where economics, Asia and Africa trade, and applied artificial intelligence meet.";
+
 export const metadata: Metadata = {
+  // [CONFIRM] domain
   metadataBase: new URL('https://pamimoakinjide.com'),
   title: {
-    default: 'Pamimo Akinjide | Product Strategy & Engineering',
+    default: 'Pamimo Akinjide',
     template: '%s | Pamimo Akinjide'
   },
-  description: 'Pamimo Akinjide is a Product Strategist, Economist, and Systems Builder specializing in AI strategy, data analytics, and community development. Award-winning work at RBC, World Food Programme, and more.',
+  description: DESCRIPTION,
   keywords: [
     'Pamimo Akinjide',
-    'Product Strategist',
-    'Economist',
-    'Data Analyst',
-    'AI Strategy',
-    'Agentic AI',
-    'RBC Amplify',
-    'World Food Programme',
-    'Economic Consulting',
-    'Systems Builder',
-    'Toronto Product Manager',
-    'Strategy Consultant',
-    'Community Leadership',
     'Oluwapamimo Akinjide',
-    'Oluwapamimo',
-    'Pamimo'
+    'Product Manager',
+    'Economist',
+    'Royal Bank of Canada',
+    "World's Edge Group",
+    'Cansbridge Fellow',
+    'Development economics',
+    'Africa and Asia trade',
+    'Applied artificial intelligence',
+    'University of Saskatchewan',
+    'Toronto',
   ],
   authors: [{ name: 'Pamimo Akinjide', url: 'https://pamimoakinjide.com' }],
   creator: 'Pamimo Akinjide',
   publisher: 'Pamimo Akinjide',
   openGraph: {
     type: 'website',
-    locale: 'en_US',
+    locale: 'en_CA',
     url: 'https://pamimoakinjide.com',
-    title: 'Pamimo Akinjide | Product Strategy & Engineering',
-    description: 'Award-winning Product Strategist and Economist specializing in AI strategy, data analytics, and systems design. $20K RBC Amplify winner, WFP researcher, community builder.',
-    siteName: 'Pamimo Akinjide Portfolio',
+    title: 'Pamimo Akinjide',
+    description: DESCRIPTION,
+    siteName: 'Pamimo Akinjide',
     images: [
       {
         url: 'https://pamimoakinjide.com/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Pamimo Akinjide | Product Management | Strategy | Building'
+        alt: 'Pamimo Akinjide, Product Manager and economist'
       }
     ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pamimo Akinjide | Product Management | Strategy | Building',
-    description: 'Award-winning strategist at the intersection of AI, data, and community. RBC Amplify winner | WFP Researcher | Systems Builder',
+    title: 'Pamimo Akinjide',
+    description: DESCRIPTION,
     images: ['https://pamimoakinjide.com/og-image.png'],
-    creator: '@pamimo' // Replace with your actual Twitter handle if you have one
   },
   robots: {
     index: true,
@@ -90,19 +114,10 @@ export const metadata: Metadata = {
       { url: '/favicon.ico', sizes: 'any' },
     ],
   },
-  verification: {
-    // google: 'your-google-verification-code', // Add after setting up Google Search Console
-    // yandex: 'your-yandex-verification-code',
-    // bing: 'your-bing-verification-code',
-  },
   alternates: {
     canonical: 'https://pamimoakinjide.com',
   },
 };
-
-import { LazyMotion, domAnimation } from "framer-motion"
-import CustomCursor from '../components/ui/CustomCursor';
-import ScrollToTop from '../components/ui/ScrollToTop';
 
 export default function RootLayout({
   children,
@@ -110,19 +125,22 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`scroll-smooth ${inter.variable} ${syne.variable} ${jetbrains.variable}`}>
+    <html
+      lang="en-CA"
+      className={`scroll-smooth ${inter.variable} ${syne.variable} ${jetbrains.variable} ${bricolage.variable} ${sourceSerif.variable} ${reenie.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <meta name="author" content="Pamimo Akinjide" />
         <meta name="geo.region" content="CA-ON" />
         <meta name="geo.placename" content="Toronto" />
+        {/* Sets time-of-day palette and full or simple mode before first paint */}
+        <script dangerouslySetInnerHTML={{ __html: PREPAINT_SCRIPT }} />
       </head>
-      <body className="text-ink dark:text-cream antialiased overflow-x-hidden selection:bg-pop selection:text-white">
+      <body className="text-ink dark:text-cream antialiased overflow-x-hidden selection:bg-pop selection:text-white" suppressHydrationWarning>
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[9999] focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-pop focus:text-white focus:font-bold focus:shadow-lg focus:outline-none">
           Skip to Content
         </a>
-
-        <CustomCursor />
-        <ScrollToTop />
 
         <LazyMotion features={domAnimation}>
           <div id="main-content">
@@ -130,7 +148,6 @@ export default function RootLayout({
           </div>
         </LazyMotion>
 
-        {/* JSON-LD Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -138,21 +155,26 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Person",
               "name": "Pamimo Akinjide",
-              "alternateName": ["Oluwapamimo Akinjide", "Oluwapamimo"],
+              "alternateName": ["Oluwapamimo Akinjide", "Oluwapamimo Oluwadamisinuola Akinjide"],
               "url": "https://pamimoakinjide.com",
               "image": "https://pamimoakinjide.com/og-image.png",
               "sameAs": [
                 "https://www.linkedin.com/in/pamimo",
-                "https://github.com/pamimo" // Add if you have one
+                "https://worldsedgegroup.com"
               ],
-              "jobTitle": "Product Strategist & Economist",
+              "jobTitle": "Product Manager",
               "worksFor": {
                 "@type": "Organization",
-                "name": "World's Edge Group"
+                "name": "Royal Bank of Canada"
+              },
+              "founder": {
+                "@type": "Organization",
+                "name": "World's Edge Group",
+                "url": "https://worldsedgegroup.com"
               },
               "alumniOf": [
                 {
-                  "@type": "Organization",
+                  "@type": "CollegeOrUniversity",
                   "name": "University of Saskatchewan"
                 }
               ],
@@ -163,23 +185,21 @@ export default function RootLayout({
                 "addressCountry": "CA"
               },
               "email": "oluwapamimoakinjide@gmail.com",
-              "description": "Product Strategist, Economist, and Systems Builder specializing in AI strategy, data analytics, and community development. Award-winning work at RBC, World Food Programme, and more.",
+              "description": DESCRIPTION,
               "award": [
-                "RBC Amplify Best Business Value - $20,000 Prize"
+                "Best Business Value Award, RBC Amplify"
               ],
               "knowsAbout": [
-                "Product Strategy",
-                "Agentic AI",
-                "Economic Analysis",
-                "Data Analytics",
-                "Strategic Planning",
-                "Community Building"
+                "Product management",
+                "Development economics",
+                "New Structural Economics",
+                "Africa and Asia trade corridors",
+                "Applied artificial intelligence"
               ]
             })
-          }
-          }
+          }}
         />
-      </body >
-    </html >
+      </body>
+    </html>
   );
 }

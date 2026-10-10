@@ -1,0 +1,716 @@
+/*
+ * Home page styles, scoped to .site so the blog keeps its own look.
+ * Layout: one left-aligned reading column with a narrow left gutter and a wide
+ * right gutter. The PA ribbon travels through the gutters and never crosses text.
+ * Palette follows the visitor's clock through a loop of earth tones (lib/palette.ts),
+ * blended minute by minute, with an earthy pen travelling alongside.
+ */
+
+.site {
+  /* The clock palette (lib/palette.ts) writes --pa-* on <html> every minute.
+     These fallbacks are its noon colours, for visitors without JavaScript. */
+  --bg: var(--pa-bg, #eff3dc);
+  --ink: var(--pa-ink, #1f2110);
+  --mute: var(--pa-mute, #5a5f37);
+  --ribbon: var(--pa-ribbon, #9e511f);
+  --link: var(--pa-link, #414709);
+  --rule: var(--pa-rule, #d3d6c5);
+  --field: var(--pa-field, #f9fcec);
+  --focus: var(--pa-focus, #414709);
+  --select: var(--pa-select, rgba(158, 81, 31, 0.2));
+
+  --display: var(--font-display), 'Bricolage Grotesque', Georgia, serif;
+  --text: var(--font-text), 'Source Serif 4', Georgia, serif;
+  --hand: var(--font-hand), 'Reenie Beanie', cursive;
+
+  /* One modular scale, ratio 1.25 from the 19px body */
+  --step--1: 0.95rem;
+  --step-0: 1.1875rem;
+  --step-1: 1.484rem;
+  --step-2: 1.855rem;
+  --step-3: 2.319rem;
+  --step-4: 2.899rem;
+  --step-5: 3.624rem;
+
+  --column: 42.5rem;
+  --gutter-left: 1.25rem;
+  --gap: 5rem;
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-kerning: normal;
+  min-height: 100vh;
+  position: relative;
+  caret-color: var(--ribbon);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 1.2s cubic-bezier(0.16, 1, 0.3, 1), color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-tone='dark'] .site { color-scheme: dark; }
+
+/* Page ground outside the wrapper (overscroll, short pages) matches the palette */
+html:has(.site) {
+  background: var(--pa-bg, #eff3dc);
+}
+
+/* --- Browser surfaces ---------------------------------------------------- */
+.site ::selection {
+  background: var(--select);
+  color: var(--ink);
+}
+
+.site :focus-visible {
+  outline: 2px solid var(--ribbon);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+html:has(.site) {
+  scrollbar-color: var(--mute) transparent;
+  scroll-padding-top: 5.5rem;
+}
+
+/* --- Shell --------------------------------------------------------------- */
+.site-shell {
+  max-width: 75rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter-left) 1.25rem;
+}
+
+/* Phones: a wider right margin carries the line and its folded paper */
+@media (max-width: 63.99rem) {
+  main.site-shell { padding-right: 2.75rem; }
+}
+
+.site-column {
+  max-width: var(--column);
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 64rem) {
+  .site {
+    --gutter-left: 8rem;
+    --gap: 9rem;
+  }
+}
+
+/* --- Header -------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+  transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-header .site-shell {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 4rem;
+}
+
+.site-header__mark {
+  flex: none;
+  display: block;
+  width: 3.25rem;
+  color: var(--ribbon);
+  border-radius: 4px;
+}
+
+.site-nav {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+  mask-image: linear-gradient(90deg, #000 85%, transparent);
+}
+.site-nav::-webkit-scrollbar { display: none; }
+
+.site-nav ul {
+  display: flex;
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 2rem 0.25rem 0;
+  white-space: nowrap;
+}
+
+/* Specificity matches .site a so section links stay plain */
+.site .site-nav a {
+  font-family: var(--display);
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--mute);
+  text-decoration: none;
+  transition: color 200ms;
+}
+.site .site-nav a:hover { color: var(--ink); }
+
+@media (min-width: 64rem) {
+  .site-nav { -webkit-mask-image: none; mask-image: none; }
+}
+
+/* The section being read is underlined in the pen colour */
+.site .site-nav a[aria-current='location'] {
+  color: var(--ink);
+  text-decoration-line: underline;
+  text-decoration-color: var(--ribbon);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.35em;
+}
+
+/* Full · Simple: plain words, the chosen one in ink with the pen underline */
+.view-toggle {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  font-family: var(--display);
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+.view-toggle button {
+  font: inherit;
+  color: var(--mute);
+  background: none;
+  border: 0;
+  padding: 0.35rem 0.3rem;
+  cursor: pointer;
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.35em;
+  transition: color 160ms, text-decoration-color 160ms;
+}
+.view-toggle button + button::before {
+  content: '·';
+  display: inline-block;
+  margin-right: 0.45rem;
+  color: var(--mute);
+  text-decoration: none;
+}
+.view-toggle button:hover { color: var(--ink); }
+.view-toggle button[aria-pressed='true'] {
+  color: var(--ink);
+  text-decoration-color: var(--ribbon);
+  cursor: default;
+}
+
+@media (max-width: 47.99rem) {
+  .site-header .site-shell {
+    flex-wrap: wrap;
+    row-gap: 0;
+    padding-block: 0.5rem 0;
+  }
+  .site-nav { order: 3; flex-basis: 100%; padding-bottom: 0.4rem; }
+  .view-toggle { margin-left: auto; }
+  .site-header__mark { width: 2.5rem; }
+  .site-header .site-shell { min-height: 3.25rem; }
+}
+
+/* --- Type ------------------------------------------------------------------ */
+.site h1,
+.site h2,
+.site h3 {
+  font-family: var(--display);
+  color: var(--ink);
+  text-wrap: balance;
+  margin: 0;
+}
+
+.site h1 {
+  font-size: clamp(var(--step-4), 6.2vw, var(--step-5));
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  font-variant-numeric: lining-nums;
+}
+@media (min-width: 48rem) {
+  .site h1 { white-space: nowrap; }
+}
+
+.site h2 {
+  font-size: clamp(var(--step-2), 3.4vw, var(--step-3));
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  /* Leaves room at the row's end for the chapter's origami on narrow screens */
+  padding-right: 3.5rem;
+}
+
+.site h3 {
+  font-size: var(--step-1);
+  font-weight: 600;
+  line-height: 1.38;
+  letter-spacing: -0.005em;
+}
+
+.site p {
+  margin: 0 0 1rem;
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+/* A real command quoted in the copy, not decoration */
+.site code {
+  /* Named directly: globals.css redefines --font-mono in terms of itself */
+  font-family: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, monospace;
+  font-size: 0.82em;
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+  background: var(--rule);
+  overflow-wrap: anywhere;
+}
+
+/* Acronyms in true small caps, lightly tracked, as in a well-set book */
+.site abbr.sc {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.site .meta {
+  font-style: italic;
+  color: var(--mute);
+  font-size: var(--step-0);
+  font-variant-numeric: tabular-nums lining-nums;
+  margin: 0.25rem 0 1rem;
+}
+
+.site a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--ribbon);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-thickness 160ms, color 160ms;
+}
+.site a:hover { text-decoration-thickness: 2.5px; }
+.site a { text-decoration-skip-ink: auto; }
+
+.site .link-accent {
+  color: var(--link);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.0625rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.site .icon {
+  width: 0.9em;
+  height: 0.9em;
+  flex: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.site ul.points {
+  margin: 0;
+  padding-left: 1.1rem;
+  max-width: 68ch;
+}
+.site ul.points li { margin-bottom: 0.6rem; padding-left: 0.25rem; }
+.site ul.points li::marker { color: var(--ribbon); }
+
+/* --- Chapters --------------------------------------------------------------- */
+.chapter {
+  margin-top: var(--gap);
+  scroll-margin-top: 5.5rem;
+}
+
+.chapter__list > * + * {
+  margin-top: 3rem;
+}
+
+.chapter__item-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.75rem;
+}
+
+.chapter__org {
+  font-family: var(--display);
+  font-weight: 400;
+  color: var(--mute);
+}
+
+/* --- Hero ------------------------------------------------------------------ */
+.hero {
+  padding-top: 2.5rem;
+}
+
+.pa-mark {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  color: var(--ribbon);
+}
+
+.hero__mark {
+  max-width: 34rem;
+  margin: 0 0 1.25rem;
+}
+
+.hero h1 { margin-top: 0.5rem; }
+
+/* The dek: what the work is about, set apart from the name by a clear step */
+.hero__lead {
+  display: grid;
+  gap: 1.5rem;
+  margin: 1.5rem 0 2rem;
+}
+
+@media (min-width: 48rem) {
+  .hero__lead {
+    grid-template-columns: minmax(0, 1fr) 9rem;
+    align-items: end;
+    gap: 2.5rem;
+  }
+}
+
+.hero__dek {
+  font-family: var(--text);
+  font-style: italic;
+  font-size: clamp(var(--step-1), 2.4vw, var(--step-2));
+  line-height: 1.3;
+  font-weight: 400;
+  margin: 0;
+  max-width: 30ch;
+  text-wrap: balance;
+}
+
+.hero__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  margin-top: 1.5rem;
+}
+
+/* Photographs: square corners and an ink hairline, no drop shadow */
+.hero__portrait,
+.photos__item img {
+  border-radius: 0;
+  outline: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  outline-offset: -1px;
+}
+
+.hero__portrait {
+  width: 9rem;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+@media (max-width: 47.99rem) {
+  .hero__portrait { width: 7.5rem; }
+}
+
+/* --- PA mark animation --------------------------------------------------------
+ * The pre-paint script sets data-intro on <html>: play (first visit this session),
+ * quick (returning visitor) or nothing (already drawn). Default state is drawn,
+ * so without JavaScript or under reduced motion the mark is simply there.
+ */
+.pa-stroke,
+.pa-tail {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+:root[data-intro='play'] .pa-mark--animated .pa-stroke,
+:root[data-intro='quick'] .pa-mark--animated .pa-stroke,
+:root[data-intro='play'] .pa-mark--animated .pa-tail,
+:root[data-intro='quick'] .pa-mark--animated .pa-tail {
+  animation: pa-draw calc(var(--dur) * var(--speed, 1)) cubic-bezier(0.32, 0, 0.18, 1) calc(var(--delay) * var(--speed, 1)) both;
+}
+
+:root[data-intro='quick'] .pa-mark--animated { --speed: 0.4; }
+
+@keyframes pa-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root .pa-mark--animated .pa-stroke,
+  :root .pa-mark--animated .pa-tail {
+    animation: none !important;
+  }
+}
+
+/* --- Ribbon -------------------------------------------------------------------- */
+.ribbon {
+  position: absolute;
+  inset: 0 auto auto 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+  display: none;
+}
+
+:root[data-mode='full'] .ribbon { display: block; }
+
+/* Waits for the PA to finish writing before the line continues down the page */
+:root[data-intro='play'] .ribbon { animation: ribbon-in 600ms ease-out 2.8s both; }
+:root[data-intro='quick'] .ribbon { animation: ribbon-in 400ms ease-out 1.15s both; }
+
+@keyframes ribbon-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Simple mode: a calm single column; the mark is drawn, the ribbon is gone */
+:root[data-mode='simple'] .site .chapter {
+  border-top: 1px solid var(--rule);
+  padding-top: calc(var(--gap) * 0.5);
+  margin-top: calc(var(--gap) * 0.5);
+}
+:root[data-mode='simple'] .site .hero { border-top: 0; }
+
+/* --- Research interests, building, education --------------------------------- */
+.lede {
+  font-size: var(--step-1);
+  line-height: 1.45;
+}
+.research__interests { margin-top: 3rem; }
+.beyond__after { margin-top: 1.5rem; }
+
+.education__degree {
+  font-family: var(--display);
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin-bottom: 0.25rem;
+}
+
+/* --- Video facade ------------------------------------------------------------- */
+.video {
+  margin-top: 1.5rem;
+  max-width: var(--column);
+}
+
+.video__frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  overflow: hidden;
+  background: var(--field);
+  outline: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  outline-offset: -1px;
+}
+
+.video__frame iframe,
+.video__frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+
+.video__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--bg);
+}
+
+.video__play span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1rem;
+  background: var(--ink);
+  border-radius: 2px;
+  padding: 0.8rem 1.3rem;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.video__play:hover span { transform: scale(1.04); }
+.video__play svg { width: 1rem; height: 1rem; fill: currentColor; }
+
+/* --- Contact and newsletter --------------------------------------------------- */
+.contact__email {
+  font-family: var(--display);
+  font-size: clamp(var(--step-1), 3vw, var(--step-2));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+}
+
+.contact__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem 1.75rem;
+  margin: 0.5rem 0 3rem;
+}
+
+.newsletter {
+  border-top: 1px solid var(--rule);
+  padding-top: 2rem;
+}
+
+.newsletter__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  max-width: 34rem;
+}
+
+.newsletter label {
+  display: block;
+  font-family: var(--display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.newsletter input {
+  flex: 1 1 14rem;
+  min-width: 0;
+  font: inherit;
+  font-size: 1.0625rem;
+  color: var(--ink);
+  background: var(--field);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.7rem 0.9rem;
+  transition: border-color 200ms;
+}
+.newsletter input::placeholder { color: var(--mute); opacity: 1; }
+.newsletter input:hover { border-color: var(--mute); }
+.newsletter input[aria-invalid='true'] { border-color: var(--link); }
+
+.newsletter button {
+  flex: none;
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+  transition: opacity 200ms, transform 160ms;
+}
+.newsletter button:hover { transform: translateY(-1px); }
+.newsletter button:disabled { opacity: 0.55; cursor: progress; transform: none; }
+
+.newsletter__status {
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  min-height: 1.6em;
+  color: var(--mute);
+}
+.newsletter__status[data-state='error'] { color: var(--link); }
+.newsletter__status[data-state='success'] { color: var(--ink); }
+
+/* --- Footer ------------------------------------------------------------------ */
+.site-footer {
+  margin-top: var(--gap);
+  padding-block: 2rem 3rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9375rem;
+  color: var(--mute);
+}
+.site .hero { margin-top: 0; }
+
+/* --- Photo strip (Beyond work) -------------------------------------------------
+ * One row at natural aspect ratios, so widths vary; scrolls sideways inside the
+ * reading column and snaps to each photo. */
+.photos {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  /* The strip runs on past the column: fade its edge so the cut is deliberate */
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
+  padding-right: 3rem;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.75rem;
+  scrollbar-width: thin;
+}
+
+.photos__item {
+  flex: none;
+  margin: 0;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+}
+
+.photos__item img {
+  display: block;
+  height: 15rem;
+  width: auto;
+  background: var(--field);
+}
+
+.photos__item figcaption {
+  /* Zero width, then stretch to the figure: the photo alone sets the width,
+     so the caption wraps under its own photo instead of running on */
+  width: 0;
+  min-width: 100%;
+  margin-top: 0.5rem;
+  font-style: italic;
+  font-size: var(--step--1);
+  line-height: 1.4;
+  color: var(--mute);
+}
+
+@media (max-width: 47.99rem) {
+  .photos__item img { height: 12rem; }
+}
+
+/* --- Origami -------------------------------------------------------------------
+ * Faceted paper models drawn by lib/origami.ts and stepped frame by frame at a
+ * stop-motion rate (components/site/origami/Figure.tsx). Fills and edges come
+ * from the clock palette. Full mode only; reduced motion shows a resting pose. */
+
+/* Paper plane on the PA tail (moved by components/site/origami/PaperPlane.tsx) */
+:root[data-mode='simple'] .paper-plane { display: none; }
+
+/* Each chapter's folded shape (components/site/origami/ChapterFigure.tsx) */
+.site .chapter { position: relative; }
+.chapter-figure {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+.chapter-figure svg { width: 100%; height: 100%; overflow: visible; }
+.chapter-figure__shadow { fill: var(--ink); opacity: 0.07; }
+:root[data-mode='simple'] .chapter-figure { display: none; }
+/* The paper travels on the ribbon's tip instead, except under reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-mode='full'] .chapter-figure { display: none; }
+  :root[data-mode='full'] .site h2 { padding-right: 0; }
+}
+:root[data-mode='simple'] .site h2 { padding-right: 0; }
