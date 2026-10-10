@@ -703,4 +703,9 @@ html:has(.site) {
 .chapter-figure svg { width: 100%; height: 100%; overflow: visible; }
 .chapter-figure__shadow { fill: var(--ink); opacity: 0.07; }
 :root[data-mode='simple'] .chapter-figure { display: none; }
+/* Wide screens: the paper travels on the ribbon's tip instead */
+@media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
+  :root[data-mode='full'] .chapter-figure { display: none; }
+  :root[data-mode='full'] .site h2 { padding-right: 0; }
+}
 :root[data-mode='simple'] .site h2 { padding-right: 0; }

@@ -2,8 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getSessionSeed, mulberry32 } from '../../lib/visit';
-import { foldingCrane } from '../../lib/origami';
-import Figure from './origami/Figure';
+import Traveller, { SIZE as TRAVELLER_BOX, type TravellerShape } from './origami/Traveller';
 
 /**
  * The thin line that leaves the PA mark and follows the reader down the page.
@@ -13,6 +12,10 @@ import Figure from './origami/Figure';
  *
  * Shown in full mode at every width. On phones the gutters are only about 20px,
  * so the line runs down their middle with small loops (see NARROW below).
+ *
+ * On wide screens the line's tip carries a piece of folded paper (Traveller) that
+ * takes the shape of the chapter it is passing and refolds at each new chapter.
+ * It is sized from the free space around the tip so it never covers text.
  */
 
 interface Geometry {
@@ -22,9 +25,14 @@ interface Geometry {
     /** Path length at sampled points, with the y each one reaches, for scroll mapping */
     samples: { len: number; y: number }[];
     total: number;
-    /** Where the line ends, and how big the paper crane there can be */
-    crane: { x: number; y: number; size: number };
+    /** Reading column edges and each chapter's extent and origami shape */
+    col: { left: number; right: number };
+    chapters: { top: number; bottom: number; shape: TravellerShape }[];
 }
+
+/** The traveller never grows past this, and hides below the smaller size */
+const TRAVELLER_MAX = 56;
+const TRAVELLER_MIN = 22;
 
 const SAMPLE_COUNT = 400;
 
@@ -36,8 +44,10 @@ const isNarrow = () => !window.matchMedia('(min-width: 64rem)').matches;
 const Ribbon: React.FC = () => {
     const svgRef = useRef<SVGSVGElement>(null);
     const pathRef = useRef<SVGPathElement>(null);
-    const [folded, setFolded] = useState(false);
-    const foldedRef = useRef(false);
+    const travellerRef = useRef<SVGGElement>(null);
+    const [shape, setShape] = useState<TravellerShape>('plane');
+    const shapeRef = useRef<TravellerShape>('plane');
+    const [carry, setCarry] = useState(false);
     const [geo, setGeo] = useState<Geometry | null>(null);
     const [narrow, setNarrow] = useState(false);
     const geoRef = useRef<Geometry | null>(null);
@@ -71,6 +81,7 @@ const Ribbon: React.FC = () => {
         const r = mulberry32(getSessionSeed());
         const small = isNarrow();
         setNarrow(small);
+        setCarry(!small && !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
         const leftGutter = col.left;
         const rightGutter = width - col.right;
         const leftX = small ? leftGutter / 2 : leftGutter * (0.42 + r() * 0.16);
@@ -138,13 +149,16 @@ const Ribbon: React.FC = () => {
         });
 
         // Trail off into the footer with a small sway, ending mid-gutter where the
-        // paper crane folds itself; the crane is sized to fit the gutter
+        // carried paper settles as a crane
         const end = Math.min(height - 40, y + 120);
         const inward = (side as 'left' | 'right') === 'left' ? 1 : -1;
         const sway = small ? 4 : 18;
         d += ` C${x.toFixed(1)},${(y + 50).toFixed(1)} ${(x + inward * sway).toFixed(1)},${(end - 40).toFixed(1)} ${x.toFixed(1)},${end.toFixed(1)}`;
-        const gutterWidth = (side as 'left' | 'right') === 'left' ? leftGutter : rightGutter;
-        const crane = { x, y: end, size: Math.max(20, Math.min(60, gutterWidth - 4)) };
+        const chapterInfo = chapters.map(c => {
+            const b = rel(c.getBoundingClientRect());
+            const fig = c.querySelector<HTMLElement>('[data-shape]');
+            return { top: b.top, bottom: b.bottom, shape: (fig?.dataset.shape as TravellerShape) ?? 'plane' };
+        });
 
         // Sample the path once so scroll position maps to drawn length cheaply
         const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -161,7 +175,7 @@ const Ribbon: React.FC = () => {
         }
         probe.remove();
 
-        setGeo({ d, width, height, samples, total, crane });
+        setGeo({ d, width, height, samples, total, col: { left: col.left, right: col.right }, chapters: chapterInfo });
     }, []);
 
     const update = useCallback(() => {
@@ -186,12 +200,41 @@ const Ribbon: React.FC = () => {
         }
         const drawn = g.samples[lo].len;
         path.style.strokeDashoffset = String(g.total - drawn);
-        // When the line arrives at its end, the paper there folds into a crane
+
+        // Carry the paper at the tip
+        const trav = travellerRef.current;
+        if (!trav) return;
+        const pt = path.getPointAtLength(drawn);
+        const back = path.getPointAtLength(Math.max(0, drawn - 3));
+        const inChapter = [...g.chapters].reverse().find(c => pt.y >= c.top - 4);
         const arrived = drawn / g.total > 0.985;
-        if (arrived !== foldedRef.current) {
-            foldedRef.current = arrived;
-            setFolded(arrived);
+        const next: TravellerShape = arrived ? 'crane' : inChapter ? inChapter.shape : 'plane';
+        if (next !== shapeRef.current) {
+            shapeRef.current = next;
+            setShape(next);
         }
+        // Room around the tip: across the gutter beside text, or up and down in a gap
+        let room: number;
+        if (pt.x < g.col.left) room = 2 * Math.min(pt.x, g.col.left - pt.x);
+        else if (pt.x > g.col.right) room = 2 * Math.min(g.width - pt.x, pt.x - g.col.right);
+        else {
+            const above = g.chapters.filter(c => c.bottom <= pt.y).pop();
+            const below = g.chapters.find(c => c.top >= pt.y);
+            room = 2 * Math.min(above ? pt.y - above.bottom : 999, below ? below.top - pt.y : 999);
+        }
+        const size = Math.min(TRAVELLER_MAX, room - 10);
+        if (size < TRAVELLER_MIN) {
+            trav.style.visibility = 'hidden';
+            return;
+        }
+        trav.style.visibility = 'visible';
+        // The plane points along the line; the other shapes stay upright
+        const angle = next === 'plane' ? (Math.atan2(pt.y - back.y, pt.x - back.x) * 180) / Math.PI : 0;
+        const k = size / TRAVELLER_BOX;
+        trav.setAttribute(
+            'transform',
+            `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(3)}) translate(${-TRAVELLER_BOX / 2} ${-TRAVELLER_BOX / 2})`,
+        );
     }, []);
 
     useEffect(() => {
@@ -255,12 +298,11 @@ const Ribbon: React.FC = () => {
                         strokeLinejoin="round"
                         style={{ strokeDasharray: geo.total, strokeDashoffset: geo.total }}
                     />
-                    <g
-                        className="ribbon-crane"
-                        transform={`translate(${(geo.crane.x - geo.crane.size / 2).toFixed(1)} ${(geo.crane.y - geo.crane.size * 0.75).toFixed(1)}) scale(${(geo.crane.size / 64).toFixed(3)})`}
-                    >
-                        <Figure model={foldingCrane} size={64} frames={18} target={folded ? 1 : 0} />
-                    </g>
+                    {carry && (
+                        <g ref={travellerRef} className="ribbon-traveller">
+                            <Traveller shape={shape} />
+                        </g>
+                    )}
                 </>
             )}
         </svg>
