@@ -37,7 +37,7 @@ const PAMark: React.FC<PAMarkProps> = ({ variant, className = '' }) => {
     const hero = variant === 'hero';
     const id = `pa-${variant}`;
     // Hero shows the tail running off to the right; the header mark is letters only
-    const viewBox = hero ? '40 40 610 240' : '50 45 205 235';
+    const viewBox = hero ? '24 40 626 240' : '50 45 205 235';
 
     return (
         <svg

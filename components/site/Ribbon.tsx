@@ -13,9 +13,10 @@ import Traveller, { SIZE as TRAVELLER_BOX, type TravellerShape } from './origami
  * Shown in full mode at every width. On phones the gutters are only about 20px,
  * so the line runs down their middle with small loops (see NARROW below).
  *
- * On wide screens the line's tip carries a piece of folded paper (Traveller) that
- * takes the shape of the chapter it is passing and refolds at each new chapter.
- * It is sized from the free space around the tip so it never covers text.
+ * The line's tip carries a piece of folded paper (Traveller) that takes the shape
+ * of the chapter it is passing and refolds at each new chapter. It is sized from
+ * the free space around the tip so it never covers text; in the narrow phone
+ * margins it travels folded into a slip and opens up in the gaps between chapters.
  */
 
 interface Geometry {
@@ -30,9 +31,11 @@ interface Geometry {
     chapters: { top: number; bottom: number; shape: TravellerShape }[];
 }
 
-/** The traveller never grows past this, and hides below the smaller size */
+/** The traveller opens up to this size, and folds into a slip below the smaller one */
 const TRAVELLER_MAX = 56;
+const TRAVELLER_MAX_NARROW = 40;
 const TRAVELLER_MIN = 22;
+const SLIP = 18;
 
 const SAMPLE_COUNT = 400;
 
@@ -48,6 +51,8 @@ const Ribbon: React.FC = () => {
     const [shape, setShape] = useState<TravellerShape>('plane');
     const shapeRef = useRef<TravellerShape>('plane');
     const [carry, setCarry] = useState(false);
+    const [compact, setCompact] = useState(false);
+    const compactRef = useRef(false);
     const [geo, setGeo] = useState<Geometry | null>(null);
     const [narrow, setNarrow] = useState(false);
     const geoRef = useRef<Geometry | null>(null);
@@ -81,7 +86,7 @@ const Ribbon: React.FC = () => {
         const r = mulberry32(getSessionSeed());
         const small = isNarrow();
         setNarrow(small);
-        setCarry(!small && !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        setCarry(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
         const leftGutter = col.left;
         const rightGutter = width - col.right;
         const leftX = small ? leftGutter / 2 : leftGutter * (0.42 + r() * 0.16);
@@ -123,7 +128,8 @@ const Ribbon: React.FC = () => {
             const loopR = small
                 ? Math.max(3, Math.min((gap / 2 - 10) / 1.7, 4 + r() * 2))
                 : Math.max(6, Math.min((gap / 2 - 14) / 1.7, 12 + r() * 14));
-            const cross = r() < 0.6;
+            // On phones the line keeps to the wider right margin so the paper can ride open
+            const cross = !small && r() < 0.6;
 
             if (cross) {
                 // Cross the page through the empty gap, looping once on the way
@@ -222,12 +228,14 @@ const Ribbon: React.FC = () => {
             const below = g.chapters.find(c => c.top >= pt.y);
             room = 2 * Math.min(above ? pt.y - above.bottom : 999, below ? below.top - pt.y : 999);
         }
-        const size = Math.min(TRAVELLER_MAX, room - 10);
-        if (size < TRAVELLER_MIN) {
-            trav.style.visibility = 'hidden';
-            return;
+        const wide = window.matchMedia('(min-width: 64rem)').matches;
+        const fold = room - 10 < TRAVELLER_MIN;
+        if (fold !== compactRef.current) {
+            compactRef.current = fold;
+            setCompact(fold);
         }
-        trav.style.visibility = 'visible';
+        const size = fold ? SLIP : Math.min(wide ? TRAVELLER_MAX : TRAVELLER_MAX_NARROW, room - 10);
+        trav.dataset.compact = fold ? '1' : '';
         // The plane points along the line; the other shapes stay upright
         const angle = next === 'plane' ? (Math.atan2(pt.y - back.y, pt.x - back.x) * 180) / Math.PI : 0;
         const k = size / TRAVELLER_BOX;
@@ -300,7 +308,7 @@ const Ribbon: React.FC = () => {
                     />
                     {carry && (
                         <g ref={travellerRef} className="ribbon-traveller">
-                            <Traveller shape={shape} />
+                            <Traveller shape={shape} compact={compact} />
                         </g>
                     )}
                 </>
