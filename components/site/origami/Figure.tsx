@@ -13,16 +13,11 @@ import { draw, type Model, type Paint } from '../../../lib/origami';
 
 export const FPS = 12;
 
-const darken = (hex: string, k: number) => {
-    const h = hex.replace('#', '');
-    return `rgb(${[0, 2, 4].map(i => Math.round(parseInt(h.slice(i, i + 2), 16) * k)).join(',')})`;
-};
-
+/** Pale paper with pen-coloured folds: the page's own paper and pen */
 export const readPaint = (): Paint => {
     const cs = getComputedStyle(document.documentElement);
     const get = (name: string, fallback: string) => cs.getPropertyValue(name).trim() || fallback;
-    const front = get('--pa-ribbon', '#9e511f');
-    return { front, back: get('--pa-field', '#f9fcec'), edge: darken(front, 0.55) };
+    return { front: get('--pa-field', '#f9fcec'), back: get('--pa-rule', '#d3d6c5'), edge: get('--pa-ribbon', '#9e511f') };
 };
 
 export const stillMotion = () =>
@@ -41,13 +36,9 @@ interface Props {
     phase?: number;
     /** Pose shown under reduced motion */
     rest?: number;
-    /** Paper whose front is the page itself (a dog-ear): front takes the page colour */
-    pageFront?: boolean;
-    /** Hide the figure while it sits at pose 0 */
-    hideAtZero?: boolean;
 }
 
-const Figure: React.FC<Props> = ({ model, size, loop = false, frames, target = 1, phase = 0, rest = 0.25, pageFront = false, hideAtZero = false }) => {
+const Figure: React.FC<Props> = ({ model, size, loop = false, frames, target = 1, phase = 0, rest = 0.25 }) => {
     const ref = useRef<SVGGElement>(null);
     const state = useRef({ frame: Math.round(phase * frames), paint: null as Paint | null, target });
     const count = model.pose(0).length;
@@ -56,12 +47,7 @@ const Figure: React.FC<Props> = ({ model, size, loop = false, frames, target = 1
     const render = (t: number) => {
         const g = ref.current;
         if (!g) return;
-        let paint = (state.current.paint ??= readPaint());
-        if (pageFront) {
-            const page = getComputedStyle(document.documentElement).getPropertyValue('--pa-bg').trim() || '#eff3dc';
-            paint = { front: page, back: paint.front, edge: paint.edge };
-        }
-        g.style.visibility = hideAtZero && t <= 0 ? 'hidden' : 'visible';
+        const paint = (state.current.paint ??= readPaint());
         const facets = draw(model, t, paint, size);
         const polys = g.children;
         facets.forEach((f, i) => {
@@ -123,7 +109,7 @@ const Figure: React.FC<Props> = ({ model, size, loop = false, frames, target = 1
     return (
         <g ref={ref} className="origami-figure" aria-hidden="true">
             {Array.from({ length: count }, (_, i) => (
-                <polygon key={i} strokeWidth={0.8} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+                <polygon key={i} strokeWidth={1.1} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
             ))}
         </g>
     );

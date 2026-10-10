@@ -42,7 +42,7 @@ export const site = {
     hero: {
         positioning: 'My work sits where economics, Asia and Africa trade, and applied artificial intelligence meet.',
         intro: [
-            "These days I'm a Product Manager on the Hybrid Cloud team at the Royal Bank of Canada (RBC) in Toronto, and the founder of World's Edge Group, an economics consulting and artificial intelligence (AI) advisory firm.",
+            "These days I’m a Product Manager on the Hybrid Cloud team at the Royal Bank of Canada (RBC) in Toronto, and the founder of World’s Edge Group, an economics consulting and artificial intelligence (AI) advisory firm.",
             'Originally from Nigeria, I moved to Canada for university in 2022 and studied Economics at the University of Saskatchewan, graduating with First Class Honours and a Computer Science minor.',
         ],
         portrait: {
@@ -60,7 +60,7 @@ export const site = {
             place: 'Toronto',
             dates: 'September 2026 to present',
             story: [
-                "Currently managing a few of the bank's Kubernetes platforms, including OpenShift, Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It's a lot of infrastructure as code (IaC), and on the rough days it's mostly `kubectl rollout restart deployment/my-sanity`. Also figuring out where AI fits into how we build software.",
+                "Currently managing a few of the bank’s Kubernetes platforms, including OpenShift, Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It’s a lot of infrastructure as code (IaC), and on the rough days it’s mostly `kubectl rollout restart deployment/my-sanity`. Also figuring out where AI fits into how we build software.",
             ],
         },
         {
@@ -70,7 +70,7 @@ export const site = {
             place: null,
             dates: 'Summer 2025',
             story: [
-                "Built a patent-pending agentic AI platform, won $20,000 with the team, and had a lot of fun pitching it to RBC's C-suite. Most of the summer was `crew.kickoff()` and hoping the agents agreed with each other.",
+                "Built a patent-pending agentic AI platform, won $20,000 with the team, and had a lot of fun pitching it to RBC’s C-suite. Most of the summer was `crew.kickoff()` and hoping the agents agreed with each other.",
             ],
         },
         {
@@ -93,7 +93,7 @@ export const site = {
                 title: 'Cansbridge Fellow, 2026 cohort',
                 meta: 'Peking University, Beijing',
                 body: [
-                    "My fellowship placed me at Peking University's Institute of New Structural Economics (INSE) in Beijing for a research placement. Only one University of Saskatchewan student had been selected for it before me.",
+                    "My fellowship placed me at Peking University’s Institute of New Structural Economics (INSE) in Beijing for a research placement. Only one University of Saskatchewan student had been selected for it before me.",
                     'My main project compared the patent filing rates of Chinese innovators before and after they returned to China.',
                 ],
             },
@@ -119,8 +119,8 @@ export const site = {
     },
 
     building: {
-        body: "World's Edge Group is the economics consulting and AI advisory firm I founded. Its own website covers the firm's work in more detail.",
-        link: { label: "Visit World's Edge Group", href: 'https://worldsedgegroup.com' } as Link,
+        body: "World’s Edge Group is the economics consulting and AI advisory firm I founded. Its own website covers the firm’s work in more detail.",
+        link: { label: "Visit World’s Edge Group", href: 'https://worldsedgegroup.com' } as Link,
     },
 
     leadership: [
@@ -192,8 +192,8 @@ export const site = {
             label: 'Email address',
             button: 'Subscribe',
             loading: 'Subscribing you now',
-            success: "Thanks, you're now subscribed to new writing.",
-            error: "That didn't go through, so please check the address and try again.",
+            success: "Thanks, you’re now subscribed to new writing.",
+            error: "That didn’t go through, so please check the address and try again.",
         },
         // [ADD] CV file, if you want one downloadable
         cv: null as Link | null,
