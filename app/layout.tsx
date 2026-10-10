@@ -49,7 +49,7 @@ const reenie = Reenie_Beanie({
 });
 
 const DESCRIPTION =
-  "Pamimo Akinjide is a Product Manager at the Royal Bank of Canada and the founder of World's Edge Group, working where economics, Asia and Africa trade, and applied artificial intelligence meet.";
+  "Pamimo Akinjide is a Product Manager at the Royal Bank of Canada and the founder of World’s Edge Group, working where economics, Asia and Africa trade, and applied artificial intelligence meet.";
 
 export const metadata: Metadata = {
   // [CONFIRM] domain

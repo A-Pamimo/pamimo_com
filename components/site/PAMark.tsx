@@ -44,7 +44,7 @@ const PAMark: React.FC<PAMarkProps> = ({ variant, className = '' }) => {
             viewBox={viewBox}
             className={`pa-mark ${hero ? 'pa-mark--animated' : ''} ${className}`}
             role="img"
-            aria-label="PA, Pamimo Akinjide's initials, hand-written in felt-tip"
+            aria-label="PA, Pamimo Akinjide’s initials, hand-written in felt-tip"
             data-pa-mark={variant}
         >
             <defs>

@@ -79,7 +79,7 @@ const PaperPlane: React.FC<Props> = ({ delay, dur }) => {
     return (
         <g ref={ref} className="paper-plane" style={{ opacity: 0 }} aria-hidden="true">
             {Array.from({ length: FACETS }, (_, i) => (
-                <polygon key={i} strokeWidth={0.8} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+                <polygon key={i} strokeWidth={1.1} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
             ))}
         </g>
     );

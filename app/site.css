@@ -23,6 +23,15 @@
   --text: var(--font-text), 'Source Serif 4', Georgia, serif;
   --hand: var(--font-hand), 'Reenie Beanie', cursive;
 
+  /* One modular scale, ratio 1.25 from the 19px body */
+  --step--1: 0.95rem;
+  --step-0: 1.1875rem;
+  --step-1: 1.484rem;
+  --step-2: 1.855rem;
+  --step-3: 2.319rem;
+  --step-4: 2.899rem;
+  --step-5: 3.624rem;
+
   --column: 42.5rem;
   --gutter-left: 1.25rem;
   --gap: 5rem;
@@ -30,8 +39,10 @@
   background: var(--bg);
   color: var(--ink);
   font-family: var(--text);
-  font-size: 1.1875rem;
+  font-size: var(--step-0);
   line-height: 1.6;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-kerning: normal;
   min-height: 100vh;
   position: relative;
   caret-color: var(--ribbon);
@@ -53,7 +64,7 @@ html:has(.site) {
 }
 
 .site :focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--ribbon);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -130,7 +141,7 @@ html:has(.site) {
 /* Specificity matches .site a so section links stay plain */
 .site .site-nav a {
   font-family: var(--display);
-  font-size: 0.9375rem;
+  font-size: var(--step--1);
   font-weight: 600;
   color: var(--mute);
   text-decoration: none;
@@ -142,20 +153,51 @@ html:has(.site) {
   .site-nav { -webkit-mask-image: none; mask-image: none; }
 }
 
-.mode-toggle {
-  flex: none;
-  font-family: var(--display);
-  font-size: 0.875rem;
-  font-weight: 600;
+/* The section being read is underlined in the pen colour */
+.site .site-nav a[aria-current='location'] {
   color: var(--ink);
-  background: transparent;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  padding: 0.45rem 0.9rem;
-  cursor: pointer;
-  transition: border-color 200ms, background-color 200ms;
+  text-decoration-line: underline;
+  text-decoration-color: var(--ribbon);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.35em;
 }
-.mode-toggle:hover { border-color: var(--ink); }
+
+/* Full · Simple: plain words, the chosen one in ink with the pen underline */
+.view-toggle {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  font-family: var(--display);
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+.view-toggle button {
+  font: inherit;
+  color: var(--mute);
+  background: none;
+  border: 0;
+  padding: 0.35rem 0.3rem;
+  cursor: pointer;
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.35em;
+  transition: color 160ms, text-decoration-color 160ms;
+}
+.view-toggle button + button::before {
+  content: '·';
+  display: inline-block;
+  margin-right: 0.45rem;
+  color: var(--mute);
+  text-decoration: none;
+}
+.view-toggle button:hover { color: var(--ink); }
+.view-toggle button[aria-pressed='true'] {
+  color: var(--ink);
+  text-decoration-color: var(--ribbon);
+  cursor: default;
+}
 
 @media (max-width: 47.99rem) {
   .site-header .site-shell {
@@ -163,8 +205,10 @@ html:has(.site) {
     row-gap: 0;
     padding-block: 0.5rem 0;
   }
-  .site-nav { order: 3; flex-basis: 100%; padding-bottom: 0.5rem; }
-  .mode-toggle { margin-left: auto; }
+  .site-nav { order: 3; flex-basis: 100%; padding-bottom: 0.4rem; }
+  .view-toggle { margin-left: auto; }
+  .site-header__mark { width: 2.5rem; }
+  .site-header .site-shell { min-height: 3.25rem; }
 }
 
 /* --- Type ------------------------------------------------------------------ */
@@ -178,22 +222,28 @@ html:has(.site) {
 }
 
 .site h1 {
-  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-size: clamp(var(--step-4), 6.2vw, var(--step-5));
   font-weight: 600;
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
+  font-variant-numeric: lining-nums;
+}
+@media (min-width: 48rem) {
+  .site h1 { white-space: nowrap; }
 }
 
 .site h2 {
-  font-size: clamp(1.875rem, 3.4vw, 2.625rem);
+  font-size: clamp(var(--step-2), 3.4vw, var(--step-3));
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
+  /* Leaves room at the row's end for the chapter's origami on narrow screens */
+  padding-right: 3.5rem;
 }
 
 .site h3 {
-  font-size: 1.25rem;
+  font-size: var(--step-1);
   font-weight: 600;
   line-height: 1.38;
   letter-spacing: -0.005em;
@@ -211,16 +261,24 @@ html:has(.site) {
   font-family: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, monospace;
   font-size: 0.82em;
   padding: 0.1em 0.35em;
-  border-radius: 4px;
+  border-radius: 2px;
   background: var(--rule);
   overflow-wrap: anywhere;
+}
+
+/* Acronyms in true small caps, lightly tracked, as in a well-set book */
+.site abbr.sc {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.04em;
+  text-decoration: none;
 }
 
 .site .meta {
   font-style: italic;
   color: var(--mute);
+  font-size: var(--step-0);
   font-variant-numeric: tabular-nums lining-nums;
-  margin: 0.15rem 0 0.75rem;
+  margin: 0.25rem 0 1rem;
 }
 
 .site a {
@@ -231,7 +289,8 @@ html:has(.site) {
   text-underline-offset: 0.22em;
   transition: text-decoration-thickness 160ms, color 160ms;
 }
-.site a:hover { text-decoration-thickness: 3px; }
+.site a:hover { text-decoration-thickness: 2.5px; }
+.site a { text-decoration-skip-ink: auto; }
 
 .site .link-accent {
   color: var(--link);
@@ -269,7 +328,7 @@ html:has(.site) {
 }
 
 .chapter__list > * + * {
-  margin-top: 2.75rem;
+  margin-top: 3rem;
 }
 
 .chapter__item-head {
@@ -303,25 +362,30 @@ html:has(.site) {
   margin: 0 0 1.25rem -0.75rem;
 }
 
-.hero__body {
+.hero h1 { margin-top: 0.5rem; }
+
+/* The dek: what the work is about, set apart from the name by a clear step */
+.hero__lead {
   display: grid;
-  gap: 2rem;
+  gap: 1.5rem;
+  margin: 1.5rem 0 2rem;
 }
 
 @media (min-width: 48rem) {
-  .hero__body {
-    grid-template-columns: minmax(0, 1fr) 9.5rem;
-    align-items: start;
+  .hero__lead {
+    grid-template-columns: minmax(0, 1fr) 9rem;
+    align-items: end;
+    gap: 2.5rem;
   }
 }
 
-.hero__positioning {
-  font-family: var(--display);
-  font-size: clamp(1.3rem, 2.3vw, 1.625rem);
-  line-height: 1.38;
+.hero__dek {
+  font-family: var(--text);
+  font-style: italic;
+  font-size: clamp(var(--step-1), 2.4vw, var(--step-2));
+  line-height: 1.3;
   font-weight: 400;
-  letter-spacing: -0.01em;
-  margin: 1.25rem 0 1.5rem;
+  margin: 0;
   max-width: 30ch;
   text-wrap: balance;
 }
@@ -329,20 +393,27 @@ html:has(.site) {
 .hero__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem 1.75rem;
+  gap: 0.75rem 2rem;
   margin-top: 1.5rem;
 }
 
+/* Photographs: square corners and an ink hairline, no drop shadow */
+.hero__portrait,
+.photos__item img {
+  border-radius: 0;
+  outline: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  outline-offset: -1px;
+}
+
 .hero__portrait {
-  width: 9.5rem;
+  width: 9rem;
+  height: auto;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  border-radius: 6px;
-  box-shadow: 0 10px 30px -12px rgba(15, 22, 38, 0.35);
 }
 
 @media (max-width: 47.99rem) {
-  .hero__portrait { width: 7.5rem; order: -1; }
+  .hero__portrait { width: 7.5rem; }
 }
 
 /* --- PA mark animation --------------------------------------------------------
@@ -408,13 +479,15 @@ html:has(.site) {
 
 /* --- Research interests, building, education --------------------------------- */
 .lede {
-  font-size: 1.3125rem;
-  line-height: 1.5;
+  font-size: var(--step-1);
+  line-height: 1.45;
 }
+.research__interests { margin-top: 3rem; }
+.beyond__after { margin-top: 1.5rem; }
 
 .education__degree {
   font-family: var(--display);
-  font-size: 1.5rem;
+  font-size: var(--step-1);
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.35;
@@ -431,10 +504,10 @@ html:has(.site) {
   position: relative;
   aspect-ratio: 16 / 9;
   width: 100%;
-  border-radius: 8px;
   overflow: hidden;
   background: var(--field);
-  box-shadow: 0 18px 40px -24px rgba(15, 22, 38, 0.45);
+  outline: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  outline-offset: -1px;
 }
 
 .video__frame iframe,
@@ -468,7 +541,7 @@ html:has(.site) {
   font-weight: 600;
   font-size: 1rem;
   background: var(--ink);
-  border-radius: 999px;
+  border-radius: 2px;
   padding: 0.8rem 1.3rem;
   transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -478,7 +551,7 @@ html:has(.site) {
 /* --- Contact and newsletter --------------------------------------------------- */
 .contact__email {
   font-family: var(--display);
-  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-size: clamp(var(--step-1), 3vw, var(--step-2));
   font-weight: 600;
   letter-spacing: -0.01em;
   word-break: break-word;
@@ -520,7 +593,7 @@ html:has(.site) {
   color: var(--ink);
   background: var(--field);
   border: 1px solid var(--rule);
-  border-radius: 6px;
+  border-radius: 2px;
   padding: 0.7rem 0.9rem;
   transition: border-color 200ms;
 }
@@ -536,7 +609,7 @@ html:has(.site) {
   color: var(--bg);
   background: var(--ink);
   border: 1px solid var(--ink);
-  border-radius: 6px;
+  border-radius: 2px;
   padding: 0.7rem 1.2rem;
   cursor: pointer;
   transition: opacity 200ms, transform 160ms;
@@ -568,8 +641,12 @@ html:has(.site) {
  * reading column and snaps to each photo. */
 .photos {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   overflow-x: auto;
+  /* The strip runs on past the column: fade its edge so the cut is deliberate */
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
+  padding-right: 3rem;
   scroll-snap-type: x mandatory;
   overscroll-behavior-x: contain;
   margin: 2rem 0 1rem;
@@ -581,21 +658,25 @@ html:has(.site) {
   flex: none;
   margin: 0;
   scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
 }
 
 .photos__item img {
   display: block;
   height: 15rem;
   width: auto;
-  border-radius: 6px;
   background: var(--field);
 }
 
 .photos__item figcaption {
+  /* Zero width, then stretch to the figure: the photo alone sets the width,
+     so the caption wraps under its own photo instead of running on */
+  width: 0;
+  min-width: 100%;
   margin-top: 0.5rem;
-  max-width: 18rem;
   font-style: italic;
-  font-size: 0.9375rem;
+  font-size: var(--step--1);
   line-height: 1.4;
   color: var(--mute);
 }
@@ -612,34 +693,14 @@ html:has(.site) {
 /* Paper plane on the PA tail (moved by components/site/origami/PaperPlane.tsx) */
 :root[data-mode='simple'] .paper-plane { display: none; }
 
-/* Dog-eared section corners (components/site/origami/DogEar.tsx) */
+/* Each chapter's folded shape (components/site/origami/ChapterFigure.tsx) */
 .site .chapter { position: relative; }
-.site .dog-ear {
+.chapter-figure {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 1.75rem;
-  height: 1.75rem;
-  overflow: visible;
-  pointer-events: none;
-}
-:root[data-mode='simple'] .site .dog-ear { display: none; }
-
-/* Small pieces resting in the outer right margin (desktop) */
-.margin-origami {
-  position: absolute;
-  inset: 0;
   pointer-events: none;
   z-index: 0;
 }
-:root[data-mode='simple'] .margin-origami { display: none; }
-.margin-origami__piece {
-  position: absolute;
-  width: 4rem;
-  height: 4rem;
-  transition: translate 300ms linear;
-}
-.margin-origami__piece svg { width: 100%; height: 100%; overflow: visible; }
-@media (prefers-reduced-motion: reduce) {
-  .margin-origami__piece { translate: none !important; }
-}
+.chapter-figure svg { width: 100%; height: 100%; overflow: visible; }
+.chapter-figure__shadow { fill: var(--ink); opacity: 0.07; }
+:root[data-mode='simple'] .chapter-figure { display: none; }
+:root[data-mode='simple'] .site h2 { padding-right: 0; }

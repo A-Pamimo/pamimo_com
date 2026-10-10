@@ -36,7 +36,6 @@ const isNarrow = () => !window.matchMedia('(min-width: 64rem)').matches;
 const Ribbon: React.FC = () => {
     const svgRef = useRef<SVGSVGElement>(null);
     const pathRef = useRef<SVGPathElement>(null);
-    const headRef = useRef<SVGCircleElement>(null);
     const [folded, setFolded] = useState(false);
     const foldedRef = useRef(false);
     const [geo, setGeo] = useState<Geometry | null>(null);
@@ -109,9 +108,10 @@ const Ribbon: React.FC = () => {
             if (gap < 40) return;
 
             const mid = y + gap / 2;
+            // An open, self-crossing loop like a felt-tip "l"; it rises about 1.7R
             const loopR = small
-                ? Math.max(4, Math.min(gap / 2 - 10, 5 + r() * 3))
-                : Math.max(8, Math.min(gap / 2 - 14, 14 + r() * 18));
+                ? Math.max(3, Math.min((gap / 2 - 10) / 1.7, 4 + r() * 2))
+                : Math.max(6, Math.min((gap / 2 - 14) / 1.7, 12 + r() * 14));
             const cross = r() < 0.6;
 
             if (cross) {
@@ -122,18 +122,17 @@ const Ribbon: React.FC = () => {
                 const dir = nx > x ? 1 : -1;
                 const pull = small ? 40 : 80;
                 d += ` C${x.toFixed(1)},${(mid - gap * 0.2).toFixed(1)} ${(loopX - dir * pull).toFixed(1)},${mid.toFixed(1)} ${loopX.toFixed(1)},${mid.toFixed(1)}`;
-                d += ` a${loopR.toFixed(1)},${loopR.toFixed(1)} 0 1,${dir > 0 ? 0 : 1} 0,${(-2 * loopR).toFixed(1)}`;
-                d += ` a${loopR.toFixed(1)},${loopR.toFixed(1)} 0 1,${dir > 0 ? 0 : 1} 0,${(2 * loopR).toFixed(1)}`;
-                d += ` C${(loopX + dir * pull).toFixed(1)},${mid.toFixed(1)} ${nx.toFixed(1)},${(mid + gap * 0.2).toFixed(1)} ${nx.toFixed(1)},${nextTop.toFixed(1)}`;
+                d += ` C${(loopX + dir * 2.4 * loopR).toFixed(1)},${(mid - 2.2 * loopR).toFixed(1)} ${(loopX - dir * 1.4 * loopR).toFixed(1)},${(mid - 2.2 * loopR).toFixed(1)} ${(loopX + dir * loopR).toFixed(1)},${mid.toFixed(1)}`;
+                d += ` C${(loopX + dir * (loopR + pull)).toFixed(1)},${mid.toFixed(1)} ${nx.toFixed(1)},${(mid + gap * 0.2).toFixed(1)} ${nx.toFixed(1)},${nextTop.toFixed(1)}`;
                 side = nextSide;
                 x = nx;
             } else {
-                // Stay in this gutter and tie a small loop in the gap
-                const out = side === 'left' ? 1 : -1;
+                // Stay in this gutter and tie a small open loop in the gap, bulging
+                // away from the column so it never reaches the text
+                const away = side === 'left' ? -1 : 1;
                 d += ` C${x.toFixed(1)},${(mid - gap * 0.25).toFixed(1)} ${x.toFixed(1)},${(mid - gap * 0.1).toFixed(1)} ${x.toFixed(1)},${mid.toFixed(1)}`;
-                d += ` a${loopR.toFixed(1)},${loopR.toFixed(1)} 0 1,${out > 0 ? 1 : 0} 0,${(-2 * loopR).toFixed(1)}`;
-                d += ` a${loopR.toFixed(1)},${loopR.toFixed(1)} 0 1,${out > 0 ? 1 : 0} 0,${(2 * loopR).toFixed(1)}`;
-                d += ` C${x.toFixed(1)},${(mid + gap * 0.1).toFixed(1)} ${x.toFixed(1)},${(mid + gap * 0.25).toFixed(1)} ${x.toFixed(1)},${nextTop.toFixed(1)}`;
+                d += ` C${(x + away * 2.2 * loopR).toFixed(1)},${(mid + 2.4 * loopR).toFixed(1)} ${(x + away * 2.2 * loopR).toFixed(1)},${(mid - 1.4 * loopR).toFixed(1)} ${x.toFixed(1)},${(mid + loopR).toFixed(1)}`;
+                d += ` C${x.toFixed(1)},${(mid + gap * 0.15).toFixed(1)} ${x.toFixed(1)},${(mid + gap * 0.3).toFixed(1)} ${x.toFixed(1)},${nextTop.toFixed(1)}`;
             }
             y = nextTop;
         });
@@ -168,9 +167,8 @@ const Ribbon: React.FC = () => {
     const update = useCallback(() => {
         const g = geoRef.current;
         const path = pathRef.current;
-        const head = headRef.current;
         const svg = svgRef.current;
-        if (!g || !path || !head || !svg) return;
+        if (!g || !path || !svg) return;
 
         // The line reaches a little past the middle of the viewport, then
         // catches up with the bottom of the page as the reader gets there
@@ -188,9 +186,6 @@ const Ribbon: React.FC = () => {
         }
         const drawn = g.samples[lo].len;
         path.style.strokeDashoffset = String(g.total - drawn);
-        const pt = path.getPointAtLength(drawn);
-        head.setAttribute('cx', pt.x.toFixed(1));
-        head.setAttribute('cy', pt.y.toFixed(1));
         // When the line arrives at its end, the paper there folds into a crane
         const arrived = drawn / g.total > 0.985;
         if (arrived !== foldedRef.current) {
@@ -260,7 +255,6 @@ const Ribbon: React.FC = () => {
                         strokeLinejoin="round"
                         style={{ strokeDasharray: geo.total, strokeDashoffset: geo.total }}
                     />
-                    <circle ref={headRef} r={narrow ? 2.5 : 3.5} fill="var(--ribbon)" />
                     <g
                         className="ribbon-crane"
                         transform={`translate(${(geo.crane.x - geo.crane.size / 2).toFixed(1)} ${(geo.crane.y - geo.crane.size * 0.75).toFixed(1)}) scale(${(geo.crane.size / 64).toFixed(3)})`}

@@ -7,15 +7,29 @@ import Newsletter from '../components/site/Newsletter';
 import VideoFacade from '../components/site/VideoFacade';
 import VisitTracker from '../components/site/VisitTracker';
 import ClockPalette from '../components/site/ClockPalette';
-import DogEar from '../components/site/origami/DogEar';
-import MarginOrigami from '../components/site/origami/MarginOrigami';
+import ChapterFigure from '../components/site/origami/ChapterFigure';
 import { ArrowRight, ArrowUpRight } from '../components/site/Icons';
 import { site, type Entry } from '../content/site';
 import './site.css';
 
-/** Text between backticks renders as inline code */
-const withCode = (text: string) =>
-    text.split('`').map((part, i) => (i % 2 ? <code key={i}>{part}</code> : part));
+/** Acronyms set in small caps: RBC, AI, AKS, IaC and the like */
+const ABBR = /\b([A-Z]{2,}s?|IaC)\b/;
+
+/** Typesets copy: text between backticks becomes inline code, acronyms small caps */
+const rich = (text: string) =>
+    text.split('`').flatMap((part, i) =>
+        i % 2
+            ? [<code key={`c${i}`}>{part}</code>]
+            : part.split(new RegExp(ABBR.source, 'g')).map((bit, j) =>
+                  j % 2 ? (
+                      <abbr key={`a${i}-${j}`} className="sc">
+                          {bit}
+                      </abbr>
+                  ) : (
+                      bit
+                  ),
+              ),
+    );
 
 const EntryList: React.FC<{ entries: Entry[] }> = ({ entries }) => (
     <div className="chapter__list">
@@ -24,7 +38,7 @@ const EntryList: React.FC<{ entries: Entry[] }> = ({ entries }) => (
                 <h3>{entry.title}</h3>
                 {entry.meta && <p className="meta">{entry.meta}</p>}
                 {entry.body.map((para, i) => (
-                    <p key={i}>{withCode(para)}</p>
+                    <p key={i}>{rich(para)}</p>
                 ))}
             </article>
         ))}
@@ -44,22 +58,9 @@ export default function Home() {
                 <div className="site-column">
                     <section className="chapter hero" aria-labelledby="hero-name">
                         <PAMark variant="hero" className="hero__mark" />
-                        <div className="hero__body">
-                            <div>
-                                <h1 id="hero-name">{site.name}</h1>
-                                <p className="hero__positioning">{hero.positioning}</p>
-                                {hero.intro.map((para, i) => (
-                                    <p key={i}>{para}</p>
-                                ))}
-                                <div className="hero__links">
-                                    <a href="#contact" className="link-accent">
-                                        Get in touch <ArrowRight />
-                                    </a>
-                                    <a href={contact.linkedin.href} className="link-accent" target="_blank" rel="noopener noreferrer">
-                                        LinkedIn <ArrowUpRight />
-                                    </a>
-                                </div>
-                            </div>
+                        <h1 id="hero-name">{site.name}</h1>
+                        <div className="hero__lead">
+                            <p className="hero__dek">{hero.positioning}</p>
                             <Image
                                 src={hero.portrait.src}
                                 alt={hero.portrait.alt}
@@ -69,10 +70,21 @@ export default function Home() {
                                 priority
                             />
                         </div>
+                        {hero.intro.map((para, i) => (
+                            <p key={i}>{rich(para)}</p>
+                        ))}
+                        <div className="hero__links">
+                            <a href="#contact" className="link-accent">
+                                Get in touch <ArrowRight />
+                            </a>
+                            <a href={contact.linkedin.href} className="link-accent" target="_blank" rel="noopener noreferrer">
+                                LinkedIn <ArrowUpRight />
+                            </a>
+                        </div>
                     </section>
 
                     <section className="chapter" id="experience" aria-labelledby="experience-title">
-                        <DogEar />
+                        <ChapterFigure shape="helm" />
                         <h2 id="experience-title">Experience</h2>
                         <div className="chapter__list">
                             {experience.map(role => (
@@ -84,12 +96,12 @@ export default function Home() {
                                     <p className="meta">{[role.place, role.dates].filter(Boolean).join(', ')}</p>
                                     {role.story ? (
                                         role.story.map((para, i) => (
-                                            <p key={i}>{withCode(para)}</p>
+                                            <p key={i}>{rich(para)}</p>
                                         ))
                                     ) : (
                                         <ul className="points">
                                             {role.points?.map((point, i) => (
-                                                <li key={i}>{point}</li>
+                                                <li key={i}>{rich(point)}</li>
                                             ))}
                                         </ul>
                                     )}
@@ -99,38 +111,38 @@ export default function Home() {
                     </section>
 
                     <section className="chapter" id="research" aria-labelledby="research-title">
-                        <DogEar />
+                        <ChapterFigure shape="lantern" />
                         <h2 id="research-title">Research</h2>
                         <EntryList entries={research.entries} />
-                        <p className="lede" style={{ marginTop: '2.75rem' }}>{research.interests}</p>
+                        <p className="lede research__interests">{rich(research.interests)}</p>
                     </section>
 
                     <section className="chapter" id="building" aria-labelledby="building-title">
-                        <DogEar />
+                        <ChapterFigure shape="boat" />
                         <h2 id="building-title">Building</h2>
-                        <p className="lede">{building.body}</p>
+                        <p className="lede">{rich(building.body)}</p>
                         <a href={building.link.href} className="link-accent" target="_blank" rel="noopener noreferrer">
                             {building.link.label} <ArrowUpRight />
                         </a>
                     </section>
 
                     <section className="chapter" id="leadership" aria-labelledby="leadership-title">
-                        <DogEar />
+                        <ChapterFigure shape="pinwheel" />
                         <h2 id="leadership-title">Leadership</h2>
                         <EntryList entries={leadership} />
                     </section>
 
                     <section className="chapter" id="education" aria-labelledby="education-title">
-                        <DogEar />
+                        <ChapterFigure shape="mortarboard" />
                         <h2 id="education-title">Education</h2>
                         <p className="education__degree">{education.degree}</p>
                         <p className="meta">{education.details}, {education.school}</p>
                     </section>
 
                     <section className="chapter" id="beyond" aria-labelledby="beyond-title">
-                        <DogEar />
+                        <ChapterFigure shape="watch" />
                         <h2 id="beyond-title">Beyond work</h2>
-                        <p>{beyond.interests}</p>
+                        <p>{rich(beyond.interests)}</p>
                         <p>
                             {beyond.writing.text}{' '}
                             <a href={beyond.writing.link.href} className="link-accent">
@@ -159,14 +171,14 @@ export default function Home() {
                                 <VideoFacade url={beyond.video.url} title={beyond.video.title} />
                             </>
                         )}
-                        <p style={{ marginTop: '1.5rem' }}>{beyond.watches}</p>
-                        <p>{beyond.askMe}</p>
+                        <p className="beyond__after">{rich(beyond.watches)}</p>
+                        <p>{rich(beyond.askMe)}</p>
                     </section>
 
                     <section className="chapter" id="contact" aria-labelledby="contact-title">
-                        <DogEar />
+                        <ChapterFigure shape="envelope" />
                         <h2 id="contact-title">Contact</h2>
-                        <p>{contact.text}</p>
+                        <p>{rich(contact.text)}</p>
                         <a href={`mailto:${contact.email}`} className="contact__email">{contact.email}</a>
                         <div className="contact__links">
                             <a href={contact.linkedin.href} className="link-accent" target="_blank" rel="noopener noreferrer">
@@ -190,7 +202,6 @@ export default function Home() {
             </footer>
 
             <Ribbon />
-            <MarginOrigami />
         </div>
     );
 }

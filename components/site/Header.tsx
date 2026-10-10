@@ -5,16 +5,36 @@ import PAMark from './PAMark';
 import { NAV } from '../../content/site';
 import { getMode, setMode, type Mode } from '../../lib/visit';
 
+const VIEWS: { mode: Mode; label: string; title: string }[] = [
+    { mode: 'full', label: 'Full', title: 'The full design, with the moving line and the folded paper' },
+    { mode: 'simple', label: 'Simple', title: 'A calm, single-column view' },
+];
+
 const Header: React.FC = () => {
     // The pre-paint script has already chosen the mode; read it after mount
     const [mode, setModeState] = useState<Mode | null>(null);
+    const [current, setCurrent] = useState<string | null>(null);
 
     useEffect(() => {
         setModeState(getMode());
     }, []);
 
-    const toggle = () => {
-        const next: Mode = mode === 'simple' ? 'full' : 'simple';
+    // Underline the section being read
+    useEffect(() => {
+        const sections = NAV.map(n => document.getElementById(n.id)).filter(Boolean) as HTMLElement[];
+        const io = new IntersectionObserver(
+            entries => {
+                const hit = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+                if (hit) setCurrent(hit.target.id);
+            },
+            { rootMargin: '-30% 0px -60% 0px' },
+        );
+        sections.forEach(s => io.observe(s));
+        return () => io.disconnect();
+    }, []);
+
+    const choose = (next: Mode) => {
+        if (next === mode) return;
         setMode(next);
         setModeState(next);
     };
@@ -29,20 +49,20 @@ const Header: React.FC = () => {
                     <ul>
                         {NAV.map(item => (
                             <li key={item.id}>
-                                <a href={`#${item.id}`}>{item.label}</a>
+                                <a href={`#${item.id}`} aria-current={current === item.id ? 'location' : undefined}>
+                                    {item.label}
+                                </a>
                             </li>
                         ))}
                     </ul>
                 </nav>
-                <button
-                    type="button"
-                    className="mode-toggle"
-                    onClick={toggle}
-                    title={mode === 'simple' ? 'Switch to the full design with the moving line' : 'Switch to a calm, single-column view'}
-                    hidden={mode === null}
-                >
-                    {mode === 'simple' ? 'Full view' : 'Simple view'}
-                </button>
+                <div className="view-toggle" role="group" aria-label="View" hidden={mode === null}>
+                    {VIEWS.map(v => (
+                        <button key={v.mode} type="button" aria-pressed={mode === v.mode} title={v.title} onClick={() => choose(v.mode)}>
+                            {v.label}
+                        </button>
+                    ))}
+                </div>
             </div>
         </header>
     );
