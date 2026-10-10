@@ -2,22 +2,22 @@
  * Home page styles, scoped to .site so the blog keeps its own look.
  * Layout: one left-aligned reading column with a narrow left gutter and a wide
  * right gutter. The PA ribbon travels through the gutters and never crosses text.
- * Palette follows the visitor's time of day (data-daypart on <html>): harmattan
- * haze in the morning, Saskatoon river ice in the afternoon, a Beijing canal at night.
+ * Palette follows the visitor's clock round a full colour wheel (lib/palette.ts):
+ * the ground's hue turns 15 degrees an hour and the pen sits 120 degrees round the wheel.
  */
 
 .site {
-  /* Morning (harmattan haze) is the default palette and the no-JS fallback.
-     One crimson pen moves through all three grounds; only the ground changes. */
-  --bg: #e2dfd3;
-  --ink: #1b1a24;
-  --mute: #575247;
-  --ribbon: #c4203f;
-  --link: #1f3a6e;
-  --rule: #cdc7b4;
-  --field: #eeece4;
-  --focus: #1f3a6e;
-  --select: rgba(31, 58, 110, 0.16);
+  /* The clock palette (lib/palette.ts) writes --pa-* on <html> every minute.
+     These fallbacks are its noon colours, for visitors without JavaScript. */
+  --bg: var(--pa-bg, #f1f3d5);
+  --ink: var(--pa-ink, #20210c);
+  --mute: var(--pa-mute, #5c5d43);
+  --ribbon: var(--pa-ribbon, #188280);
+  --link: var(--pa-link, #215515);
+  --rule: var(--pa-rule, #d5d6c0);
+  --field: var(--pa-field, #fbfce9);
+  --focus: var(--pa-focus, #215515);
+  --select: var(--pa-select, rgba(24, 130, 128, 0.2));
 
   --display: var(--font-display), 'Bricolage Grotesque', Georgia, serif;
   --text: var(--font-text), 'Source Serif 4', Georgia, serif;
@@ -36,42 +36,15 @@
   position: relative;
   caret-color: var(--ribbon);
   -webkit-font-smoothing: antialiased;
-  transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 1.2s cubic-bezier(0.16, 1, 0.3, 1), color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-:root[data-daypart='dusk'] .site {
-  /* Saskatoon river ice on a January afternoon */
-  --bg: #cfe3e0;
-  --ink: #0c2622;
-  --mute: #2f5550;
-  --ribbon: #c4203f;
-  --link: #123f6b;
-  --rule: #b0cbc6;
-  --field: #e1eeec;
-  --focus: #123f6b;
-  --select: rgba(18, 63, 107, 0.16);
-}
-
-:root[data-daypart='night'] .site {
-  /* A Beijing canal after summer rain */
-  --bg: #121a17;
-  --ink: #dfe6dc;
-  --mute: #9aa89f;
-  --ribbon: #f2505f;
-  --link: #a9c6e8;
-  --rule: #27332e;
-  --field: #18221e;
-  --focus: #f2505f;
-  --select: rgba(242, 80, 95, 0.26);
-  color-scheme: dark;
-}
+:root[data-tone='dark'] .site { color-scheme: dark; }
 
 /* Page ground outside the wrapper (overscroll, short pages) matches the palette */
 html:has(.site) {
-  background: var(--page-bg, #e2dfd3);
+  background: var(--pa-bg, #f1f3d5);
 }
-:root[data-daypart='dusk']:has(.site) { --page-bg: #cfe3e0; }
-:root[data-daypart='night']:has(.site) { --page-bg: #121a17; }
 
 /* --- Browser surfaces ---------------------------------------------------- */
 .site ::selection {
@@ -629,4 +602,110 @@ html:has(.site) {
 
 @media (max-width: 47.99rem) {
   .photos__item img { height: 12rem; }
+}
+
+/* --- Origami -------------------------------------------------------------------
+ * Thin line art: paper faces in the field colour, edges in the pen colour.
+ * Full mode only; under reduced motion everything rests in its finished pose. */
+.site .origami-face {
+  fill: var(--field);
+  stroke: var(--ribbon);
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.site .origami-face--back { fill: var(--rule); }
+.site .origami-crease {
+  fill: none;
+  stroke: var(--ribbon);
+  stroke-width: 1px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.7;
+}
+
+/* Paper plane on the PA tail (moved by components/site/origami/PaperPlane.tsx) */
+:root[data-mode='simple'] .paper-plane { display: none; }
+
+/* Dog-eared section corners: the top-right corner folds down along its diagonal */
+.site .chapter { position: relative; }
+:root[data-mode='full'] .site .chapter:not(.hero)::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  background:
+    linear-gradient(45deg, var(--field) 0 calc(50% - 0.5px), var(--ribbon) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  box-shadow: inset 1px -1px 0 var(--rule);
+  transform-origin: 100% 0;
+  transform: scale(0);
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1) 120ms;
+  pointer-events: none;
+}
+:root[data-mode='full'] .site .chapter.is-folded::after { transform: scale(1); }
+
+/* Small pieces resting in the outer right margin (desktop) */
+.margin-origami {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+:root[data-mode='simple'] .margin-origami { display: none; }
+.margin-origami__piece {
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  transition: translate 300ms linear;
+}
+.margin-origami__piece svg { width: 100%; height: 100%; overflow: visible; }
+.site .origami .fold {
+  transform-box: fill-box;
+  animation: origami-fold 7s cubic-bezier(0.45, 0, 0.2, 1) var(--fold-delay, 0s) infinite;
+}
+.site .origami .fold--sail { transform-origin: 100% 50%; }
+.site .origami .fold--wing { transform-origin: 50% 100%; animation-name: origami-flap; }
+.site .origami .fold--teller { transform-origin: 50% 50%; animation-name: origami-pinch; }
+
+@keyframes origami-fold {
+  0%, 35% { transform: scaleX(1); }
+  50%, 85% { transform: scaleX(-0.35); }
+  100% { transform: scaleX(1); }
+}
+@keyframes origami-flap {
+  0%, 35% { transform: scaleY(1); }
+  50%, 85% { transform: scaleY(0.25); }
+  100% { transform: scaleY(1); }
+}
+@keyframes origami-pinch {
+  0%, 35% { transform: scale(1) rotate(0deg); }
+  50%, 85% { transform: scale(0.7) rotate(45deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* The crane where the ribbon ends: flat paper until the line arrives. Its faces
+   take a wash of the pen colour so the small silhouette reads at a glance. */
+.site .ribbon-crane .crane-part.origami-face { fill: var(--select); }
+.site .ribbon-crane .crane-paper,
+.site .ribbon-crane .crane-part {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1), opacity 450ms ease;
+}
+.site .ribbon-crane .crane-part { transform: scale(0); opacity: 0; }
+.site .ribbon-crane[data-folded] .crane-paper { transform: scale(0.3); opacity: 0; }
+.site .ribbon-crane[data-folded] .crane-part { transform: scale(1); opacity: 1; }
+.site .ribbon-crane[data-folded] .crane-part:nth-child(3) { transition-delay: 140ms; }
+.site .ribbon-crane[data-folded] .crane-part:nth-child(4) { transition-delay: 220ms; }
+.site .ribbon-crane[data-folded] .crane-part:nth-child(n + 5) { transition-delay: 360ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .site .origami .fold { animation: none; }
+  :root[data-mode='full'] .site .chapter:not(.hero)::after { transform: scale(1); transition: none; }
+  .site .ribbon-crane .crane-paper { opacity: 0; }
+  .site .ribbon-crane .crane-part { transform: none; opacity: 1; transition: none; }
+  .margin-origami__piece { translate: none !important; }
 }

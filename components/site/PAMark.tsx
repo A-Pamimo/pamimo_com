@@ -1,4 +1,5 @@
 import React from 'react';
+import PaperPlane from './origami/PaperPlane';
 
 /**
  * The PA mark: Reenie Beanie lettering with the A pulled left until it just
@@ -95,6 +96,7 @@ const PAMark: React.FC<PAMarkProps> = ({ variant, className = '' }) => {
                     style={{ '--dur': `${TAIL.dur}s`, '--delay': `${TAIL.delay}s` } as React.CSSProperties}
                 />
             )}
+            {hero && <PaperPlane delay={TAIL.delay} dur={TAIL.dur} />}
             {hero && <circle data-pa-tail-end cx={TAIL_END.x} cy={TAIL_END.y} r={0.5} fill="none" />}
         </svg>
     );

@@ -1,10 +1,11 @@
+import { PALETTE_SOURCE } from './palette';
+
 /**
  * Small, bounded per-visit variation for the home page.
  * Everything here is read after mount; the pre-paint script in app/layout.tsx
  * handles the attributes that must exist before first paint.
  */
 
-export type Daypart = 'morning' | 'dusk' | 'night';
 export type Mode = 'full' | 'simple';
 
 const SEED_KEY = 'pa_seed';
@@ -67,14 +68,14 @@ export const setMode = (mode: Mode) => {
 
 /**
  * Runs inline in <head> before first paint. Kept dependency-free and tiny.
- * Sets data-daypart from the visitor's clock and data-mode from their saved
+ * Paints the clock palette for the current minute and sets data-mode from the saved
  * choice, falling back to simple for reduced motion and slow networks.
  * Sets data-intro to play (first visit) or quick (visits two to four) when the
  * PA should write itself; from the fifth visit it simply appears drawn.
  */
-export const PREPAINT_SCRIPT = `(function(){try{
-var d=document.documentElement,h=new Date().getHours();
-d.dataset.daypart=h>=5&&h<12?'morning':h>=12&&h<19?'dusk':'night';
+export const PREPAINT_SCRIPT = `(function(){try{${PALETTE_SOURCE}
+paApply(paPalette(Date.now()));
+var d=document.documentElement;
 var m=null;try{m=localStorage.getItem('${MODE_KEY}')}catch(e){}
 if(m!=='full'&&m!=='simple'){
 var c=navigator.connection||{};
