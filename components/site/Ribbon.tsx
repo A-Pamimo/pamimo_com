@@ -9,7 +9,8 @@ import { getSessionSeed, mulberry32 } from '../../lib/visit';
  * the empty gap between chapters, so it never passes over text. Its drawn length
  * tracks native scrolling; nothing hijacks the scroll.
  *
- * Shown only in full mode at 64rem and wider (see .ribbon in app/site.css).
+ * Shown in full mode at every width. On phones the gutters are only about 20px,
+ * so the line runs down their middle with small loops (see NARROW below).
  */
 
 interface Geometry {
@@ -23,16 +24,17 @@ interface Geometry {
 
 const SAMPLE_COUNT = 400;
 
-const isActive = () =>
-    typeof window !== 'undefined' &&
-    document.documentElement.dataset.mode === 'full' &&
-    window.matchMedia('(min-width: 64rem)').matches;
+const isActive = () => typeof window !== 'undefined' && document.documentElement.dataset.mode === 'full';
+
+/** Below 64rem the gutters are too narrow for wide loops or a 3px line */
+const isNarrow = () => !window.matchMedia('(min-width: 64rem)').matches;
 
 const Ribbon: React.FC = () => {
     const svgRef = useRef<SVGSVGElement>(null);
     const pathRef = useRef<SVGPathElement>(null);
     const headRef = useRef<SVGCircleElement>(null);
     const [geo, setGeo] = useState<Geometry | null>(null);
+    const [narrow, setNarrow] = useState(false);
     const geoRef = useRef<Geometry | null>(null);
 
     const build = useCallback(() => {
@@ -62,10 +64,12 @@ const Ribbon: React.FC = () => {
         const height = site.scrollHeight;
 
         const r = mulberry32(getSessionSeed());
+        const small = isNarrow();
+        setNarrow(small);
         const leftGutter = col.left;
         const rightGutter = width - col.right;
-        const leftX = leftGutter * (0.42 + r() * 0.16);
-        const rightX = col.right + Math.min(rightGutter * (0.28 + r() * 0.22), 220);
+        const leftX = small ? leftGutter / 2 : leftGutter * (0.42 + r() * 0.16);
+        const rightX = small ? width - rightGutter / 2 : col.right + Math.min(rightGutter * (0.28 + r() * 0.22), 220);
         const xFor = (side: 'left' | 'right') => (side === 'left' ? leftX : rightX);
 
         let side: 'left' | 'right' = 'right';
@@ -76,13 +80,14 @@ const Ribbon: React.FC = () => {
         // Ease from the end of the PA tail into the right gutter
         const firstBottom = rel(chapters[0].getBoundingClientRect()).bottom;
         const settleY = Math.min(y + 140, firstBottom);
-        d += ` C${(x + 60).toFixed(1)},${(y + 10).toFixed(1)} ${xFor(side).toFixed(1)},${(y + 40).toFixed(1)} ${xFor(side).toFixed(1)},${settleY.toFixed(1)}`;
+        const lead = small ? Math.min(20, xFor(side) - x) : 60;
+        d += ` C${(x + lead).toFixed(1)},${(y + 10).toFixed(1)} ${xFor(side).toFixed(1)},${(y + 40).toFixed(1)} ${xFor(side).toFixed(1)},${settleY.toFixed(1)}`;
         x = xFor(side);
         y = settleY;
 
         chapters.forEach((chapter, i) => {
             const box = rel(chapter.getBoundingClientRect());
-            const maxWander = side === 'left' ? Math.min(14, leftX - 12) : 26;
+            const maxWander = small ? 3 : side === 'left' ? Math.min(14, leftX - 12) : 26;
             const wander = (r() * 2 - 1) * maxWander;
 
             // Run down the gutter alongside the chapter with a gentle wander
@@ -98,7 +103,9 @@ const Ribbon: React.FC = () => {
             if (gap < 40) return;
 
             const mid = y + gap / 2;
-            const loopR = Math.max(8, Math.min(gap / 2 - 14, 14 + r() * 18));
+            const loopR = small
+                ? Math.max(4, Math.min(gap / 2 - 10, 5 + r() * 3))
+                : Math.max(8, Math.min(gap / 2 - 14, 14 + r() * 18));
             const cross = r() < 0.6;
 
             if (cross) {
@@ -107,10 +114,11 @@ const Ribbon: React.FC = () => {
                 const nx = xFor(nextSide);
                 const loopX = col.left + (col.right - col.left) * (0.25 + r() * 0.5);
                 const dir = nx > x ? 1 : -1;
-                d += ` C${x.toFixed(1)},${(mid - gap * 0.2).toFixed(1)} ${(loopX - dir * 80).toFixed(1)},${mid.toFixed(1)} ${loopX.toFixed(1)},${mid.toFixed(1)}`;
+                const pull = small ? 40 : 80;
+                d += ` C${x.toFixed(1)},${(mid - gap * 0.2).toFixed(1)} ${(loopX - dir * pull).toFixed(1)},${mid.toFixed(1)} ${loopX.toFixed(1)},${mid.toFixed(1)}`;
                 d += ` a${loopR.toFixed(1)},${loopR.toFixed(1)} 0 1,${dir > 0 ? 0 : 1} 0,${(-2 * loopR).toFixed(1)}`;
                 d += ` a${loopR.toFixed(1)},${loopR.toFixed(1)} 0 1,${dir > 0 ? 0 : 1} 0,${(2 * loopR).toFixed(1)}`;
-                d += ` C${(loopX + dir * 80).toFixed(1)},${mid.toFixed(1)} ${nx.toFixed(1)},${(mid + gap * 0.2).toFixed(1)} ${nx.toFixed(1)},${nextTop.toFixed(1)}`;
+                d += ` C${(loopX + dir * pull).toFixed(1)},${mid.toFixed(1)} ${nx.toFixed(1)},${(mid + gap * 0.2).toFixed(1)} ${nx.toFixed(1)},${nextTop.toFixed(1)}`;
                 side = nextSide;
                 x = nx;
             } else {
@@ -127,7 +135,8 @@ const Ribbon: React.FC = () => {
         // Trail off into the footer, curling back toward the column
         const end = Math.min(height - 24, y + 120);
         const inward = (side as 'left' | 'right') === 'left' ? 1 : -1;
-        d += ` C${x.toFixed(1)},${(y + 60).toFixed(1)} ${(x + inward * 40).toFixed(1)},${(end - 20).toFixed(1)} ${(x + inward * 70).toFixed(1)},${end.toFixed(1)}`;
+        const curl = small ? 0.4 : 1;
+        d += ` C${x.toFixed(1)},${(y + 60).toFixed(1)} ${(x + inward * 40 * curl).toFixed(1)},${(end - 20).toFixed(1)} ${(x + inward * 70 * curl).toFixed(1)},${end.toFixed(1)}`;
 
         // Sample the path once so scroll position maps to drawn length cheaply
         const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -231,12 +240,12 @@ const Ribbon: React.FC = () => {
                         d={geo.d}
                         fill="none"
                         stroke="var(--ribbon)"
-                        strokeWidth={3}
+                        strokeWidth={narrow ? 2 : 3}
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         style={{ strokeDasharray: geo.total, strokeDashoffset: geo.total }}
                     />
-                    <circle ref={headRef} r={3.5} fill="var(--ribbon)" />
+                    <circle ref={headRef} r={narrow ? 2.5 : 3.5} fill="var(--ribbon)" />
                 </>
             )}
         </svg>

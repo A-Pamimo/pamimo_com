@@ -410,9 +410,7 @@ html:has(.site) {
   display: none;
 }
 
-@media (min-width: 64rem) {
-  :root[data-mode='full'] .ribbon { display: block; }
-}
+:root[data-mode='full'] .ribbon { display: block; }
 
 /* Waits for the PA to finish writing before the line continues down the page */
 :root[data-intro='play'] .ribbon { animation: ribbon-in 600ms ease-out 2.8s both; }
