@@ -5,11 +5,11 @@ import { envelope, helm, lantern, mortarboard, pinwheel, rockingBoat, wristwatch
 import Figure from './Figure';
 
 /**
- * The folded shape that belongs to a chapter of the story, pinned level with the
- * chapter's heading. On wide screens it rests in the outer right margin, beyond
- * the ribbon's widest reach; where that margin is too narrow it sits at the end
- * of the heading row instead. It casts a small contact shadow so it rests on the
- * page rather than floating. Full mode only (see .chapter-figure in site.css).
+ * The folded shape that belongs to a chapter of the story, at the end of the
+ * chapter's heading row on a small contact shadow. On wide screens the ribbon's
+ * travelling paper takes these shapes instead, so this shows on phones (and on
+ * wide screens under reduced motion). It also tells Ribbon each chapter's shape
+ * through data-shape. Full mode only (see .chapter-figure in site.css).
  */
 
 const SHAPES: Record<string, { model: Model; frames: number }> = {
@@ -38,19 +38,9 @@ const ChapterFigure: React.FC<{ shape: Shape }> = ({ shape }) => {
         const heading = chapter?.querySelector('h2');
         if (!el || !chapter || !site || !heading) return;
         const c = chapter.getBoundingClientRect();
-        const s = site.getBoundingClientRect();
         const h = heading.getBoundingClientRect();
-        const headMid = h.top - c.top + h.height / 2;
-        const gutter = s.right - c.right;
-        // The ribbon keeps within min(gutter / 2, 220) of the column, plus its loops
-        const offset = Math.min(gutter * 0.5, 220) + 90;
-        const wide = window.matchMedia('(min-width: 64rem)').matches;
-        if (wide && c.right + offset + BOX < s.right - 16) {
-            setSpot({ left: c.width + offset, top: headMid - BOX / 2, size: BOX });
-        } else {
-            const size = 44;
-            setSpot({ left: c.width - size, top: headMid - size / 2, size });
-        }
+        const size = 44;
+        setSpot({ left: c.width - size, top: h.top - c.top + h.height / 2 - size / 2, size });
     }, []);
 
     useEffect(() => {
@@ -74,6 +64,7 @@ const ChapterFigure: React.FC<{ shape: Shape }> = ({ shape }) => {
         <div
             ref={ref}
             className="chapter-figure"
+            data-shape={shape}
             aria-hidden="true"
             style={spot ? { left: spot.left, top: spot.top, width: spot.size, height: spot.size } : { visibility: 'hidden' }}
         >
