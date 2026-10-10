@@ -13,6 +13,7 @@ const ClockPalette: React.FC = () => {
         let timer: ReturnType<typeof setTimeout>;
         const tick = () => {
             paApply(paPalette(Date.now()));
+            window.dispatchEvent(new Event('pa-palette'));
             timer = setTimeout(tick, 60_000 - (Date.now() % 60_000) + 50);
         };
         tick();

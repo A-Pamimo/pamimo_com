@@ -2,16 +2,17 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getSessionSeed, mulberry32 } from '../../../lib/visit';
-import { Boat, Crane, FortuneTeller } from './shapes';
+import { flappingCrane, fortuneTeller, rockingBoat } from '../../../lib/origami';
+import Figure from './Figure';
 
 /**
  * Three small paper pieces resting in the outer right margin, each in an empty
  * gap between chapters and beyond the ribbon's path, so they never touch text.
- * Desktop full mode only; they drift a little with scroll.
+ * Desktop full mode only; they fold frame by frame and drift a little with scroll.
  */
 
-const SHAPES = [Boat, Crane, FortuneTeller];
-const SIZE = 48;
+const MODELS = [rockingBoat, flappingCrane, fortuneTeller];
+const SIZE = 64;
 
 interface Spot {
     top: number;
@@ -37,8 +38,8 @@ const MarginOrigami: React.FC = () => {
         const gutter = siteBox.width - colRight;
         // The ribbon stays within colRight + min(gutter * 0.5, 220); keep clear of it
         const ribbonMax = colRight + Math.min(gutter * 0.5, 220) + 44;
-        const left = Math.max(ribbonMax, colRight + gutter * 0.72) - SIZE / 2;
-        if (left + SIZE > siteBox.width - 12) {
+        const left = Math.max(ribbonMax + 15, colRight + gutter * 0.72 - SIZE / 2);
+        if (left + SIZE + 15 > siteBox.width - 12) {
             setSpots([]);
             return;
         }
@@ -50,7 +51,7 @@ const MarginOrigami: React.FC = () => {
         const usable = gaps.filter(g => g.to - g.from > SIZE + 24);
         const r = mulberry32(getSessionSeed() ^ 0x5bd1);
         // Spread the three pieces down the page: one from each third of the gaps
-        const picks = SHAPES.map((_, i) => {
+        const picks = MODELS.map((_, i) => {
             const slice = usable.slice(Math.floor((usable.length * i) / 3), Math.floor((usable.length * (i + 1)) / 3));
             const g = slice[Math.floor(r() * slice.length)];
             return g && { top: g.from + (g.to - g.from - SIZE) * (0.3 + r() * 0.4), left: left + (r() - 0.5) * 30 };
@@ -96,14 +97,13 @@ const MarginOrigami: React.FC = () => {
 
     return (
         <div ref={ref} className="margin-origami" aria-hidden="true">
-            {spots.map((s, i) => {
-                const Shape = SHAPES[i];
-                return (
-                    <div key={i} className="margin-origami__piece" style={{ top: s.top, left: s.left, '--fold-delay': `${i * -2.3}s` } as React.CSSProperties}>
-                        <Shape />
-                    </div>
-                );
-            })}
+            {spots.map((s, i) => (
+                <div key={i} className="margin-origami__piece" style={{ top: s.top, left: s.left }}>
+                    <svg viewBox={`0 0 ${SIZE} ${SIZE}`}>
+                        <Figure model={MODELS[i]} size={SIZE} loop frames={36} phase={i / 3} />
+                    </svg>
+                </div>
+            ))}
         </div>
     );
 };
