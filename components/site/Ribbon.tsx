@@ -20,6 +20,8 @@ interface Geometry {
     /** Path length at sampled points, with the y each one reaches, for scroll mapping */
     samples: { len: number; y: number }[];
     total: number;
+    /** Where the line ends, and how big the paper crane there can be */
+    crane: { x: number; y: number; size: number };
 }
 
 const SAMPLE_COUNT = 400;
@@ -33,6 +35,7 @@ const Ribbon: React.FC = () => {
     const svgRef = useRef<SVGSVGElement>(null);
     const pathRef = useRef<SVGPathElement>(null);
     const headRef = useRef<SVGCircleElement>(null);
+    const craneRef = useRef<SVGGElement>(null);
     const [geo, setGeo] = useState<Geometry | null>(null);
     const [narrow, setNarrow] = useState(false);
     const geoRef = useRef<Geometry | null>(null);
@@ -132,11 +135,14 @@ const Ribbon: React.FC = () => {
             y = nextTop;
         });
 
-        // Trail off into the footer, curling back toward the column
-        const end = Math.min(height - 24, y + 120);
+        // Trail off into the footer with a small sway, ending mid-gutter where the
+        // paper crane folds itself; the crane is sized to fit the gutter
+        const end = Math.min(height - 40, y + 120);
         const inward = (side as 'left' | 'right') === 'left' ? 1 : -1;
-        const curl = small ? 0.4 : 1;
-        d += ` C${x.toFixed(1)},${(y + 60).toFixed(1)} ${(x + inward * 40 * curl).toFixed(1)},${(end - 20).toFixed(1)} ${(x + inward * 70 * curl).toFixed(1)},${end.toFixed(1)}`;
+        const sway = small ? 4 : 18;
+        d += ` C${x.toFixed(1)},${(y + 50).toFixed(1)} ${(x + inward * sway).toFixed(1)},${(end - 40).toFixed(1)} ${x.toFixed(1)},${end.toFixed(1)}`;
+        const gutterWidth = (side as 'left' | 'right') === 'left' ? leftGutter : rightGutter;
+        const crane = { x, y: end, size: Math.max(20, Math.min(60, gutterWidth - 4)) };
 
         // Sample the path once so scroll position maps to drawn length cheaply
         const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -153,7 +159,7 @@ const Ribbon: React.FC = () => {
         }
         probe.remove();
 
-        setGeo({ d, width, height, samples, total });
+        setGeo({ d, width, height, samples, total, crane });
     }, []);
 
     const update = useCallback(() => {
@@ -182,6 +188,8 @@ const Ribbon: React.FC = () => {
         const pt = path.getPointAtLength(drawn);
         head.setAttribute('cx', pt.x.toFixed(1));
         head.setAttribute('cy', pt.y.toFixed(1));
+        // When the line arrives at its end, the square of paper there folds into a crane
+        craneRef.current?.toggleAttribute('data-folded', drawn / g.total > 0.985);
     }, []);
 
     useEffect(() => {
@@ -246,6 +254,20 @@ const Ribbon: React.FC = () => {
                         style={{ strokeDasharray: geo.total, strokeDashoffset: geo.total }}
                     />
                     <circle ref={headRef} r={narrow ? 2.5 : 3.5} fill="var(--ribbon)" />
+                    <g
+                        ref={craneRef}
+                        className="ribbon-crane"
+                        transform={`translate(${(geo.crane.x - geo.crane.size / 2).toFixed(1)} ${(geo.crane.y - geo.crane.size * 0.8).toFixed(1)}) scale(${(geo.crane.size / 48).toFixed(3)})`}
+                    >
+                        {/* Flat paper, then the crane's facets, on a 48x48 grid */}
+                        <polygon className="origami-face crane-paper" points="24,12 40,28 24,44 8,28" />
+                        <polygon className="origami-face origami-face--back crane-part" points="15,31 24,25 33,31 24,37" />
+                        <polygon className="origami-face crane-part" points="24,27 12,5 21,30" />
+                        <polygon className="origami-face origami-face--back crane-part" points="24,27 37,8 27,30" />
+                        <polygon className="origami-face crane-part" points="16,31 5,16 18,32" />
+                        <polygon className="origami-face crane-part" points="5,16 1,20 7,19" />
+                        <polygon className="origami-face crane-part" points="32,31 45,23 33,33" />
+                    </g>
                 </>
             )}
         </svg>

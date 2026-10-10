@@ -6,6 +6,9 @@ import Ribbon from '../components/site/Ribbon';
 import Newsletter from '../components/site/Newsletter';
 import VideoFacade from '../components/site/VideoFacade';
 import VisitTracker from '../components/site/VisitTracker';
+import ClockPalette from '../components/site/ClockPalette';
+import FoldCorners from '../components/site/origami/FoldCorners';
+import MarginOrigami from '../components/site/origami/MarginOrigami';
 import { ArrowRight, ArrowUpRight } from '../components/site/Icons';
 import { site, type Entry } from '../content/site';
 import './site.css';
@@ -34,6 +37,8 @@ export default function Home() {
     return (
         <div className="site" id="top">
             <VisitTracker />
+            <ClockPalette />
+            <FoldCorners />
             <Header />
 
             <main className="site-shell">
@@ -179,6 +184,7 @@ export default function Home() {
             </footer>
 
             <Ribbon />
+            <MarginOrigami />
         </div>
     );
 }
