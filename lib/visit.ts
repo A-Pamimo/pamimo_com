@@ -68,7 +68,7 @@ export const setMode = (mode: Mode) => {
 /**
  * Runs inline in <head> before first paint. Kept dependency-free and tiny.
  * Sets data-daypart from the visitor's clock and data-mode from their saved
- * choice, falling back to simple on phones, reduced motion and slow networks.
+ * choice, falling back to simple for reduced motion and slow networks.
  * Sets data-intro to play (first visit) or quick (visits two to four) when the
  * PA should write itself; from the fifth visit it simply appears drawn.
  */
@@ -80,7 +80,7 @@ if(m!=='full'&&m!=='simple'){
 var c=navigator.connection||{};
 var slow=c.saveData||/(^|-)2g|3g/.test(c.effectiveType||'');
 var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-m=(window.innerWidth<768||rm||slow)?'simple':'full';}
+m=(rm||slow)?'simple':'full';}
 d.dataset.mode=m;
 var seen=null,v=0;try{seen=sessionStorage.getItem('${INTRO_KEY}');v=+(localStorage.getItem('${VISIT_KEY}')||0)}catch(e){}
 var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
