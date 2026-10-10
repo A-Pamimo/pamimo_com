@@ -2,20 +2,22 @@
  * Home page styles, scoped to .site so the blog keeps its own look.
  * Layout: one left-aligned reading column with a narrow left gutter and a wide
  * right gutter. The PA ribbon travels through the gutters and never crosses text.
- * Palette follows the visitor's time of day (data-daypart on <html>).
+ * Palette follows the visitor's time of day (data-daypart on <html>): harmattan
+ * haze in the morning, Saskatoon river ice in the afternoon, a Beijing canal at night.
  */
 
 .site {
-  /* Morning is the default palette and the no-JS fallback */
-  --bg: #eef1ec;
-  --ink: #17201b;
-  --mute: #4f5a53;
-  --ribbon: #1f4fd8;
-  --link: #1b44bd;
-  --rule: rgba(23, 32, 27, 0.14);
-  --field: #f7f9f6;
-  --focus: #1f4fd8;
-  --select: rgba(31, 79, 216, 0.18);
+  /* Morning (harmattan haze) is the default palette and the no-JS fallback.
+     One crimson pen moves through all three grounds; only the ground changes. */
+  --bg: #e2dfd3;
+  --ink: #1b1a24;
+  --mute: #575247;
+  --ribbon: #c4203f;
+  --link: #1f3a6e;
+  --rule: #cdc7b4;
+  --field: #eeece4;
+  --focus: #1f3a6e;
+  --select: rgba(31, 58, 110, 0.16);
 
   --display: var(--font-display), 'Bricolage Grotesque', Georgia, serif;
   --text: var(--font-text), 'Source Serif 4', Georgia, serif;
@@ -38,36 +40,38 @@
 }
 
 :root[data-daypart='dusk'] .site {
-  --bg: #e8e3ef;
-  --ink: #221a2e;
-  --mute: #564c63;
-  --ribbon: #d23d14;
-  --link: #a52f0d;
-  --rule: rgba(34, 26, 46, 0.14);
-  --field: #f3f0f7;
-  --focus: #a52f0d;
-  --select: rgba(210, 61, 20, 0.18);
+  /* Saskatoon river ice on a January afternoon */
+  --bg: #cfe3e0;
+  --ink: #0c2622;
+  --mute: #2f5550;
+  --ribbon: #c4203f;
+  --link: #123f6b;
+  --rule: #b0cbc6;
+  --field: #e1eeec;
+  --focus: #123f6b;
+  --select: rgba(18, 63, 107, 0.16);
 }
 
 :root[data-daypart='night'] .site {
-  --bg: #0f1626;
-  --ink: #e6e9f0;
-  --mute: #a3abbd;
-  --ribbon: #f2c94c;
-  --link: #f2c94c;
-  --rule: rgba(230, 233, 240, 0.16);
-  --field: #172036;
-  --focus: #f2c94c;
-  --select: rgba(242, 201, 76, 0.24);
+  /* A Beijing canal after summer rain */
+  --bg: #121a17;
+  --ink: #dfe6dc;
+  --mute: #9aa89f;
+  --ribbon: #f2505f;
+  --link: #a9c6e8;
+  --rule: #27332e;
+  --field: #18221e;
+  --focus: #f2505f;
+  --select: rgba(242, 80, 95, 0.26);
   color-scheme: dark;
 }
 
 /* Page ground outside the wrapper (overscroll, short pages) matches the palette */
 html:has(.site) {
-  background: var(--page-bg, #eef1ec);
+  background: var(--page-bg, #e2dfd3);
 }
-:root[data-daypart='dusk']:has(.site) { --page-bg: #e8e3ef; }
-:root[data-daypart='night']:has(.site) { --page-bg: #0f1626; }
+:root[data-daypart='dusk']:has(.site) { --page-bg: #cfe3e0; }
+:root[data-daypart='night']:has(.site) { --page-bg: #121a17; }
 
 /* --- Browser surfaces ---------------------------------------------------- */
 .site ::selection {
