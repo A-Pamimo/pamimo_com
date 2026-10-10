@@ -21,7 +21,9 @@ import { FPS, readPaint } from './Figure';
  * The piece of paper the ribbon carries at its tip. It holds the shape of the
  * chapter the line is passing through, looping that shape's own motion, and when
  * the line crosses into a new chapter it folds flat and refolds into the next
- * shape, stepped frame by frame. Position and size are set by Ribbon.
+ * shape, stepped frame by frame. Where there is little room (the narrow margins
+ * on phones) it stays folded into a slip and opens again where there is space.
+ * Position and size are set by Ribbon.
  */
 
 export type TravellerShape =
@@ -58,13 +60,17 @@ const pressed = (model: Model, k: number): Model => ({
     pose: t => model.pose(t).map(f => f.map(p => [p[0], p[1] * k, p[2] * (0.25 + 0.75 * k)]) as Facet),
 });
 
-const Traveller: React.FC<{ shape: TravellerShape }> = ({ shape }) => {
+const Traveller: React.FC<{ shape: TravellerShape; compact?: boolean }> = ({ shape, compact = false }) => {
     const ref = useRef<SVGGElement>(null);
-    const state = useRef({ shown: shape, wanted: shape, frame: 0, fold: 0 });
+    const state = useRef({ shown: shape, wanted: shape, frame: 0, fold: 0, compact });
 
     useEffect(() => {
         state.current.wanted = shape;
     }, [shape]);
+
+    useEffect(() => {
+        state.current.compact = compact;
+    }, [compact]);
 
     useEffect(() => {
         const g = ref.current;
@@ -80,7 +86,7 @@ const Traveller: React.FC<{ shape: TravellerShape }> = ({ shape }) => {
             const t = still ?? (frames ? (s.frame % frames) / frames : 0);
             // fold counts 0..HALF going flat, then HALF..0 coming back up
             const k = 1 - s.fold / HALF;
-            const facets = draw(k < 1 ? pressed(model, Math.max(0.04, k)) : model, t, paint, SIZE);
+            const facets = draw(k < 1 ? pressed(model, Math.max(0.1, k)) : model, t, paint, SIZE);
             polys.forEach((p, i) => {
                 const f = facets[i];
                 if (!f) {
@@ -110,6 +116,9 @@ const Traveller: React.FC<{ shape: TravellerShape }> = ({ shape }) => {
                     s.frame = 0;
                     flattening = false;
                 }
+            } else if (s.compact) {
+                // Little room: fold down into a slip and travel that way
+                s.fold = Math.min(HALF, s.fold + 1);
             } else if (s.fold > 0) {
                 s.fold -= 1;
             }
