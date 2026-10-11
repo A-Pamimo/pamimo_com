@@ -49,7 +49,7 @@ const reenie = Reenie_Beanie({
 });
 
 const DESCRIPTION =
-  "Pamimo Akinjide is a Product Manager at the Royal Bank of Canada and the founder of World’s Edge Group, working where economics, Asia and Africa trade, and applied artificial intelligence meet.";
+  "Pamimo Akinjide is a Product Manager at the Royal Bank of Canada and the founder of World’s Edge Group, working across economics, global trade, applied artificial intelligence, and scaling and infrastructure.";
 
 export const metadata: Metadata = {
   // [CONFIRM] domain
@@ -68,8 +68,9 @@ export const metadata: Metadata = {
     "World's Edge Group",
     'Cansbridge Fellow',
     'Development economics',
-    'Africa and Asia trade',
+    'Global trade',
     'Applied artificial intelligence',
+    'Scaling and infrastructure',
     'University of Saskatchewan',
     'Toronto',
   ],
@@ -193,8 +194,9 @@ export default function RootLayout({
                 "Product management",
                 "Development economics",
                 "New Structural Economics",
-                "Africa and Asia trade corridors",
-                "Applied artificial intelligence"
+                "Global trade",
+                "Applied artificial intelligence",
+                "Scaling and infrastructure"
               ]
             })
           }}
