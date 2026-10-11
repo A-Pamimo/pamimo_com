@@ -152,7 +152,7 @@ export const site = {
 
     beyond: {
         // [ADD] any other interests
-        interests: 'Outside of work, my time goes to mentorship, economics and agriculture.',
+        interests: 'Outside of work, my time goes to startups, tech and innovation, mentorship, economics and agriculture, plus a fair bit of singing and writing.',
         writing: {
             text: 'My longer pieces of writing all live on my writing page.',
             link: { label: 'Read my writing', href: '/blog' } as Link,
