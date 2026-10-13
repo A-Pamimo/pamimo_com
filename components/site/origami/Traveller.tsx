@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import { motion } from '../../../lib/motion';
 import {
     draw,
     envelope,
@@ -21,9 +22,9 @@ import { FPS, readPaint } from './Figure';
  * The piece of paper the ribbon carries at its tip. It holds the shape of the
  * chapter the line is passing through, looping that shape's own motion, and when
  * the line crosses into a new chapter it folds flat and refolds into the next
- * shape, stepped frame by frame. Where there is little room (the narrow margins
- * on phones) it stays folded into a slip and opens again where there is space.
- * Position and size are set by Ribbon.
+ * shape. Where there is little room it stays folded into a slip and opens again
+ * where there is space. Drawn on the GSAP ticker at display rate, with the folds
+ * tweened, so it moves smoothly. Position and size are set by Ribbon.
  */
 
 export type TravellerShape =
@@ -51,8 +52,8 @@ const SHAPES: Record<TravellerShape, { model: Model; frames: number; still?: num
 
 export const SIZE = 64;
 const SLOTS = Math.max(...Object.values(SHAPES).map(s => s.model.pose(0).length));
-/** Frames to fold flat, and the same again to refold into the next shape */
-const HALF = 6;
+/** Seconds to fold flat, and to open back up */
+const FOLD = 0.28;
 
 /** The same model, pressed toward a flat sheet by k (1 = as folded, 0 = flat) */
 const pressed = (model: Model, k: number): Model => ({
@@ -62,30 +63,65 @@ const pressed = (model: Model, k: number): Model => ({
 
 const Traveller: React.FC<{ shape: TravellerShape; compact?: boolean }> = ({ shape, compact = false }) => {
     const ref = useRef<SVGGElement>(null);
-    const state = useRef({ shown: shape, wanted: shape, frame: 0, fold: 0, compact });
+    /** fold: 0 as folded into the shape, 1 pressed flat */
+    const state = useRef({ shown: shape, wanted: shape, fold: 0, compact, busy: false, start: 0 });
+    const settleRef = useRef<() => void>(() => {});
 
     useEffect(() => {
         state.current.wanted = shape;
+        settleRef.current();
     }, [shape]);
 
     useEffect(() => {
         state.current.compact = compact;
+        settleRef.current();
     }, [compact]);
 
     useEffect(() => {
         const g = ref.current;
         if (!g) return;
+        const { gsap } = motion();
         const s = state.current;
         const polys = Array.from(g.children) as SVGPolygonElement[];
         let paint = readPaint();
         const repaint = () => (paint = readPaint());
         window.addEventListener('pa-palette', repaint);
+        s.start = gsap.ticker.time;
 
-        const render = () => {
+        let tween: gsap.core.Tween | null = null;
+        // Fold flat and swap to the wanted shape, then open up (or stay a slip)
+        const settle = () => {
+            if (s.busy) return;
+            if (s.wanted !== s.shown) {
+                s.busy = true;
+                tween?.kill();
+                tween = gsap.to(s, {
+                    fold: 1,
+                    duration: FOLD * (1 - s.fold) + 0.04,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        s.shown = s.wanted;
+                        s.start = gsap.ticker.time;
+                        s.busy = false;
+                        settle();
+                    },
+                });
+                return;
+            }
+            const goal = s.compact ? 1 : 0;
+            if (s.fold !== goal) {
+                tween?.kill();
+                tween = gsap.to(s, { fold: goal, duration: FOLD + 0.06, ease: 'power2.inOut' });
+            }
+        };
+        settleRef.current = settle;
+
+        const render = (time: number) => {
+            if (document.hidden) return;
             const { model, frames, still } = SHAPES[s.shown];
-            const t = still ?? (frames ? (s.frame % frames) / frames : 0);
-            // fold counts 0..HALF going flat, then HALF..0 coming back up
-            const k = 1 - s.fold / HALF;
+            // Each shape loops at its own pace: the same cycle as its stop-motion figure
+            const t = still ?? (frames ? (((time - s.start) * FPS) / frames) % 1 : 0);
+            const k = 1 - s.fold;
             const facets = draw(k < 1 ? pressed(model, Math.max(0.1, k)) : model, t, paint, SIZE);
             polys.forEach((p, i) => {
                 const f = facets[i];
@@ -98,36 +134,13 @@ const Traveller: React.FC<{ shape: TravellerShape; compact?: boolean }> = ({ sha
                 p.setAttribute('stroke', paint.edge);
             });
         };
-
-        let raf = 0;
-        let last = 0;
-        let flattening = false;
-        const tick = (now: number) => {
-            raf = requestAnimationFrame(tick);
-            if (now - last < 1000 / FPS || document.hidden) return;
-            last = now;
-            s.frame += 1;
-            if (s.wanted !== s.shown || flattening) {
-                // Fold flat, swap to the next shape, then open it back up
-                flattening = true;
-                s.fold = Math.min(HALF, s.fold + 1);
-                if (s.fold === HALF) {
-                    s.shown = s.wanted;
-                    s.frame = 0;
-                    flattening = false;
-                }
-            } else if (s.compact) {
-                // Little room: fold down into a slip and travel that way
-                s.fold = Math.min(HALF, s.fold + 1);
-            } else if (s.fold > 0) {
-                s.fold -= 1;
-            }
-            render();
-        };
-        render();
-        raf = requestAnimationFrame(tick);
+        render(gsap.ticker.time);
+        settle();
+        gsap.ticker.add(render);
         return () => {
-            cancelAnimationFrame(raf);
+            gsap.ticker.remove(render);
+            tween?.kill();
+            settleRef.current = () => {};
             window.removeEventListener('pa-palette', repaint);
         };
     }, []);
