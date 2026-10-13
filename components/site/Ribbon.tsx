@@ -9,8 +9,8 @@ import Traveller, { SIZE as TRAVELLER_BOX, type TravellerShape } from './origami
  * It swoops back and forth across the whole page, passing behind the text, and
  * ties open felt-tip loops along the way. Behind a block of text it dims (an SVG
  * mask built from the text boxes) and the text carries a page-coloured halo, so
- * the words stay crisp. Its drawn length tracks native scrolling; nothing
- * hijacks the scroll.
+ * the words stay crisp. Its drawn length follows native scrolling, eased so it
+ * glides rather than steps; nothing hijacks the scroll.
  *
  * The line's tip carries a piece of folded paper (Traveller) that takes the shape
  * of the chapter it is passing and refolds at each new chapter. It opens up in
@@ -40,7 +40,9 @@ const TRAVELLER_MAX_NARROW = 40;
 const TRAVELLER_MIN = 22;
 const SLIP = 18;
 
-const SAMPLE_COUNT = 400;
+const SAMPLE_COUNT = 1600;
+/** How quickly the drawn line catches up with the scroll position, in ms */
+const EASE_MS = 110;
 
 const isActive = () => typeof window !== 'undefined' && document.documentElement.dataset.mode === 'full';
 
@@ -216,11 +218,16 @@ const Ribbon: React.FC = () => {
         setGeo({ d, width, height, samples, total, col: { left: col.left, right: col.right }, chapters: chapterInfo, blocks });
     }, []);
 
-    const update = useCallback(() => {
+    /** Drawn length so far, eased toward the scroll target (null until first placed) */
+    const drawnRef = useRef<number | null>(null);
+    const lastFrameRef = useRef(0);
+
+    /** Moves the line one frame toward the scroll position; returns true while still catching up */
+    const update = useCallback((now = performance.now(), jump = false): boolean => {
         const g = geoRef.current;
         const path = pathRef.current;
         const svg = svgRef.current;
-        if (!g || !path || !svg) return;
+        if (!g || !path || !svg) return false;
 
         // The line reaches a little past the middle of the viewport, then
         // catches up with the bottom of the page as the reader gets there
@@ -236,16 +243,29 @@ const Ribbon: React.FC = () => {
             if (g.samples[mid].y < targetY) lo = mid + 1;
             else hi = mid;
         }
-        const drawn = g.samples[lo].len;
-        path.style.strokeDashoffset = String(g.total - drawn);
+        // Interpolate between neighbouring samples so the length moves continuously
+        const a = g.samples[Math.max(0, lo - 1)];
+        const b = g.samples[lo];
+        const t = b.y > a.y ? Math.min(1, Math.max(0, (targetY - a.y) / (b.y - a.y))) : 1;
+        const target = a.len + (b.len - a.len) * t;
+
+        // Ease toward the target over time, so long sideways swoops glide
+        // instead of jumping with each scroll step
+        const prev = drawnRef.current;
+        const dt = Math.min(64, Math.max(0, now - lastFrameRef.current));
+        lastFrameRef.current = now;
+        const drawn = prev === null || jump ? target : prev + (target - prev) * (1 - Math.exp(-dt / EASE_MS));
+        const moving = Math.abs(target - drawn) > 0.5;
+        drawnRef.current = moving ? drawn : target;
+        path.style.strokeDashoffset = String(g.total - drawnRef.current);
 
         // Carry the paper at the tip
         const trav = travellerRef.current;
-        if (!trav) return;
-        const pt = path.getPointAtLength(drawn);
-        const back = path.getPointAtLength(Math.max(0, drawn - 3));
+        if (!trav) return moving;
+        const pt = path.getPointAtLength(drawnRef.current);
+        const back = path.getPointAtLength(Math.max(0, drawnRef.current - 3));
         const inChapter = [...g.chapters].reverse().find(c => pt.y >= c.top - 4);
-        const arrived = drawn / g.total > 0.985;
+        const arrived = drawnRef.current / g.total > 0.985;
         const next: TravellerShape = arrived ? 'crane' : inChapter ? inChapter.shape : 'plane';
         if (next !== shapeRef.current) {
             shapeRef.current = next;
@@ -274,23 +294,27 @@ const Ribbon: React.FC = () => {
             'transform',
             `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(3)}) translate(${-TRAVELLER_BOX / 2} ${-TRAVELLER_BOX / 2})`,
         );
+        return moving;
     }, []);
 
     useEffect(() => {
         geoRef.current = geo;
-        update();
+        // A new layout places the line straight at the scroll position
+        update(performance.now(), true);
     }, [geo, update]);
 
     useEffect(() => {
         let raf = 0;
         let resizeTimer: ReturnType<typeof setTimeout>;
 
+        // Keep stepping each frame until the line has caught up with the scroll
+        const frame = (now: number) => {
+            raf = update(now) ? requestAnimationFrame(frame) : 0;
+        };
         const onScroll = () => {
             if (raf) return;
-            raf = requestAnimationFrame(() => {
-                raf = 0;
-                update();
-            });
+            lastFrameRef.current = performance.now();
+            raf = requestAnimationFrame(frame);
         };
         const rebuild = () => {
             clearTimeout(resizeTimer);
