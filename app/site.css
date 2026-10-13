@@ -714,3 +714,8 @@ html:has(.site) {
   :root[data-mode='full'] .site h2 { padding-right: 0; }
 }
 :root[data-mode='simple'] .site h2 { padding-right: 0; }
+
+/* The line flies behind the text; a page-coloured halo keeps the words crisp where it passes */
+:root[data-mode='full'] .site-column :is(p, li, h1, h2, h3, figcaption, dt, dd, label) {
+  text-shadow: 0 0 0.08em var(--bg), 0 0 0.18em var(--bg), 0 0 0.3em var(--bg);
+}

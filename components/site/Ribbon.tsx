@@ -5,18 +5,17 @@ import { getSessionSeed, mulberry32 } from '../../lib/visit';
 import Traveller, { SIZE as TRAVELLER_BOX, type TravellerShape } from './origami/Traveller';
 
 /**
- * The thin line that leaves the PA mark and follows the reader down the page.
- * It runs through the gutters beside each chapter and only crosses the page in
- * the empty gap between chapters, so it never passes over text. Its drawn length
- * tracks native scrolling; nothing hijacks the scroll.
- *
- * Shown in full mode at every width. On phones the gutters are only about 20px,
- * so the line runs down their middle with small loops (see NARROW below).
+ * The thin line that leaves the PA mark and flies down the page with the reader.
+ * It swoops back and forth across the whole page, passing behind the text, and
+ * ties open felt-tip loops along the way. Behind a block of text it dims (an SVG
+ * mask built from the text boxes) and the text carries a page-coloured halo, so
+ * the words stay crisp. Its drawn length tracks native scrolling; nothing
+ * hijacks the scroll.
  *
  * The line's tip carries a piece of folded paper (Traveller) that takes the shape
- * of the chapter it is passing and refolds at each new chapter. It is sized from
- * the free space around the tip so it never covers text; in the narrow phone
- * margins it travels folded into a slip and opens up in the gaps between chapters.
+ * of the chapter it is passing and refolds at each new chapter. It opens up in
+ * clear space and travels folded into a slip while it passes behind text.
+ * The paper sits outside the mask so it never fades.
  */
 
 interface Geometry {
@@ -29,7 +28,11 @@ interface Geometry {
     /** Reading column edges and each chapter's extent and origami shape */
     col: { left: number; right: number };
     chapters: { top: number; bottom: number; shape: TravellerShape }[];
+    /** Text and photos the line passes behind, padded a little */
+    blocks: { x: number; y: number; w: number; h: number }[];
 }
+
+const TEXT_BLOCKS = 'p, li, h1, h2, h3, figcaption, dt, dd, a, img, form';
 
 /** The traveller opens up to this size, and folds into a slip below the smaller one */
 const TRAVELLER_MAX = 56;
@@ -89,82 +92,111 @@ const Ribbon: React.FC = () => {
         setCarry(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
         const leftGutter = col.left;
         const rightGutter = width - col.right;
-        const leftX = small ? leftGutter / 2 : leftGutter * (0.42 + r() * 0.16);
+        // The far reach on each side: out in the gutters, past the text
+        const leftX = small ? Math.max(6, leftGutter / 2) : leftGutter * (0.42 + r() * 0.16);
         const rightX = small ? width - rightGutter / 2 : col.right + Math.min(rightGutter * (0.28 + r() * 0.22), 220);
-        const xFor = (side: 'left' | 'right') => (side === 'left' ? leftX : rightX);
+        const colMid = (col.left + col.right) / 2;
+        // How far a swoop reaches toward its side: mostly all the way, sometimes only partway
+        const reach = (side: 'left' | 'right') => {
+            const k = r() < (small ? 0.2 : 0.3) ? 0.35 + r() * 0.35 : 1;
+            const far = side === 'left' ? leftX : rightX;
+            return colMid + (far - colMid) * k;
+        };
+        const f = (n: number) => n.toFixed(1);
 
         let side: 'left' | 'right' = 'right';
         let x = start.left;
         let y = start.top;
-        let d = `M${x.toFixed(1)},${y.toFixed(1)}`;
+        let d = `M${f(x)},${f(y)}`;
 
-        // Ease from the end of the PA tail into the right gutter
+        // Ease from the end of the PA tail out to the right
         const firstBottom = rel(chapters[0].getBoundingClientRect()).bottom;
         const settleY = Math.min(y + 140, firstBottom);
-        const lead = small ? Math.min(20, xFor(side) - x) : 60;
-        d += ` C${(x + lead).toFixed(1)},${(y + 10).toFixed(1)} ${xFor(side).toFixed(1)},${(y + 40).toFixed(1)} ${xFor(side).toFixed(1)},${settleY.toFixed(1)}`;
-        x = xFor(side);
+        const lead = small ? Math.min(20, rightX - x) : 60;
+        d += ` C${f(x + lead)},${f(y + 10)} ${f(rightX)},${f(y + 40)} ${f(rightX)},${f(settleY)}`;
+        x = rightX;
         y = settleY;
+
+        /**
+         * One swoop across the page from the current point to (nx, ny): it leaves
+         * and arrives travelling downward and crosses in between, like a plane
+         * banking side to side. With loopR it ties an open felt-tip loop halfway.
+         */
+        const swoop = (nx: number, ny: number, loopR = 0) => {
+            const dy = ny - y;
+            if (!loopR) {
+                d += ` C${f(x)},${f(y + dy * 0.55)} ${f(nx)},${f(ny - dy * 0.55)} ${f(nx)},${f(ny)}`;
+            } else {
+                const dir = nx >= x ? 1 : -1;
+                const mx = (x + nx) / 2 - (dir * loopR) / 2;
+                const my = y + dy / 2;
+                const pull = Math.min(Math.abs(nx - x) / 3, small ? 50 : 90);
+                d += ` C${f(x)},${f(y + dy * 0.3)} ${f(mx - dir * pull)},${f(my)} ${f(mx)},${f(my)}`;
+                d += ` C${f(mx + dir * 2.4 * loopR)},${f(my - 2.2 * loopR)} ${f(mx - dir * 1.4 * loopR)},${f(my - 2.2 * loopR)} ${f(mx + dir * loopR)},${f(my)}`;
+                d += ` C${f(mx + dir * (loopR + pull))},${f(my)} ${f(nx)},${f(ny - dy * 0.3)} ${f(nx)},${f(ny)}`;
+            }
+            x = nx;
+            y = ny;
+        };
+        const loopSize = (room: number) =>
+            small ? Math.max(5, Math.min(room, 8 + r() * 10)) : Math.max(8, Math.min(room, 14 + r() * 26));
 
         chapters.forEach((chapter, i) => {
             const box = rel(chapter.getBoundingClientRect());
-            const maxWander = small ? 3 : side === 'left' ? Math.min(14, leftX - 12) : 26;
-            const wander = (r() * 2 - 1) * maxWander;
-
-            // Run down the gutter alongside the chapter with a gentle wander
-            if (box.bottom > y) {
-                d += ` C${(x + wander).toFixed(1)},${(y + (box.bottom - y) * 0.35).toFixed(1)} ${(x - wander).toFixed(1)},${(y + (box.bottom - y) * 0.7).toFixed(1)} ${x.toFixed(1)},${box.bottom.toFixed(1)}`;
-                y = box.bottom;
+            // Swoop back and forth across the chapter, behind the text
+            const h = box.bottom - y;
+            if (h > 40) {
+                const n = Math.max(small ? 1 : 2, Math.round(h / (small ? 420 : 320)));
+                let looped = h < 500;
+                for (let k = 1; k <= n; k++) {
+                    side = side === 'left' ? 'right' : 'left';
+                    const ny = k === n ? box.bottom : y + (box.bottom - y) / (n - k + 1) * (0.85 + r() * 0.3);
+                    const loop = !looped && r() < 0.5 ? loopSize((ny - y) / 5) : 0;
+                    if (loop) looped = true;
+                    swoop(reach(side), ny, loop);
+                }
             }
 
             const next = chapters[i + 1];
             if (!next) return;
             const nextTop = rel(next.getBoundingClientRect()).top;
             const gap = nextTop - y;
-            if (gap < 40) return;
-
-            const mid = y + gap / 2;
-            // An open, self-crossing loop like a felt-tip "l"; it rises about 1.7R
-            const loopR = small
-                ? Math.max(3, Math.min((gap / 2 - 10) / 1.7, 4 + r() * 2))
-                : Math.max(6, Math.min((gap / 2 - 14) / 1.7, 12 + r() * 14));
-            // On phones the line keeps to the wider right margin so the paper can ride open
-            const cross = !small && r() < 0.6;
-
-            if (cross) {
-                // Cross the page through the empty gap, looping once on the way
-                const nextSide = side === 'left' ? 'right' : 'left';
-                const nx = xFor(nextSide);
-                const loopX = col.left + (col.right - col.left) * (0.25 + r() * 0.5);
-                const dir = nx > x ? 1 : -1;
-                const pull = small ? 40 : 80;
-                d += ` C${x.toFixed(1)},${(mid - gap * 0.2).toFixed(1)} ${(loopX - dir * pull).toFixed(1)},${mid.toFixed(1)} ${loopX.toFixed(1)},${mid.toFixed(1)}`;
-                d += ` C${(loopX + dir * 2.4 * loopR).toFixed(1)},${(mid - 2.2 * loopR).toFixed(1)} ${(loopX - dir * 1.4 * loopR).toFixed(1)},${(mid - 2.2 * loopR).toFixed(1)} ${(loopX + dir * loopR).toFixed(1)},${mid.toFixed(1)}`;
-                d += ` C${(loopX + dir * (loopR + pull)).toFixed(1)},${mid.toFixed(1)} ${nx.toFixed(1)},${(mid + gap * 0.2).toFixed(1)} ${nx.toFixed(1)},${nextTop.toFixed(1)}`;
-                side = nextSide;
-                x = nx;
-            } else {
-                // Stay in this gutter and tie a small open loop in the gap, bulging
-                // away from the column so it never reaches the text
-                const away = side === 'left' ? -1 : 1;
-                d += ` C${x.toFixed(1)},${(mid - gap * 0.25).toFixed(1)} ${x.toFixed(1)},${(mid - gap * 0.1).toFixed(1)} ${x.toFixed(1)},${mid.toFixed(1)}`;
-                d += ` C${(x + away * 2.2 * loopR).toFixed(1)},${(mid + 2.4 * loopR).toFixed(1)} ${(x + away * 2.2 * loopR).toFixed(1)},${(mid - 1.4 * loopR).toFixed(1)} ${x.toFixed(1)},${(mid + loopR).toFixed(1)}`;
-                d += ` C${x.toFixed(1)},${(mid + gap * 0.15).toFixed(1)} ${x.toFixed(1)},${(mid + gap * 0.3).toFixed(1)} ${x.toFixed(1)},${nextTop.toFixed(1)}`;
-            }
-            y = nextTop;
+            if (gap < 30) return;
+            // Cross through the gap between chapters, usually with a loop
+            side = side === 'left' ? 'right' : 'left';
+            swoop(reach(side), nextTop, r() < 0.75 ? loopSize((gap / 2 - 10) / 1.7) : 0);
         });
 
-        // Trail off into the footer with a small sway, ending mid-gutter where the
-        // carried paper settles as a crane
+        // Trail off into the footer with a small sway, ending where the carried
+        // paper settles as a crane
         const end = Math.min(height - 40, y + 120);
-        const inward = (side as 'left' | 'right') === 'left' ? 1 : -1;
+        const inward = x > colMid ? -1 : 1;
         const sway = small ? 4 : 18;
-        d += ` C${x.toFixed(1)},${(y + 50).toFixed(1)} ${(x + inward * sway).toFixed(1)},${(end - 40).toFixed(1)} ${x.toFixed(1)},${end.toFixed(1)}`;
+        d += ` C${f(x)},${f(y + 50)} ${f(x + inward * sway)},${f(end - 40)} ${f(x)},${f(end)}`;
         const chapterInfo = chapters.map(c => {
             const b = rel(c.getBoundingClientRect());
             const fig = c.querySelector<HTMLElement>('[data-shape]');
             return { top: b.top, bottom: b.bottom, shape: (fig?.dataset.shape as TravellerShape) ?? 'plane' };
         });
+
+        // The text the line passes behind: it dims there, and the paper folds small
+        const blocks = Array.from(column.querySelectorAll<HTMLElement>(TEXT_BLOCKS))
+            .map(el => rel(el.getBoundingClientRect()))
+            .filter(b => b.right > b.left && b.bottom > b.top)
+            .map(b => ({ x: b.left - 4, y: b.top - 3, w: b.right - b.left + 8, h: b.bottom - b.top + 6 }))
+            .sort((a, b) => a.y - b.y)
+            // Merge blocks a paragraph gap apart, so the line fades once instead of flickering
+            .reduce<Geometry['blocks']>((merged, b) => {
+                const last = merged[merged.length - 1];
+                if (last && b.y - (last.y + last.h) < 40 && b.x < last.x + last.w && b.x + b.w > last.x) {
+                    const x = Math.min(last.x, b.x);
+                    const right = Math.max(last.x + last.w, b.x + b.w);
+                    last.h = Math.max(last.y + last.h, b.y + b.h) - last.y;
+                    last.x = x;
+                    last.w = right - x;
+                } else merged.push({ ...b });
+                return merged;
+            }, []);
 
         // Sample the path once so scroll position maps to drawn length cheaply
         const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -181,7 +213,7 @@ const Ribbon: React.FC = () => {
         }
         probe.remove();
 
-        setGeo({ d, width, height, samples, total, col: { left: col.left, right: col.right }, chapters: chapterInfo });
+        setGeo({ d, width, height, samples, total, col: { left: col.left, right: col.right }, chapters: chapterInfo, blocks });
     }, []);
 
     const update = useCallback(() => {
@@ -219,14 +251,13 @@ const Ribbon: React.FC = () => {
             shapeRef.current = next;
             setShape(next);
         }
-        // Room around the tip: across the gutter beside text, or up and down in a gap
-        let room: number;
-        if (pt.x < g.col.left) room = 2 * Math.min(pt.x, g.col.left - pt.x);
-        else if (pt.x > g.col.right) room = 2 * Math.min(g.width - pt.x, pt.x - g.col.right);
-        else {
-            const above = g.chapters.filter(c => c.bottom <= pt.y).pop();
-            const below = g.chapters.find(c => c.top >= pt.y);
-            room = 2 * Math.min(above ? pt.y - above.bottom : 999, below ? below.top - pt.y : 999);
+        // Room around the tip: the distance to the nearest text block or page edge
+        let room = 2 * Math.min(pt.x, g.width - pt.x);
+        for (const b of g.blocks) {
+            const dx = Math.max(b.x - pt.x, 0, pt.x - (b.x + b.w));
+            const dy = Math.max(b.y - pt.y, 0, pt.y - (b.y + b.h));
+            room = Math.min(room, 2 * Math.hypot(dx, dy));
+            if (room <= 0) break;
         }
         const wide = window.matchMedia('(min-width: 64rem)').matches;
         const fold = room - 10 < TRAVELLER_MIN;
@@ -296,16 +327,26 @@ const Ribbon: React.FC = () => {
         >
             {geo && (
                 <>
-                    <path
-                        ref={pathRef}
-                        d={geo.d}
-                        fill="none"
-                        stroke="var(--ribbon)"
-                        strokeWidth={narrow ? 2 : 3}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{ strokeDasharray: geo.total, strokeDashoffset: geo.total }}
-                    />
+                    <defs>
+                        <mask id="ribbon-mask" maskUnits="userSpaceOnUse" x={0} y={0} width={geo.width} height={geo.height}>
+                            <rect width={geo.width} height={geo.height} fill="#fff" />
+                            {geo.blocks.map((b, i) => (
+                                <rect key={i} x={b.x} y={b.y} width={b.w} height={b.h} rx={4} fill="#737373" />
+                            ))}
+                        </mask>
+                    </defs>
+                    <g mask="url(#ribbon-mask)">
+                        <path
+                            ref={pathRef}
+                            d={geo.d}
+                            fill="none"
+                            stroke="var(--ribbon)"
+                            strokeWidth={narrow ? 2 : 3}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{ strokeDasharray: geo.total, strokeDashoffset: geo.total }}
+                        />
+                    </g>
                     {carry && (
                         <g ref={travellerRef} className="ribbon-traveller">
                             <Traveller shape={shape} compact={compact} />
