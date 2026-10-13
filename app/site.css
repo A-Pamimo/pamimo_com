@@ -167,43 +167,6 @@ html:has(.site) {
   text-underline-offset: 0.35em;
 }
 
-/* Full · Simple: plain words, the chosen one in ink with the pen underline */
-.view-toggle {
-  flex: none;
-  display: flex;
-  align-items: baseline;
-  gap: 0.15rem;
-  font-family: var(--display);
-  font-size: var(--step--1);
-  font-weight: 600;
-}
-.view-toggle button {
-  font: inherit;
-  color: var(--mute);
-  background: none;
-  border: 0;
-  padding: 0.35rem 0.3rem;
-  cursor: pointer;
-  text-decoration-line: underline;
-  text-decoration-color: transparent;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 0.35em;
-  transition: color 160ms, text-decoration-color 160ms;
-}
-.view-toggle button + button::before {
-  content: '·';
-  display: inline-block;
-  margin-right: 0.45rem;
-  color: var(--mute);
-  text-decoration: none;
-}
-.view-toggle button:hover { color: var(--ink); }
-.view-toggle button[aria-pressed='true'] {
-  color: var(--ink);
-  text-decoration-color: var(--ribbon);
-  cursor: default;
-}
-
 @media (max-width: 47.99rem) {
   .site-header .site-shell {
     flex-wrap: wrap;
@@ -211,7 +174,6 @@ html:has(.site) {
     padding-block: 0.5rem 0;
   }
   .site-nav { order: 3; flex-basis: 100%; padding-bottom: 0.4rem; }
-  .view-toggle { margin-left: auto; }
   .site-header__mark { width: 2.5rem; }
   .site-header .site-shell { min-height: 3.25rem; }
 }
@@ -714,8 +676,3 @@ html:has(.site) {
   :root[data-mode='full'] .site h2 { padding-right: 0; }
 }
 :root[data-mode='simple'] .site h2 { padding-right: 0; }
-
-/* The line flies behind the text; a page-coloured halo keeps the words crisp where it passes */
-:root[data-mode='full'] .site-column :is(p, li, h1, h2, h3, figcaption, dt, dd, label) {
-  text-shadow: 0 0 0.08em var(--bg), 0 0 0.18em var(--bg), 0 0 0.3em var(--bg);
-}

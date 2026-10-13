@@ -6,12 +6,9 @@ import { PALETTE_SOURCE } from './palette';
  * handles the attributes that must exist before first paint.
  */
 
-export type Mode = 'full' | 'simple';
-
 const SEED_KEY = 'pa_seed';
 const VISIT_KEY = 'pa_visits';
 const VISIT_SESSION_KEY = 'pa_visit_counted';
-const MODE_KEY = 'pa_mode';
 const INTRO_KEY = 'pa_intro_seen';
 
 const safe = <T,>(fn: () => T, fallback: T): T => {
@@ -57,31 +54,21 @@ export const countVisit = (): number =>
 export const introSeen = (): boolean => safe(() => sessionStorage.getItem(INTRO_KEY) === '1', false);
 export const markIntroSeen = () => safe(() => sessionStorage.setItem(INTRO_KEY, '1'), undefined);
 
-export const getMode = (): Mode =>
-    typeof document !== 'undefined' && document.documentElement.dataset.mode === 'simple' ? 'simple' : 'full';
-
-export const setMode = (mode: Mode) => {
-    document.documentElement.dataset.mode = mode;
-    safe(() => localStorage.setItem(MODE_KEY, mode), undefined);
-    window.dispatchEvent(new CustomEvent('pa-mode', { detail: mode }));
-};
-
 /**
  * Runs inline in <head> before first paint. Kept dependency-free and tiny.
- * Paints the clock palette for the current minute and sets data-mode from the saved
- * choice, falling back to simple for reduced motion and slow networks.
+ * Paints the clock palette for the current minute and sets data-mode: full, or
+ * simple (no moving line or paper) for reduced motion and slow networks.
  * Sets data-intro to play (first visit) or quick (visits two to four) when the
  * PA should write itself; from the fifth visit it simply appears drawn.
  */
 export const PREPAINT_SCRIPT = `(function(){try{${PALETTE_SOURCE}
 paApply(paPalette(Date.now()));
 var d=document.documentElement;
-var m=null;try{m=localStorage.getItem('${MODE_KEY}')}catch(e){}
-if(m!=='full'&&m!=='simple'){
 var c=navigator.connection||{};
 var slow=c.saveData||/(^|-)2g|3g/.test(c.effectiveType||'');
 var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-m=(rm||slow)?'simple':'full';}
+var m=(rm||slow)?'simple':'full';
+try{localStorage.removeItem('pa_mode')}catch(e){}
 d.dataset.mode=m;
 var seen=null,v=0;try{seen=sessionStorage.getItem('${INTRO_KEY}');v=+(localStorage.getItem('${VISIT_KEY}')||0)}catch(e){}
 var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
