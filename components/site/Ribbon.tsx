@@ -3,14 +3,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getSessionSeed, mulberry32 } from '../../lib/visit';
 import Traveller, { SIZE as TRAVELLER_BOX, type TravellerShape } from './origami/Traveller';
+import { motion, pathTracker, shortAngle } from '../../lib/motion';
 
 /**
  * The thin line that leaves the PA mark and flies down the page with the reader.
  * It swoops back and forth across the whole page, passing behind the text, and
  * ties open felt-tip loops along the way. Behind a block of text it dims (an SVG
  * mask built from the text boxes) and the text carries a page-coloured halo, so
- * the words stay crisp. Its drawn length follows native scrolling, eased so it
- * glides rather than steps; nothing hijacks the scroll.
+ * the words stay crisp. Its drawn length follows native scrolling and eases
+ * with GSAP quickTo, so it glides; nothing hijacks the scroll.
  *
  * The line's tip carries a piece of folded paper (Traveller) that takes the shape
  * of the chapter it is passing and refolds at each new chapter. It opens up in
@@ -41,8 +42,9 @@ const TRAVELLER_MIN = 22;
 const SLIP = 18;
 
 const SAMPLE_COUNT = 1600;
-/** How quickly the drawn line catches up with the scroll position, in ms */
-const EASE_MS = 110;
+/** A folded slip opens again only with this much room, and after this long folded (s) */
+const TRAVELLER_OPEN = 34;
+const HOLD = 0.6;
 
 const isActive = () => typeof window !== 'undefined' && document.documentElement.dataset.mode === 'full';
 
@@ -218,17 +220,11 @@ const Ribbon: React.FC = () => {
         setGeo({ d, width, height, samples, total, col: { left: col.left, right: col.right }, chapters: chapterInfo, blocks });
     }, []);
 
-    /** Drawn length so far, eased toward the scroll target (null until first placed) */
-    const drawnRef = useRef<number | null>(null);
-    const lastFrameRef = useRef(0);
-
-    /** Moves the line one frame toward the scroll position; returns true while still catching up */
-    const update = useCallback((now = performance.now(), jump = false): boolean => {
+    /** Where the scroll says the line should reach, as a drawn length */
+    const targetLength = useCallback((): number | null => {
         const g = geoRef.current;
-        const path = pathRef.current;
         const svg = svgRef.current;
-        if (!g || !path || !svg) return false;
-
+        if (!g || !svg) return null;
         // The line reaches a little past the middle of the viewport, then
         // catches up with the bottom of the page as the reader gets there
         const svgTop = svg.getBoundingClientRect().top;
@@ -247,75 +243,111 @@ const Ribbon: React.FC = () => {
         const a = g.samples[Math.max(0, lo - 1)];
         const b = g.samples[lo];
         const t = b.y > a.y ? Math.min(1, Math.max(0, (targetY - a.y) / (b.y - a.y))) : 1;
-        const target = a.len + (b.len - a.len) * t;
-
-        // Ease toward the target over time, so long sideways swoops glide
-        // instead of jumping with each scroll step
-        const prev = drawnRef.current;
-        const dt = Math.min(64, Math.max(0, now - lastFrameRef.current));
-        lastFrameRef.current = now;
-        const drawn = prev === null || jump ? target : prev + (target - prev) * (1 - Math.exp(-dt / EASE_MS));
-        const moving = Math.abs(target - drawn) > 0.5;
-        drawnRef.current = moving ? drawn : target;
-        path.style.strokeDashoffset = String(g.total - drawnRef.current);
-
-        // Carry the paper at the tip
-        const trav = travellerRef.current;
-        if (!trav) return moving;
-        const pt = path.getPointAtLength(drawnRef.current);
-        const back = path.getPointAtLength(Math.max(0, drawnRef.current - 3));
-        const inChapter = [...g.chapters].reverse().find(c => pt.y >= c.top - 4);
-        const arrived = drawnRef.current / g.total > 0.985;
-        const next: TravellerShape = arrived ? 'crane' : inChapter ? inChapter.shape : 'plane';
-        if (next !== shapeRef.current) {
-            shapeRef.current = next;
-            setShape(next);
-        }
-        // Room around the tip: the distance to the nearest text block or page edge
-        let room = 2 * Math.min(pt.x, g.width - pt.x);
-        for (const b of g.blocks) {
-            const dx = Math.max(b.x - pt.x, 0, pt.x - (b.x + b.w));
-            const dy = Math.max(b.y - pt.y, 0, pt.y - (b.y + b.h));
-            room = Math.min(room, 2 * Math.hypot(dx, dy));
-            if (room <= 0) break;
-        }
-        const wide = window.matchMedia('(min-width: 64rem)').matches;
-        const fold = room - 10 < TRAVELLER_MIN;
-        if (fold !== compactRef.current) {
-            compactRef.current = fold;
-            setCompact(fold);
-        }
-        const size = fold ? SLIP : Math.min(wide ? TRAVELLER_MAX : TRAVELLER_MAX_NARROW, room - 10);
-        trav.dataset.compact = fold ? '1' : '';
-        // The plane points along the line; the other shapes stay upright
-        const angle = next === 'plane' ? (Math.atan2(pt.y - back.y, pt.x - back.x) * 180) / Math.PI : 0;
-        const k = size / TRAVELLER_BOX;
-        trav.setAttribute(
-            'transform',
-            `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${angle.toFixed(1)}) scale(${k.toFixed(3)}) translate(${-TRAVELLER_BOX / 2} ${-TRAVELLER_BOX / 2})`,
-        );
-        return moving;
+        return a.len + (b.len - a.len) * t;
     }, []);
 
+    // The line and its paper, eased by GSAP: one rig per layout
     useEffect(() => {
         geoRef.current = geo;
-        // A new layout places the line straight at the scroll position
-        update(performance.now(), true);
-    }, [geo, update]);
+        const g = geo;
+        const path = pathRef.current;
+        if (!g || !path) return;
+        const { gsap } = motion();
+        const at = pathTracker(path);
+        const start = targetLength() ?? 0;
+        const now = { len: start, angle: 0, size: SLIP };
+        const ease = {
+            len: gsap.quickTo(now, 'len', { duration: 0.6, ease: 'power3' }),
+            angle: gsap.quickTo(now, 'angle', { duration: 0.35, ease: 'power2' }),
+            size: gsap.quickTo(now, 'size', { duration: 0.3, ease: 'power2' }),
+        };
+        const aim = { angle: 0, size: SLIP };
+        let folded = compactRef.current;
+        let flipped = 0;
+        /** A slip that has room to open but is still holding */
+        let waiting = false;
+        let first = true;
+
+        const render = (time: number) => {
+            path.style.strokeDashoffset = String(g.total - now.len);
+            const trav = travellerRef.current;
+            if (!trav) return;
+            const pt = at(now.len / g.total);
+            const inChapter = [...g.chapters].reverse().find(c => pt.y >= c.top - 4);
+            const arrived = now.len / g.total > 0.985;
+            const next: TravellerShape = arrived ? 'crane' : inChapter ? inChapter.shape : 'plane';
+            if (next !== shapeRef.current) {
+                shapeRef.current = next;
+                setShape(next);
+            }
+
+            // Room around the tip: the distance to the nearest text block or page edge
+            let room = 2 * Math.min(pt.x, g.width - pt.x);
+            for (const b of g.blocks) {
+                const dx = Math.max(b.x - pt.x, 0, pt.x - (b.x + b.w));
+                const dy = Math.max(b.y - pt.y, 0, pt.y - (b.y + b.h));
+                room = Math.min(room, 2 * Math.hypot(dx, dy));
+                if (room <= 0) break;
+            }
+            // Fold as soon as text is near; open again only with room to spare and
+            // after a moment folded, so it never flickers open and shut
+            const fold = folded ? room - 10 < TRAVELLER_OPEN : room - 10 < TRAVELLER_MIN;
+            waiting = folded && !fold && !first && time - flipped <= HOLD;
+            if (fold !== folded && !waiting) {
+                folded = fold;
+                flipped = time;
+                compactRef.current = fold;
+                setCompact(fold);
+            }
+            const wide = window.matchMedia('(min-width: 64rem)').matches;
+            const size = folded ? SLIP : Math.max(SLIP, Math.min(wide ? TRAVELLER_MAX : TRAVELLER_MAX_NARROW, room - 10));
+            trav.dataset.compact = folded ? '1' : '';
+            // The plane points along the line and banks through the turns; the
+            // other shapes stay upright
+            const angle = shortAngle(now.angle, next === 'plane' ? pt.angle : 0);
+            if (first) {
+                ease.size(size, size);
+                ease.angle(angle, angle);
+                aim.size = size;
+                aim.angle = angle;
+                first = false;
+            } else {
+                if (Math.abs(size - aim.size) > 0.5) ease.size((aim.size = size));
+                if (Math.abs(angle - aim.angle) > 0.5) ease.angle((aim.angle = angle));
+            }
+            const k = now.size / TRAVELLER_BOX;
+            trav.setAttribute(
+                'transform',
+                `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${now.angle.toFixed(1)}) scale(${k.toFixed(3)}) translate(${-TRAVELLER_BOX / 2} ${-TRAVELLER_BOX / 2})`,
+            );
+        };
+
+        // Redraw on the GSAP ticker only while something is still easing
+        let last = { len: NaN, angle: NaN, size: NaN };
+        const tick = (time: number) => {
+            const still = now.len === last.len && now.angle === last.angle && now.size === last.size;
+            if (still && !waiting) return;
+            last = { ...now };
+            render(time);
+        };
+        render(gsap.ticker.time);
+        gsap.ticker.add(tick);
+
+        // Native scroll sets the target; quickTo eases the line toward it
+        const onScroll = () => {
+            const target = targetLength();
+            if (target !== null) ease.len(target);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+            gsap.ticker.remove(tick);
+            gsap.killTweensOf(now);
+        };
+    }, [geo, targetLength]);
 
     useEffect(() => {
-        let raf = 0;
         let resizeTimer: ReturnType<typeof setTimeout>;
-
-        // Keep stepping each frame until the line has caught up with the scroll
-        const frame = (now: number) => {
-            raf = update(now) ? requestAnimationFrame(frame) : 0;
-        };
-        const onScroll = () => {
-            if (raf) return;
-            lastFrameRef.current = performance.now();
-            raf = requestAnimationFrame(frame);
-        };
         const rebuild = () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(build, 200);
@@ -329,16 +361,13 @@ const Ribbon: React.FC = () => {
         const ro = new ResizeObserver(rebuild);
         if (site) ro.observe(site);
 
-        window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('pa-mode', build);
         return () => {
-            cancelAnimationFrame(raf);
             clearTimeout(resizeTimer);
             ro.disconnect();
-            window.removeEventListener('scroll', onScroll);
             window.removeEventListener('pa-mode', build);
         };
-    }, [build, update]);
+    }, [build]);
 
     return (
         <svg
