@@ -41,10 +41,11 @@ export const site = {
 
     hero: {
         positioning:
-            'I really like connecting dots, and that means doing things across different spaces so there are more interesting lines to connect. Right now those spaces are economics, global trade and applied artificial intelligence, plus scaling and infrastructure.',
+            'I really like connecting dots, and that means doing things across different spaces so there are more interesting lines to connect.',
         intro: [
-            "These days I’m a Product Manager on the Hybrid Cloud team at the Royal Bank of Canada (RBC) in Toronto, and the founder of World’s Edge Group, an economics consulting and artificial intelligence (AI) advisory firm.",
-            'Originally from Nigeria, I moved to Canada for university in 2022 and studied Economics at the University of Saskatchewan, graduating with First Class Honours and a Computer Science minor.',
+            'Right now those spaces are economics, global trade, applied artificial intelligence (AI), and scaling and infrastructure.',
+            "Most days that looks like product management on the Hybrid Cloud team at the Royal Bank of Canada (RBC) in Toronto. Economist by training, and on the side the founder of World’s Edge Group, an economics consulting and AI advisory firm.",
+            'The line so far runs from Nigeria to Saskatoon, where I studied Economics at the University of Saskatchewan with First Class Honours and a Computer Science minor, then to Beijing for a research fellowship, and now Toronto.',
         ],
         portrait: {
             // [CONFIRM] headshot: reusing the photo from the current site
