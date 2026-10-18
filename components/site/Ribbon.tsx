@@ -70,37 +70,56 @@ const handDrawn = (
     width: number,
     r: () => number,
     small: boolean,
-    svg: SVGSVGElement,
-): string => {
-    const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    probe.setAttribute('d', route);
-    svg.appendChild(probe);
-    const total = probe.getTotalLength();
+): { d: string; pts: { x: number; y: number }[] } => {
+    // GSAP measures the route once and then finds points along it cheaply
+    const { MotionPathPlugin: mp } = motion();
+    const raw = mp.getRawPath(route);
+    mp.cacheRawPathMeasurements(raw);
+    const total = (raw as unknown as { totalLength: number }).totalLength;
+    const at = (l: number) => mp.getPositionOnPath(raw, Math.min(1, l / total)) as { x: number; y: number };
     const step = small ? 6 : 8;
     const pts: { x: number; y: number }[] = [];
     for (let l = 0; l <= total; l += step) {
-        const p = probe.getPointAtLength(l);
+        const p = at(l);
         pts.push({ x: p.x, y: p.y });
     }
-    const last = probe.getPointAtLength(total);
+    const last = at(total);
     pts.push({ x: last.x, y: last.y });
-    probe.remove();
     const n = pts.length;
 
-    // Free space at each point: distance to the nearest ink, less the stroke
+    // Free space at each point: distance to the nearest ink, less the stroke.
+    // The wobble never needs more than a few pixels, so only nearby ink counts
+    // (bucketed by height to keep this quick on long pages).
+    const CAP = 24;
+    const BIN = 64;
+    const bins = new Map<number, Box[]>();
+    for (const b of ink) {
+        for (let k = Math.floor((b.y - CAP) / BIN); k <= Math.floor((b.y + b.h + CAP) / BIN); k++) {
+            const list = bins.get(k);
+            if (list) list.push(b);
+            else bins.set(k, [b]);
+        }
+    }
     const clear = pts.map(p => {
-        let best = Math.min(p.x, width - p.x) - 2;
-        for (const b of ink) {
+        let best = Math.min(CAP, p.x - 2, width - p.x - 2);
+        for (const b of bins.get(Math.floor(p.y / BIN)) ?? []) {
             const dy = Math.max(b.y - p.y, 0, p.y - (b.y + b.h));
             if (dy >= best) continue;
             const dx = Math.max(b.x - p.x, 0, p.x - (b.x + b.w));
+            if (dx >= best) continue;
             best = Math.min(best, Math.hypot(dx, dy));
         }
         return Math.max(0, best - pad);
     });
     // Let the wobble grow and shrink gradually, never past the space nearby
     const W = 6;
-    const near = clear.map((_, i) => Math.min(...clear.slice(Math.max(0, i - W), i + W + 1)));
+    const windowMin = (a: number[], w: number) =>
+        a.map((_, i) => {
+            let m = Infinity;
+            for (let j = Math.max(0, i - w); j <= Math.min(a.length - 1, i + w); j++) m = Math.min(m, a[j]);
+            return m;
+        });
+    const near = windowMin(clear, W);
     const maxAmp = small ? 4 : 9;
     const amp = near.map((c, i) => {
         let sum = 0;
@@ -127,7 +146,7 @@ const handDrawn = (
     // Fade the wobble in and out over a stretch rather than at a point, so it
     // leaves no notch where it settles
     const still = turn.map(t => 1 / (1 + (t / 0.06) ** 2));
-    const lowest = still.map((_, i) => Math.min(...still.slice(Math.max(0, i - 8), i + 9)));
+    const lowest = windowMin(still, 8);
     const calm = lowest.map((_, i) => {
         let sum = 0;
         let k = 0;
@@ -158,7 +177,7 @@ const handDrawn = (
         const p3 = out[Math.min(n - 1, i + 2)];
         d += ` C${f(q1.x + (q2.x - p0.x) / 6)},${f(q1.y + (q2.y - p0.y) / 6)} ${f(q2.x - (p3.x - q1.x) / 6)},${f(q2.y - (p3.y - q1.y) / 6)} ${f(q2.x)},${f(q2.y)}`;
     }
-    return d;
+    return { d, pts: out };
 };
 
 const Ribbon: React.FC = () => {
@@ -386,22 +405,31 @@ const Ribbon: React.FC = () => {
             return { top: b.top, bottom: b.bottom, shape: (fig?.dataset.shape as TravellerShape) ?? 'plane' };
         });
 
-        // Sample the path once so scroll position maps to drawn length cheaply
-        const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        probe.setAttribute('d', handDrawn(d, ink, pad, width, r, small, svg));
-        svg.appendChild(probe);
-        const total = probe.getTotalLength();
+        // Measure the drawn line from its own points (a long hand-drawn path is
+        // slow for the browser to measure), then sample it so scroll position
+        // maps to drawn length cheaply
+        const drawn = handDrawn(d, ink, pad, width, r, small);
+        const cum = [0];
+        for (let i = 1; i < drawn.pts.length; i++) {
+            const a = drawn.pts[i - 1];
+            const b = drawn.pts[i];
+            cum.push(cum[i - 1] + Math.hypot(b.x - a.x, b.y - a.y));
+        }
+        const total = cum[cum.length - 1];
         const samples: Geometry['samples'] = [];
         let maxY = -Infinity;
+        let j = 0;
         for (let i = 0; i <= SAMPLE_COUNT; i++) {
             const len = (total * i) / SAMPLE_COUNT;
+            while (j < cum.length - 2 && cum[j + 1] < len) j++;
+            const t = cum[j + 1] > cum[j] ? (len - cum[j]) / (cum[j + 1] - cum[j]) : 0;
+            const yAt = drawn.pts[j].y + (drawn.pts[j + 1].y - drawn.pts[j].y) * Math.min(1, Math.max(0, t));
             // Keep y monotonic so loops never make the line jump backwards
-            maxY = Math.max(maxY, probe.getPointAtLength(len).y);
+            maxY = Math.max(maxY, yAt);
             samples.push({ len, y: maxY });
         }
-        probe.remove();
 
-        setGeo({ d: probe.getAttribute('d') ?? d, width, height, samples, total, col: { left: col.left, right: col.right }, chapters: chapterInfo, ink });
+        setGeo({ d: drawn.d, width, height, samples, total, col: { left: col.left, right: col.right }, chapters: chapterInfo, ink });
     }, []);
 
     /** Where the scroll says the line should reach, as a drawn length */
@@ -571,6 +599,7 @@ const Ribbon: React.FC = () => {
                     <path
                         ref={pathRef}
                         d={geo.d}
+                        pathLength={geo.total}
                         fill="none"
                         stroke="var(--ribbon)"
                         strokeWidth={narrow ? 2 : 3}
