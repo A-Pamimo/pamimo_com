@@ -57,6 +57,110 @@ const isActive = () => typeof window !== 'undefined' && document.documentElement
 /** Below 64rem the gutters are too narrow for wide loops or a 3px line */
 const isNarrow = () => !window.matchMedia('(min-width: 64rem)').matches;
 
+/**
+ * Redraws a planned route the way a hand would: a slow, uneven wobble along its
+ * whole length, sized at every point to the free space around it. It swings
+ * wide out in the margins and barely moves while threading between two lines
+ * of text, so it never reaches the ink.
+ */
+const handDrawn = (
+    route: string,
+    ink: Box[],
+    pad: number,
+    width: number,
+    r: () => number,
+    small: boolean,
+    svg: SVGSVGElement,
+): string => {
+    const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    probe.setAttribute('d', route);
+    svg.appendChild(probe);
+    const total = probe.getTotalLength();
+    const step = small ? 6 : 8;
+    const pts: { x: number; y: number }[] = [];
+    for (let l = 0; l <= total; l += step) {
+        const p = probe.getPointAtLength(l);
+        pts.push({ x: p.x, y: p.y });
+    }
+    const last = probe.getPointAtLength(total);
+    pts.push({ x: last.x, y: last.y });
+    probe.remove();
+    const n = pts.length;
+
+    // Free space at each point: distance to the nearest ink, less the stroke
+    const clear = pts.map(p => {
+        let best = Math.min(p.x, width - p.x) - 2;
+        for (const b of ink) {
+            const dy = Math.max(b.y - p.y, 0, p.y - (b.y + b.h));
+            if (dy >= best) continue;
+            const dx = Math.max(b.x - p.x, 0, p.x - (b.x + b.w));
+            best = Math.min(best, Math.hypot(dx, dy));
+        }
+        return Math.max(0, best - pad);
+    });
+    // Let the wobble grow and shrink gradually, never past the space nearby
+    const W = 6;
+    const near = clear.map((_, i) => Math.min(...clear.slice(Math.max(0, i - W), i + W + 1)));
+    const maxAmp = small ? 4 : 9;
+    const amp = near.map((c, i) => {
+        let sum = 0;
+        let k = 0;
+        for (let j = Math.max(0, i - 4); j <= Math.min(n - 1, i + 4); j++, k++) sum += near[j];
+        // Ease in from the PA tail and out at the end
+        const ends = Math.min(1, i / 6, (n - 1 - i) / 6);
+        return Math.min(maxAmp, (sum / k) * 0.7, clear[i] * 0.85) * ends;
+    });
+    // Hold still through tight curves (loops and corners) so they keep their shape
+    const heading = pts.map((p, i) => {
+        const q = pts[Math.min(n - 1, i + 1)];
+        const o = pts[Math.max(0, i - 1)];
+        return Math.atan2(q.y - o.y, q.x - o.x);
+    });
+    const turn = heading.map((h, i) => {
+        let t = 0;
+        for (let j = Math.max(1, i - 3); j <= Math.min(n - 1, i + 3); j++) {
+            const dh = Math.abs(((heading[j] - heading[j - 1] + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
+            t = Math.max(t, dh);
+        }
+        return t;
+    });
+    // Fade the wobble in and out over a stretch rather than at a point, so it
+    // leaves no notch where it settles
+    const still = turn.map(t => 1 / (1 + (t / 0.06) ** 2));
+    const lowest = still.map((_, i) => Math.min(...still.slice(Math.max(0, i - 8), i + 9)));
+    const calm = lowest.map((_, i) => {
+        let sum = 0;
+        let k = 0;
+        for (let j = Math.max(0, i - 8); j <= Math.min(n - 1, i + 8); j++, k++) sum += lowest[j];
+        return sum / k;
+    });
+    const p1 = r() * Math.PI * 2;
+    const p2 = r() * Math.PI * 2;
+    const out = pts.map((p, i) => {
+        const a = pts[Math.max(0, i - 1)];
+        const b = pts[Math.min(n - 1, i + 1)];
+        const tx = b.x - a.x;
+        const ty = b.y - a.y;
+        const len = Math.hypot(tx, ty) || 1;
+        const s = i * step;
+        const wobble = 0.62 * Math.sin(s / 83 + p1) + 0.38 * Math.sin(s / 37 + p2);
+        const a2 = amp[i] * calm[i];
+        return { x: p.x - (ty / len) * a2 * wobble, y: p.y + (tx / len) * a2 * wobble };
+    });
+
+    // A smooth curve through the points (Catmull-Rom as cubic Béziers)
+    const f = (v: number) => v.toFixed(1);
+    let d = `M${f(out[0].x)},${f(out[0].y)}`;
+    for (let i = 0; i < n - 1; i++) {
+        const p0 = out[Math.max(0, i - 1)];
+        const q1 = out[i];
+        const q2 = out[i + 1];
+        const p3 = out[Math.min(n - 1, i + 2)];
+        d += ` C${f(q1.x + (q2.x - p0.x) / 6)},${f(q1.y + (q2.y - p0.y) / 6)} ${f(q2.x - (p3.x - q1.x) / 6)},${f(q2.y - (p3.y - q1.y) / 6)} ${f(q2.x)},${f(q2.y)}`;
+    }
+    return d;
+};
+
 const Ribbon: React.FC = () => {
     const svgRef = useRef<SVGSVGElement>(null);
     const pathRef = useRef<SVGPathElement>(null);
@@ -188,21 +292,31 @@ const Ribbon: React.FC = () => {
         }
 
         /** Straight down the gutter to y2, with a slight wander and sometimes a loop */
+        /** A bow down the gutter from y to y2, leaving and arriving straight down */
+        const bow = (y2: number, w: number) => {
+            const mid = (y + y2) / 2;
+            const q = (y2 - y) / 4;
+            d += ` C${f(x)},${f(y + q)} ${f(x + w)},${f(mid - q)} ${f(x + w)},${f(mid)}`;
+            d += ` C${f(x + w)},${f(mid + q)} ${f(x)},${f(y2 - q)} ${f(x)},${f(y2)}`;
+            y = y2;
+        };
+
+        /** Down the gutter to y2, bowing out a little and sometimes tying a loop */
         const runDown = (y2: number) => {
             const len = y2 - y;
             if (len <= 0) return;
             const away = side === 'left' ? -1 : 1;
             const R = Math.min(18, (side === 'left' ? gx.left : width - gx.right) / 2.6);
+            const w = () => (r() * 2 - 1) * swing[side] * Math.min(1, len / 200);
             if (!small && len > 200 && R > 6 && r() < 0.45) {
                 // An open loop bulging out, away from the text
                 const mid = y + len * (0.35 + r() * 0.3);
-                const w = (r() * 2 - 1) * swing[side];
-                d += ` C${f(x + w)},${f(y + (mid - y) * 0.4)} ${f(x)},${f(mid - (mid - y) * 0.3)} ${f(x)},${f(mid)}`;
+                bow(mid, w());
                 d += ` C${f(x + away * 2.2 * R)},${f(mid + 2.4 * R)} ${f(x + away * 2.2 * R)},${f(mid - 1.4 * R)} ${f(x)},${f(mid + R)}`;
-                d += ` C${f(x)},${f(mid + R + (y2 - mid) * 0.3)} ${f(x - w)},${f(y2 - (y2 - mid) * 0.3)} ${f(x)},${f(y2)}`;
+                y = mid + R;
+                bow(y2, w());
             } else {
-                const w = (r() * 2 - 1) * swing[side] * Math.min(1, len / 200);
-                d += ` C${f(x + w)},${f(y + len * 0.35)} ${f(x - w)},${f(y + len * 0.7)} ${f(x)},${f(y2)}`;
+                bow(y2, w());
             }
             y = y2;
         };
@@ -213,22 +327,32 @@ const Ribbon: React.FC = () => {
             const s = to === 'right' ? 1 : -1;
             const R1 = radius[side];
             const R2 = radius[to];
-            const Y = lane.y;
-            runDown(Y - R1);
-            d += ` C${f(x)},${f(Y - R1 + K * R1)} ${f(x + s * (R1 - K * R1))},${f(Y)} ${f(x + s * R1)},${f(Y)}`;
             // A loop where a lane is roomy (the gaps between sections)
             const half = (lane.bottom - lane.top) / 2;
             const L = Math.min(small ? 12 : 24, (half - 2) / 2.1);
-            if (L >= 5) {
+            const loop = L >= 5;
+            // Otherwise drift down across a roomy lane instead of running dead level
+            const tilt = loop ? 0 : Math.max(0, Math.min(small ? 18 : 36, half - pad - 2) * (0.35 + r() * 0.55));
+            const Y1 = lane.y - tilt;
+            const Y2 = lane.y + tilt;
+            runDown(Y1 - R1);
+            d += ` C${f(x)},${f(Y1 - R1 + K * R1)} ${f(x + s * (R1 - K * R1))},${f(Y1)} ${f(x + s * R1)},${f(Y1)}`;
+            x += s * R1;
+            const endX = gx[to] - s * R2;
+            if (loop) {
                 const lx = col.left + (col.right - col.left) * (0.25 + r() * 0.5);
-                d += ` L${f(lx)},${f(Y)}`;
-                d += ` C${f(lx + s * 2.4 * L)},${f(Y - 2.2 * L)} ${f(lx - s * 1.4 * L)},${f(Y - 2.2 * L)} ${f(lx + s * L)},${f(Y)}`;
+                d += ` L${f(lx)},${f(Y1)}`;
+                d += ` C${f(lx + s * 2.4 * L)},${f(Y1 - 2.2 * L)} ${f(lx - s * 1.4 * L)},${f(Y1 - 2.2 * L)} ${f(lx + s * L)},${f(Y1)}`;
+                d += ` L${f(endX)},${f(Y2)}`;
+            } else {
+                const span = Math.abs(endX - x);
+                d += ` C${f(x + s * span * (0.3 + r() * 0.25))},${f(Y1)} ${f(endX - s * span * (0.3 + r() * 0.25))},${f(Y2)} ${f(endX)},${f(Y2)}`;
             }
-            d += ` L${f(gx[to] - s * R2)},${f(Y)}`;
-            d += ` C${f(gx[to] - s * R2 + s * K * R2)},${f(Y)} ${f(gx[to])},${f(Y + R2 - K * R2)} ${f(gx[to])},${f(Y + R2)}`;
+            // Turn down into the far gutter
+            d += ` C${f(endX + s * K * R2)},${f(Y2)} ${f(gx[to])},${f(Y2 + R2 - K * R2)} ${f(gx[to])},${f(Y2 + R2)}`;
             side = to;
             x = gx[to];
-            y = Y + R2;
+            y = Y2 + R2;
         };
 
         const last = rel(chapters[chapters.length - 1].getBoundingClientRect());
@@ -245,7 +369,10 @@ const Ribbon: React.FC = () => {
                 l => l.y - R1 >= y + 4 && l.y + pad <= wall && clearRun(to, l.y, l.y + radius[to] + 6),
             );
             if (!options.length) break;
-            const lane = options.reduce((best, l) => (Math.abs(l.y - target) < Math.abs(best.y - target) ? l : best));
+            // Prefer threading between two lines of a paragraph when one is near
+            const score = (l: { top: number; bottom: number; y: number }) =>
+                Math.abs(l.y - target) - (l.bottom - l.top < 16 ? 70 : 0);
+            const lane = options.reduce((best, l) => (score(l) < score(best) ? l : best));
             // Ink ahead in this gutter forces the earliest lane that clears it
             cross(wall < target + 40 ? options.filter(l => l.y < wall).pop() ?? lane : lane);
         }
@@ -261,7 +388,7 @@ const Ribbon: React.FC = () => {
 
         // Sample the path once so scroll position maps to drawn length cheaply
         const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        probe.setAttribute('d', d);
+        probe.setAttribute('d', handDrawn(d, ink, pad, width, r, small, svg));
         svg.appendChild(probe);
         const total = probe.getTotalLength();
         const samples: Geometry['samples'] = [];
@@ -274,7 +401,7 @@ const Ribbon: React.FC = () => {
         }
         probe.remove();
 
-        setGeo({ d, width, height, samples, total, col: { left: col.left, right: col.right }, chapters: chapterInfo, ink });
+        setGeo({ d: probe.getAttribute('d') ?? d, width, height, samples, total, col: { left: col.left, right: col.right }, chapters: chapterInfo, ink });
     }, []);
 
     /** Where the scroll says the line should reach, as a drawn length */
