@@ -48,6 +48,8 @@ const TRAVELLER_MIN = 22;
 const SLIP = 18;
 
 const SAMPLE_COUNT = 1600;
+/** Wildness before the visitor has scrolled at all */
+const CALM = 0.3;
 /** A folded slip opens again only with this much room, and after this long folded (s) */
 const TRAVELLER_OPEN = 34;
 const HOLD = 0.6;
@@ -70,6 +72,7 @@ const handDrawn = (
     width: number,
     r: () => number,
     small: boolean,
+    wild: (y: number) => number,
 ): { d: string; pts: { x: number; y: number }[] } => {
     // GSAP measures the route once and then finds points along it cheaply
     const { MotionPathPlugin: mp } = motion();
@@ -120,14 +123,16 @@ const handDrawn = (
             return m;
         });
     const near = windowMin(clear, W);
-    const maxAmp = small ? 4 : 9;
+    const maxAmp = small ? 5 : 14;
     const amp = near.map((c, i) => {
         let sum = 0;
         let k = 0;
         for (let j = Math.max(0, i - 4); j <= Math.min(n - 1, i + 4); j++, k++) sum += near[j];
         // Ease in from the PA tail and out at the end
         const ends = Math.min(1, i / 6, (n - 1 - i) / 6);
-        return Math.min(maxAmp, (sum / k) * 0.7, clear[i] * 0.85) * ends;
+        // Calm reading keeps it to about a third; restless scrolling lets it loose
+        const loose = 0.3 + 0.7 * wild(pts[i].y);
+        return Math.min(maxAmp, (sum / k) * 0.7, clear[i] * 0.85) * ends * loose;
     });
     // Hold still through tight curves (loops and corners) so they keep their shape
     const heading = pts.map((p, i) => {
@@ -155,6 +160,7 @@ const handDrawn = (
     });
     const p1 = r() * Math.PI * 2;
     const p2 = r() * Math.PI * 2;
+    const p3 = r() * Math.PI * 2;
     const out = pts.map((p, i) => {
         const a = pts[Math.max(0, i - 1)];
         const b = pts[Math.min(n - 1, i + 1)];
@@ -162,7 +168,9 @@ const handDrawn = (
         const ty = b.y - a.y;
         const len = Math.hypot(tx, ty) || 1;
         const s = i * step;
-        const wobble = 0.62 * Math.sin(s / 83 + p1) + 0.38 * Math.sin(s / 37 + p2);
+        // A quicker tremor joins in as the reader scrolls more restlessly
+        const w = wild(p.y);
+        const wobble = (0.62 * Math.sin(s / 83 + p1) + 0.38 * Math.sin(s / 37 + p2) + 0.5 * w * Math.sin(s / 17 + p3)) / (1 + 0.5 * w);
         const a2 = amp[i] * calm[i];
         return { x: p.x - (ty / len) * a2 * wobble, y: p.y + (tx / len) * a2 * wobble };
     });
@@ -192,6 +200,15 @@ const Ribbon: React.FC = () => {
     const [geo, setGeo] = useState<Geometry | null>(null);
     const [narrow, setNarrow] = useState(false);
     const geoRef = useRef<Geometry | null>(null);
+    /**
+     * How wild the line is, set by how the visitor scrolls: a list of heights
+     * from which a wildness (0 calm to 1 wild) applies. Only the stretch below
+     * the line's tip is ever replanned, so what is already drawn never changes.
+     */
+    const profileRef = useRef<{ y: number; w: number }[]>([]);
+    /** Drawn length and the lowest point the tip has reached, kept across replans */
+    const tipRef = useRef<{ len: number; y: number } | null>(null);
+    const keepTipRef = useRef(false);
 
     const build = useCallback(() => {
         const svg = svgRef.current;
@@ -219,7 +236,14 @@ const Ribbon: React.FC = () => {
         const width = siteBox.width;
         const height = site.scrollHeight;
 
-        const r = mulberry32(getSessionSeed());
+        const seed = getSessionSeed();
+        const r = mulberry32(seed);
+        const profile = profileRef.current;
+        const wild = (at: number) => {
+            let w = CALM;
+            for (const p of profile) if (p.y <= at) w = p.w;
+            return w;
+        };
         const small = isNarrow();
         setNarrow(small);
         setCarry(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -326,8 +350,9 @@ const Ribbon: React.FC = () => {
             if (len <= 0) return;
             const away = side === 'left' ? -1 : 1;
             const R = Math.min(18, (side === 'left' ? gx.left : width - gx.right) / 2.6);
-            const w = () => (r() * 2 - 1) * swing[side] * Math.min(1, len / 200);
-            if (!small && len > 200 && R > 6 && r() < 0.45) {
+            const loose = 0.35 + 0.65 * wild(y);
+            const w = () => (r() * 2 - 1) * swing[side] * Math.min(1, len / 200) * loose;
+            if (!small && len > 200 && R > 6 && r() < 0.1 + 0.6 * wild(y)) {
                 // An open loop bulging out, away from the text
                 const mid = y + len * (0.35 + r() * 0.3);
                 bow(mid, w());
@@ -349,7 +374,8 @@ const Ribbon: React.FC = () => {
             // A loop where a lane is roomy (the gaps between sections)
             const half = (lane.bottom - lane.top) / 2;
             const L = Math.min(small ? 12 : 24, (half - 2) / 2.1);
-            const loop = L >= 5;
+            const roll = r();
+            const loop = L >= 5 && roll < 0.3 + 0.7 * wild(lane.y);
             // Otherwise drift down across a roomy lane instead of running dead level
             const tilt = loop ? 0 : Math.max(0, Math.min(small ? 18 : 36, half - pad - 2) * (0.35 + r() * 0.55));
             const Y1 = lane.y - tilt;
@@ -382,7 +408,9 @@ const Ribbon: React.FC = () => {
             const R1 = radius[side];
             const to: Side = side === 'left' ? 'right' : 'left';
             const wall = blocked[side].find(([t, b]) => b > y)?.[0] ?? Infinity;
-            const target = y + (small ? 300 + r() * 160 : 240 + r() * 150);
+            // Restless scrolling crosses the page more often
+            const often = wild(y);
+            const target = y + (small ? 460 - 200 * often : 400 - 200 * often) + r() * 140;
             if (target > end && wall > end) break;
             const options = lanesInside.filter(
                 l => l.y - R1 >= y + 4 && l.y + pad <= wall && clearRun(to, l.y, l.y + radius[to] + 6),
@@ -408,7 +436,9 @@ const Ribbon: React.FC = () => {
         // Measure the drawn line from its own points (a long hand-drawn path is
         // slow for the browser to measure), then sample it so scroll position
         // maps to drawn length cheaply
-        const drawn = handDrawn(d, ink, pad, width, r, small);
+        // The wobble has its own random sequence, so replanning the route ahead
+        // never shifts the part already drawn
+        const drawn = handDrawn(d, ink, pad, width, mulberry32(seed ^ 0x5bd1e995), small, wild);
         const cum = [0];
         for (let i = 1; i < drawn.pts.length; i++) {
             const a = drawn.pts[i - 1];
@@ -466,7 +496,11 @@ const Ribbon: React.FC = () => {
         if (!g || !path) return;
         const { gsap } = motion();
         const at = pathTracker(path);
-        const start = targetLength() ?? 0;
+        // A replan (the visitor's scrolling changed how wild the line ahead is)
+        // keeps the line exactly where it was; a new layout starts at the scroll
+        const kept = keepTipRef.current ? tipRef.current : null;
+        keepTipRef.current = false;
+        const start = kept ? Math.min(kept.len, g.total) : targetLength() ?? 0;
         const now = { len: start, angle: 0, size: SLIP, alpha: 0 };
         const ease = {
             len: gsap.quickTo(now, 'len', { duration: 0.6, ease: 'power3' }),
@@ -483,6 +517,8 @@ const Ribbon: React.FC = () => {
 
         const render = (time: number) => {
             path.style.strokeDashoffset = String(g.total - now.len);
+            const sample = g.samples[Math.min(g.samples.length - 1, Math.round((now.len / g.total) * SAMPLE_COUNT))];
+            tipRef.current = { len: now.len, y: sample.y };
             const trav = travellerRef.current;
             if (!trav) return;
             const pt = at(now.len / g.total);
@@ -550,6 +586,10 @@ const Ribbon: React.FC = () => {
         };
         render(gsap.ticker.time);
         gsap.ticker.add(tick);
+        if (kept) {
+            const target = targetLength();
+            if (target !== null) ease.len(target);
+        }
 
         // Native scroll sets the target; quickTo eases the line toward it
         const onScroll = () => {
@@ -563,6 +603,55 @@ const Ribbon: React.FC = () => {
             gsap.killTweensOf(now);
         };
     }, [geo, targetLength]);
+
+    // The randomness calculator: how the visitor scrolls decides how wild the
+    // line ahead of them is. Steady reading keeps it calm; fast or jumpy
+    // scrolling (quick flicks, sudden reversals) loosens it. Every so often the
+    // stretch below the tip is replanned at the new wildness.
+    useEffect(() => {
+        let lastY = window.scrollY;
+        let lastT = performance.now();
+        let dir = 0;
+        let energy = CALM;
+        let planned = 0;
+        const onScroll = () => {
+            const t = performance.now();
+            const y = window.scrollY;
+            const dy = y - lastY;
+            const dt = Math.max(16, t - lastT);
+            lastT = t;
+            lastY = y;
+            let e = Math.min(1, ((Math.abs(dy) / dt) * 1000) / 2400);
+            const d = Math.sign(dy);
+            // Turning back on itself reads as restless
+            if (d && dir && d !== dir && Math.abs(dy) > 4) e = Math.min(1, e + 0.5);
+            if (d) dir = d;
+            energy += (e - energy) * 0.08;
+        };
+        const check = window.setInterval(() => {
+            const t = performance.now();
+            // Drift back toward calm while the visitor is still
+            if (t - lastT > 1500) energy += (CALM - energy) * 0.15;
+            const level = Math.round(energy * 4) / 4;
+            const svg = svgRef.current;
+            if (svg) svg.dataset.wild = level.toFixed(2);
+            const profile = profileRef.current;
+            const current = profile.length ? profile[profile.length - 1].w : CALM;
+            const tip = tipRef.current;
+            if (!tip || !geoRef.current || Math.abs(level - current) < 0.25 || t - planned < 1500) return;
+            planned = t;
+            // Replan only well below the tip, so nothing already drawn moves
+            const from = tip.y + 150;
+            profileRef.current = [...profile.filter(p => p.y < from), { y: from, w: level }];
+            keepTipRef.current = true;
+            build();
+        }, 400);
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => {
+            window.clearInterval(check);
+            window.removeEventListener('scroll', onScroll);
+        };
+    }, [build]);
 
     useEffect(() => {
         let resizeTimer: ReturnType<typeof setTimeout>;
