@@ -5,3 +5,6 @@ out/
 .env.local
 .DS_Store
 .wrangler/
+# Build logs
+build_output.log
+*.log

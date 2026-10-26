@@ -14,3 +14,4 @@ pages_build_output_dir = "out"
 binding = "DB" # Available in your Worker on env.DB
 database_name = "pamimo-db"
 database_id = "ad2bdf6a-a98d-4239-b586-0c14e32a7ef6"
+migrations_dir = "migrations"
