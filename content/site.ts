@@ -49,7 +49,7 @@ export const site = {
         ],
         portrait: {
             // [CONFIRM] headshot: reusing the photo from the current site
-            src: '/slide-assets/header-smile.png',
+            src: '/slide-assets/header-smile.webp',
             alt: 'Portrait of Pamimo Akinjide smiling',
         },
     },

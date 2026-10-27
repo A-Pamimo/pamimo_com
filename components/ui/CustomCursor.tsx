@@ -2,11 +2,13 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 const CustomCursor: React.FC = () => {
   const dotRef = useRef<HTMLDivElement>(null);
   const outlineRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
+  const reduce = useReducedMotion();
 
   // Handle client-side mounting
   useEffect(() => {
@@ -16,7 +18,7 @@ const CustomCursor: React.FC = () => {
 
   // Setup mouse tracking and interactive element listeners
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || reduce) return;
 
     const dot = dotRef.current;
     const outline = outlineRef.current;
@@ -74,9 +76,9 @@ const CustomCursor: React.FC = () => {
       });
       observer.disconnect();
     };
-  }, [mounted]);
+  }, [mounted, reduce]);
 
-  if (!mounted) return null;
+  if (!mounted || reduce) return null;
 
   // Use Portal to escape parent transforms (framer-motion in template.tsx)
   return createPortal(

@@ -38,7 +38,7 @@ const SlidePage: React.FC = () => {
             {/* Header Sticker 2 */}
             {/* Header Sticker 2 - Smile */}
             <div className="w-[5cqw] h-[5cqw] border-[0.2cqw] border-black bg-white transform -rotate-6 shadow-[0.3cqw_0.3cqw_0px_0px_rgba(0,0,0,1)] flex items-center justify-center overflow-hidden">
-              <img src="/slide-assets/header-smile.png" alt="Smile" className="w-full h-full object-cover" />
+              <img src="/slide-assets/header-smile.webp" alt="Smile" className="w-full h-full object-cover" />
             </div>
 
             <div className="bg-white border-[0.3cqw] border-black px-[1cqw] py-[0.5cqw] text-center transform rotate-2 shadow-[0.3cqw_0.3cqw_0px_0px_rgba(0,0,0,1)] hover:rotate-0 hover:scale-105 transition-all duration-300 cursor-help">
@@ -268,7 +268,7 @@ const SlidePage: React.FC = () => {
 
               {/* Header Smile - Replaced Falls */}
               <div className="absolute bottom-[0.4cqw] right-[0.4cqw] w-[5cqw] h-[5cqw] border-[0.15cqw] border-black bg-[#FFD700] transform rotate-3 shadow-[0.3cqw_0.3cqw_0px_0px_rgba(0,0,0,1)] flex items-center justify-center z-40 hover:scale-150 hover:rotate-0 hover:z-50 transition-all duration-300">
-                <img src="/slide-assets/header-smile.png" alt="Smile" className="w-full h-full object-cover" />
+                <img src="/slide-assets/header-smile.webp" alt="Smile" className="w-full h-full object-cover" />
                 <div className="absolute -top-[0.5cqw] -left-[0.5cqw] bg-black text-white text-[0.5cqw] px-[0.3cqw] font-black transform -rotate-3">NEXT</div>
               </div>
             </div>

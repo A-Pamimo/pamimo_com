@@ -3,21 +3,28 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconArrow } from './Icons';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+
+const SHOW_AFTER = 500;
+const HIDE_BELOW = 420;
 
 export default function ScrollToTop() {
     const [isVisible, setIsVisible] = useState(false);
+    const reduce = useReducedMotion();
 
-    // Toggle visibility based on scroll position
+    // Show once the reader is well down the page, and stay up until they are
+    // clearly back near the top, so it doesn't flicker around the threshold.
     useEffect(() => {
+        let visible = false;
         const toggleVisibility = () => {
-            if (window.scrollY > 500) {
-                setIsVisible(true);
-            } else {
-                setIsVisible(false);
-            }
+            const next = visible ? window.scrollY > HIDE_BELOW : window.scrollY > SHOW_AFTER;
+            if (next === visible) return;
+            visible = next;
+            setIsVisible(next);
         };
 
-        window.addEventListener('scroll', toggleVisibility);
+        toggleVisibility();
+        window.addEventListener('scroll', toggleVisibility, { passive: true });
         return () => window.removeEventListener('scroll', toggleVisibility);
     }, []);
 
@@ -33,9 +40,10 @@ export default function ScrollToTop() {
             {isVisible && (
                 <motion.button
                     onClick={scrollToTop}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
+                    initial={reduce ? { opacity: 0 } : { opacity: 0, y: 20 }}
+                    animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                    exit={reduce ? { opacity: 0 } : { opacity: 0, y: 20 }}
+                    transition={reduce ? { duration: 0 } : { duration: 0.2 }}
                     className="fixed bottom-6 z-50 flex items-center gap-2 px-3 py-3 md:px-4 md:py-2 bg-pop text-white border-2 border-transparent hover:bg-black hover:border-pop hover:text-pop transition-colors shadow-hard group right-6 md:right-8"
                     aria-label="Scroll to top"
                 >
