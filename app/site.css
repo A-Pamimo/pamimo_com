@@ -742,9 +742,13 @@ html:has(.site) {
 .chapter-figure svg { width: 100%; height: 100%; overflow: visible; }
 .chapter-figure__shadow { fill: var(--ink); opacity: 0.07; }
 :root[data-mode='simple'] .chapter-figure { display: none; }
-/* The paper travels on the ribbon's tip instead, except under reduced motion */
-@media (prefers-reduced-motion: no-preference) {
+/* Wide screens with motion: the travelling paper carries the chapter shape.
+   Phones keep the figure beside the heading. Reduced motion (data-reduce, set
+   even when the page is in simple mode) shows the resting figure. */
+@media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
   :root[data-mode='full'] .chapter-figure { display: none; }
   :root[data-mode='full'] .site h2 { padding-right: 0; }
 }
 :root[data-mode='simple'] .site h2 { padding-right: 0; }
+:root[data-reduce='1'] .chapter-figure { display: block; }
+:root[data-reduce='1'] .site h2 { padding-right: 3.5rem; }

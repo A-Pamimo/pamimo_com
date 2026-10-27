@@ -9,7 +9,8 @@ import Figure from './Figure';
  * chapter's heading row on a small contact shadow. On wide screens the ribbon's
  * travelling paper takes these shapes instead, so this shows on phones (and on
  * wide screens under reduced motion). It also tells Ribbon each chapter's shape
- * through data-shape. Full mode only (see .chapter-figure in site.css).
+ * through data-shape. Hidden on wide screens with motion, where the ribbon carries
+ * the shape instead (see .chapter-figure in site.css).
  */
 
 const SHAPES: Record<string, { model: Model; frames: number }> = {

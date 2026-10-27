@@ -54,6 +54,11 @@ export const SIZE = 64;
 const SLOTS = Math.max(...Object.values(SHAPES).map(s => s.model.pose(0).length));
 /** Seconds to fold flat, and to open back up */
 const FOLD = 0.28;
+/** Clearance (px) at which the paper folds away, and at which a slip may open */
+export const FOLD_BELOW = 28;
+export const OPEN_ABOVE = 72;
+/** Don't reverse a fold until this long after the last one, either way */
+export const HOLD = 0.45;
 
 /** The same model, pressed toward a flat sheet by k (1 = as folded, 0 = flat) */
 const pressed = (model: Model, k: number): Model => ({
@@ -89,6 +94,9 @@ const Traveller: React.FC<{ shape: TravellerShape; compact?: boolean }> = ({ sha
         s.start = gsap.ticker.time;
 
         let tween: gsap.core.Tween | null = null;
+        /** Which way the fold last moved, and when, so it can't flicker open and shut */
+        let foldDir: 'flat' | 'open' | null = null;
+        let foldAt = -Infinity;
         // Fold flat and swap to the wanted shape, then open up (or stay a slip)
         const settle = () => {
             if (s.busy) return;
@@ -109,10 +117,14 @@ const Traveller: React.FC<{ shape: TravellerShape; compact?: boolean }> = ({ sha
                 return;
             }
             const goal = s.compact ? 1 : 0;
-            if (s.fold !== goal) {
-                tween?.kill();
-                tween = gsap.to(s, { fold: goal, duration: FOLD + 0.06, ease: 'power2.inOut' });
-            }
+            if (s.fold === goal) return;
+            const nextDir = goal > s.fold ? 'flat' : 'open';
+            const now = gsap.ticker.time;
+            if (foldDir && nextDir !== foldDir && now - foldAt < HOLD) return;
+            foldDir = nextDir;
+            foldAt = now;
+            tween?.kill();
+            tween = gsap.to(s, { fold: goal, duration: FOLD + 0.06, ease: 'power2.inOut' });
         };
         settleRef.current = settle;
 

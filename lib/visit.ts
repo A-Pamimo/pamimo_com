@@ -57,7 +57,8 @@ export const markIntroSeen = () => safe(() => sessionStorage.setItem(INTRO_KEY, 
 /**
  * Runs inline in <head> before first paint. Kept dependency-free and tiny.
  * Paints the clock palette for the current minute and sets data-mode: full, or
- * simple (no moving line or paper) for reduced motion and slow networks.
+ * simple (no moving line) for reduced motion and slow networks. Reduced motion
+ * also sets data-reduce so the resting chapter figures can still show.
  * Sets data-intro to play (first visit) or quick (visits two to four) when the
  * PA should write itself; from the fifth visit it simply appears drawn.
  */
@@ -70,6 +71,7 @@ var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches
 var m=(rm||slow)?'simple':'full';
 try{localStorage.removeItem('pa_mode')}catch(e){}
 d.dataset.mode=m;
+d.dataset.reduce=rm?'1':'';
 var seen=null,v=0;try{seen=sessionStorage.getItem('${INTRO_KEY}');v=+(localStorage.getItem('${VISIT_KEY}')||0)}catch(e){}
 var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 if(m==='full'&&!seen&&!still&&v<4)d.dataset.intro=v===0?'play':'quick';

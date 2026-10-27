@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useReducedMotion } from './useReducedMotion';
 
 const GLITCH_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -22,9 +23,10 @@ const GLITCH_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`0123456789ABCDEFGHIJKLMNOPQRS
 export function useGlitchText(text: string, active: boolean, speed: number = 1 / 3): string {
     const [displayText, setDisplayText] = useState(text);
     const iterations = useRef(0);
+    const reduce = useReducedMotion();
 
     useEffect(() => {
-        if (!active) {
+        if (reduce || !active) {
             setDisplayText(text);
             iterations.current = 0;
             return;
@@ -51,9 +53,9 @@ export function useGlitchText(text: string, active: boolean, speed: number = 1 /
         }, 30);
 
         return () => clearInterval(interval);
-    }, [active, text, speed]);
+    }, [active, text, speed, reduce]);
 
-    return displayText;
+    return reduce ? text : displayText;
 }
 
 export default useGlitchText;

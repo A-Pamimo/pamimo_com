@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { getSessionSeed, mulberry32 } from '../../lib/visit';
-import Traveller, { SIZE as TRAVELLER_BOX, type TravellerShape } from './origami/Traveller';
+import Traveller, { FOLD_BELOW, HOLD, OPEN_ABOVE, SIZE as TRAVELLER_BOX, type TravellerShape } from './origami/Traveller';
 import { motion, pathTracker, shortAngle } from '../../lib/motion';
 
 /**
@@ -12,7 +12,7 @@ import { motion, pathTracker, shortAngle } from '../../lib/motion';
  * paragraph or the gaps between paragraphs and sections, with rounded turns and
  * the odd open felt-tip loop where there is room. The lanes come from measuring
  * the ink itself (each line of text's glyph box, photos, code and controls).
- * Its drawn length follows native scrolling and eases with GSAP quickTo, so it
+ * Its drawn length follows native scrolling through a damped spring, so it
  * glides; nothing hijacks the scroll.
  *
  * The line's tip carries a piece of folded paper (Traveller) that takes the shape
@@ -25,8 +25,12 @@ interface Geometry {
     d: string;
     width: number;
     height: number;
-    /** Path length at sampled points, with the y each one reaches, for scroll mapping */
-    samples: { len: number; y: number }[];
+    /**
+     * Path length at sampled points. `y` is how far down the page the line has
+     * reached (never backwards). `key` gives each loop its own scroll span, so
+     * the stroke draws through the loop instead of skipping it.
+     */
+    samples: { len: number; y: number; key: number }[];
     total: number;
     /** Reading column edges and each chapter's extent and origami shape */
     col: { left: number; right: number };
@@ -44,15 +48,113 @@ const INK = 'img, svg, code, input, textarea, select, button, video, iframe';
 /** The traveller opens up to this size, and folds away out of sight below the smaller one */
 const TRAVELLER_MAX = 56;
 const TRAVELLER_MAX_NARROW = 40;
-const TRAVELLER_MIN = 22;
 const SLIP = 18;
 
 const SAMPLE_COUNT = 1600;
 /** Wildness before the visitor has scrolled at all */
 const CALM = 0.3;
-/** A folded slip opens again only with this much room, and after this long folded (s) */
-const TRAVELLER_OPEN = 34;
-const HOLD = 0.6;
+/** How fast scroll energy follows the hand, in seconds */
+const ENERGY_TAU = 0.45;
+/** A reversal of at least this many px inside this window adds a little wildness */
+const REVERSAL_PX = 48;
+const REVERSAL_MS = 200;
+const REVERSAL_ADD = 0.15;
+/** New loops and wobble start this far below the tip, and blend in over the ramp */
+const REPLAN_GAP = 400;
+const WILD_RAMP = 240;
+/** First appearance eases out over this long, instead of popping to the scroll target */
+const INTRO_DRAW = 0.9;
+/** Tip speed caps, px per second. The higher one is only while catching a flick. */
+const SPEED_CAP = 1400;
+const SPEED_CAP_CATCH = 2800;
+const CATCH_GAP = 900;
+const SPRING_K = 70;
+const SPRING_D = 18;
+
+/** Scroll span for one loop: its vertical size, kept short so the tip doesn't lag far */
+const loopSpanFor = (backtrack: number) => Math.min(140, Math.max(48, backtrack));
+
+/**
+ * Gives every loop a monotonic scroll key of its own. Straight runs keep key equal
+ * to page position plus the spans already passed, so a loop is drawn across a
+ * short extra scroll instead of collapsing into one sample.
+ */
+const withLoopKeys = (raw: { len: number; y: number }[]) => {
+    const samples: { len: number; y: number; key: number }[] = [];
+    let maxY = -Infinity;
+    let extra = 0;
+    let loopAt = -1;
+    let loopMinY = Infinity;
+
+    const closeLoop = () => {
+        if (loopAt < 0) return;
+        const entrance = samples[Math.max(0, loopAt - 1)];
+        const span = loopSpanFor(Math.max(0, maxY - loopMinY));
+        const n = samples.length - loopAt;
+        for (let i = 0; i < n; i++) {
+            const t = n <= 1 ? 1 : i / (n - 1);
+            samples[loopAt + i].key = entrance.key + span * t;
+        }
+        extra += span;
+        loopAt = -1;
+        loopMinY = Infinity;
+    };
+
+    for (const s of raw) {
+        if (s.y >= maxY - 0.5) {
+            closeLoop();
+            maxY = Math.max(maxY, s.y);
+            samples.push({ len: s.len, y: maxY, key: s.y + extra });
+        } else {
+            if (loopAt < 0) {
+                loopAt = samples.length;
+                loopMinY = s.y;
+            } else loopMinY = Math.min(loopMinY, s.y);
+            const entrance = samples.length ? samples[samples.length - 1].key : s.y + extra;
+            samples.push({ len: s.len, y: maxY < 0 ? s.y : maxY, key: entrance });
+        }
+    }
+    closeLoop();
+    for (let i = 1; i < samples.length; i++) {
+        if (samples[i].key <= samples[i - 1].key) samples[i].key = samples[i - 1].key + 0.01;
+    }
+    return samples;
+};
+
+/** Drawn length whose scroll key is `key`, interpolated so it moves continuously */
+const lengthAtKey = (samples: { len: number; key: number }[], key: number) => {
+    if (!samples.length) return 0;
+    if (key <= samples[0].key) return samples[0].len;
+    let lo = 0;
+    let hi = samples.length - 1;
+    while (lo < hi) {
+        const mid = (lo + hi) >> 1;
+        if (samples[mid].key < key) lo = mid + 1;
+        else hi = mid;
+    }
+    const b = samples[lo];
+    const a = samples[Math.max(0, lo - 1)];
+    const t = b.key > a.key ? Math.min(1, Math.max(0, (key - a.key) / (b.key - a.key))) : 1;
+    return a.len + (b.len - a.len) * t;
+};
+
+/** Length at which the line has reached `pageY`, ignoring loop spans (for keeping the tip put) */
+const lengthAtPageY = (samples: { len: number; y: number }[], pageY: number) => {
+    if (!samples.length) return 0;
+    let lo = 0;
+    let hi = samples.length - 1;
+    while (lo < hi) {
+        const mid = (lo + hi) >> 1;
+        if (samples[mid].y < pageY) lo = mid + 1;
+        else hi = mid;
+    }
+    const b = samples[lo];
+    const a = samples[Math.max(0, lo - 1)];
+    const t = b.y > a.y ? Math.min(1, Math.max(0, (pageY - a.y) / (b.y - a.y))) : 0;
+    return a.len + (b.len - a.len) * t;
+};
+
+const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - ((-2 * t + 2) ** 2) / 2);
 
 const isActive = () => typeof window !== 'undefined' && document.documentElement.dataset.mode === 'full';
 
@@ -206,9 +308,17 @@ const Ribbon: React.FC = () => {
      * the line's tip is ever replanned, so what is already drawn never changes.
      */
     const profileRef = useRef<{ y: number; w: number }[]>([]);
-    /** Drawn length and the lowest point the tip has reached, kept across replans */
-    const tipRef = useRef<{ len: number; y: number } | null>(null);
-    const keepTipRef = useRef(false);
+    /**
+     * Drawn length, the furthest page position the stroke has reached (`y`), and
+     * the tip's actual page position (`at`). Kept so a rebuild can put the tip back.
+     */
+    const tipRef = useRef<{ len: number; y: number; at: number } | null>(null);
+    /** 'arc' keeps the drawn length (route ahead changed only). 'page' remaps a font or resize. */
+    const keepTipRef = useRef<false | 'arc' | 'page'>(false);
+    /** Length, velocity and paper pose, kept across path rebuilds so nothing snaps */
+    const poseRef = useRef({ len: 0, v: 0, angle: 0, size: SLIP, alpha: 0, seen: false, intro: true, introStart: 0 });
+    /** Set when the visitor actually scrolls, so anchor jumps don't count as wild */
+    const gestureUntilRef = useRef(0);
 
     const build = useCallback(() => {
         const svg = svgRef.current;
@@ -239,10 +349,22 @@ const Ribbon: React.FC = () => {
         const seed = getSessionSeed();
         const r = mulberry32(seed);
         const profile = profileRef.current;
+        // Blend each wildness change over WILD_RAMP px instead of stepping at a point
         const wild = (at: number) => {
+            let prevW = CALM;
             let w = CALM;
-            for (const p of profile) if (p.y <= at) w = p.w;
-            return w;
+            let from = -1e9;
+            for (const p of profile) {
+                if (p.y <= at) {
+                    prevW = w;
+                    w = p.w;
+                    from = p.y;
+                }
+            }
+            if (from < -1e8) return w;
+            const t = Math.min(1, Math.max(0, (at - from) / WILD_RAMP));
+            const s = t * t * (3 - 2 * t);
+            return prevW + (w - prevW) * s;
         };
         const small = isNarrow();
         setNarrow(small);
@@ -271,6 +393,19 @@ const Ribbon: React.FC = () => {
             if (mark?.contains(el)) return;
             for (const b of Array.from(el.getClientRects())) if (b.width > 0 && b.height > 0) ink.push(box(b, 2));
         });
+        // On a phone the mark fills the column and the line can curve back through
+        // the letters. Treat the letterforms as ink, but leave the tail's exit clear.
+        if (small && mark) {
+            const b = mark.getBoundingClientRect();
+            if (b.width > 8 && b.height > 0) {
+                ink.push({
+                    x: b.left - siteBox.left,
+                    y: b.top - siteBox.top,
+                    w: b.width - 8,
+                    h: b.height,
+                });
+            }
+        }
 
         // Half the stroke plus a hair: how close the line may come to any ink
         const pad = (small ? 2 : 3) / 2 + 0.75;
@@ -446,18 +581,16 @@ const Ribbon: React.FC = () => {
             cum.push(cum[i - 1] + Math.hypot(b.x - a.x, b.y - a.y));
         }
         const total = cum[cum.length - 1];
-        const samples: Geometry['samples'] = [];
-        let maxY = -Infinity;
+        const raw: { len: number; y: number }[] = [];
         let j = 0;
         for (let i = 0; i <= SAMPLE_COUNT; i++) {
             const len = (total * i) / SAMPLE_COUNT;
             while (j < cum.length - 2 && cum[j + 1] < len) j++;
             const t = cum[j + 1] > cum[j] ? (len - cum[j]) / (cum[j + 1] - cum[j]) : 0;
             const yAt = drawn.pts[j].y + (drawn.pts[j + 1].y - drawn.pts[j].y) * Math.min(1, Math.max(0, t));
-            // Keep y monotonic so loops never make the line jump backwards
-            maxY = Math.max(maxY, yAt);
-            samples.push({ len, y: maxY });
+            raw.push({ len, y: yAt });
         }
+        const samples = withLoopKeys(raw);
 
         setGeo({ d: drawn.d, width, height, samples, total, col: { left: col.left, right: col.right }, chapters: chapterInfo, ink });
     }, []);
@@ -473,57 +606,77 @@ const Ribbon: React.FC = () => {
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
         const progress = maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 1;
         const targetY = window.innerHeight * (0.62 + 0.38 * progress ** 3) - svgTop + progress ** 3 * 40;
-
-        let lo = 0;
-        let hi = g.samples.length - 1;
-        while (lo < hi) {
-            const mid = (lo + hi) >> 1;
-            if (g.samples[mid].y < targetY) lo = mid + 1;
-            else hi = mid;
-        }
-        // Interpolate between neighbouring samples so the length moves continuously
-        const a = g.samples[Math.max(0, lo - 1)];
-        const b = g.samples[lo];
-        const t = b.y > a.y ? Math.min(1, Math.max(0, (targetY - a.y) / (b.y - a.y))) : 1;
-        return a.len + (b.len - a.len) * t;
+        // Loop spans push keys past page position. Fold that lag back in toward
+        // the end of the page so the line still arrives, without collapsing a loop.
+        const end = g.samples[g.samples.length - 1];
+        const extra = end ? Math.max(0, end.key - end.y) : 0;
+        return lengthAtKey(g.samples, targetY + extra * progress * progress);
     }, []);
 
-    // The line and its paper, eased by GSAP: one rig per layout
-    useEffect(() => {
+    // The line and its paper. Length is a damped spring; the dash offset is written
+    // here, before paint, so a path rebuild never flashes the stroke back to empty.
+    useLayoutEffect(() => {
         geoRef.current = geo;
         const g = geo;
         const path = pathRef.current;
         if (!g || !path) return;
         const { gsap } = motion();
         const at = pathTracker(path);
-        // A replan (the visitor's scrolling changed how wild the line ahead is)
-        // keeps the line exactly where it was; a new layout starts at the scroll
-        const kept = keepTipRef.current ? tipRef.current : null;
+        const pose = poseRef.current;
+        // A replan keeps the drawn length (the path above the tip did not change).
+        // A font or resize rebuild keeps the tip at the same place on the page.
+        // The very first draw eases up from nothing and is not replayed by either.
+        const keep = keepTipRef.current;
         keepTipRef.current = false;
-        const start = kept ? Math.min(kept.len, g.total) : targetLength() ?? 0;
-        const now = { len: start, angle: 0, size: SLIP, alpha: 0 };
-        const ease = {
-            len: gsap.quickTo(now, 'len', { duration: 0.6, ease: 'power3' }),
-            angle: gsap.quickTo(now, 'angle', { duration: 0.35, ease: 'power2' }),
-            size: gsap.quickTo(now, 'size', { duration: 0.3, ease: 'power2' }),
-            alpha: gsap.quickTo(now, 'alpha', { duration: 0.25, ease: 'power1' }),
+        if (!pose.seen) {
+            pose.seen = true;
+            pose.intro = true;
+            pose.introStart = gsap.ticker.time;
+        }
+        let startLen = pose.intro ? 0 : Math.min(pose.len, g.total);
+        if (keep === 'page' && tipRef.current) {
+            pose.intro = false;
+            startLen = Math.min(lengthAtPageY(g.samples, tipRef.current.at), g.total);
+        } else if (keep === 'arc') {
+            pose.intro = false;
+            startLen = Math.min(pose.len, g.total);
+        }
+        const now = {
+            len: startLen,
+            angle: pose.angle,
+            size: pose.size,
+            alpha: pose.alpha,
         };
-        const aim = { angle: 0, size: SLIP, alpha: 0 };
+        const spring = { v: keep ? 0 : pose.v, target: targetLength() ?? now.len };
+        const ease = {
+            angle: gsap.quickTo(now, 'angle', { duration: 0.35, ease: 'power2' }),
+            size: gsap.quickTo(now, 'size', { duration: 0.35, ease: 'power2' }),
+            alpha: gsap.quickTo(now, 'alpha', { duration: 0.4, ease: 'power2' }),
+        };
+        const aim = { angle: now.angle, size: now.size, alpha: now.alpha };
         let folded = compactRef.current;
         let flipped = 0;
-        /** A slip that has room to open but is still holding */
-        let waiting = false;
-        let first = true;
+        let hasFlipped = false;
+        // The paper has never been posed, so its first placement shouldn't ease in from 0.
+        let first = !keep && pose.intro && now.angle === 0 && now.alpha === 0;
 
         const render = (time: number) => {
-            path.style.strokeDashoffset = String(g.total - now.len);
-            const sample = g.samples[Math.min(g.samples.length - 1, Math.round((now.len / g.total) * SAMPLE_COUNT))];
-            tipRef.current = { len: now.len, y: sample.y };
+            const len = Math.min(g.total, Math.max(0, now.len));
+            now.len = len;
+            path.style.strokeDashoffset = String(g.total - len);
+            const sample = g.samples[Math.min(g.samples.length - 1, Math.round((len / Math.max(g.total, 1)) * SAMPLE_COUNT))] ?? g.samples[0];
+            pose.len = len;
+            pose.v = spring.v;
+            pose.angle = now.angle;
+            pose.size = now.size;
+            pose.alpha = now.alpha;
+            if (g.total <= 0) return;
+            const pt = at(len / g.total);
+            if (sample) tipRef.current = { len, y: sample.y, at: pt.y };
             const trav = travellerRef.current;
-            if (!trav) return;
-            const pt = at(now.len / g.total);
+            if (!trav || !sample) return;
             const inChapter = [...g.chapters].reverse().find(c => pt.y >= c.top - 4);
-            const arrived = now.len / g.total > 0.985;
+            const arrived = len / g.total > 0.985;
             const next: TravellerShape = arrived ? 'crane' : inChapter ? inChapter.shape : 'plane';
             if (next !== shapeRef.current) {
                 shapeRef.current = next;
@@ -538,15 +691,16 @@ const Ribbon: React.FC = () => {
                 room = Math.min(room, 2 * Math.hypot(dx, dy));
                 if (room <= 0) break;
             }
-            // Fold as soon as text is near; open again only with room to spare and
-            // after a moment folded, so it never flickers open and shut
-            const fold = folded ? room - 10 < TRAVELLER_OPEN : room - 10 < TRAVELLER_MIN;
-            waiting = folded && !fold && !first && time - flipped <= HOLD;
-            if (fold !== folded && !waiting) {
-                folded = fold;
+            // Fold below FOLD_BELOW, open only above OPEN_ABOVE, and hold either
+            // way so a fast pass through a line of text can't flicker the paper.
+            const wantFold = folded ? room < OPEN_ABOVE : room < FOLD_BELOW;
+            const held = hasFlipped && time - flipped < HOLD;
+            if (wantFold !== folded && !held) {
+                folded = wantFold;
+                hasFlipped = true;
                 flipped = time;
-                compactRef.current = fold;
-                setCompact(fold);
+                compactRef.current = folded;
+                setCompact(folded);
             }
             const wide = window.matchMedia('(min-width: 64rem)').matches;
             const size = folded ? SLIP : Math.max(SLIP, Math.min(wide ? TRAVELLER_MAX : TRAVELLER_MAX_NARROW, room - 10));
@@ -576,25 +730,41 @@ const Ribbon: React.FC = () => {
             );
         };
 
-        // Redraw on the GSAP ticker only while something is still easing
-        let last = { len: NaN, angle: NaN, size: NaN, alpha: NaN };
-        const tick = (time: number) => {
-            const still = now.len === last.len && now.angle === last.angle && now.size === last.size && now.alpha === last.alpha;
-            if (still && !waiting) return;
-            last = { ...now };
+        const stepLength = (dt: number) => {
+            if (pose.intro) {
+                const t = Math.min(1, (gsap.ticker.time - pose.introStart) / INTRO_DRAW);
+                const prev = now.len;
+                spring.target = targetLength() ?? spring.target;
+                now.len = spring.target * easeInOut(t);
+                spring.v = dt > 0 ? (now.len - prev) / dt : 0;
+                if (t >= 1) pose.intro = false;
+                return;
+            }
+            const acc = SPRING_K * (spring.target - now.len) - SPRING_D * spring.v;
+            spring.v += acc * dt;
+            const cap = Math.abs(spring.target - now.len) > CATCH_GAP ? SPEED_CAP_CATCH : SPEED_CAP;
+            if (spring.v > cap) spring.v = cap;
+            if (spring.v < -cap) spring.v = -cap;
+            now.len += spring.v * dt;
+        };
+
+        const tick = (time: number, delta = 16) => {
+            const dt = Math.min(0.05, Math.max(0.001, delta / 1000));
+            stepLength(dt);
             render(time);
         };
+        // Pose the stroke before the browser paints this rebuild
+        stepLength(1 / 60);
         render(gsap.ticker.time);
         gsap.ticker.add(tick);
-        if (kept) {
-            const target = targetLength();
-            if (target !== null) ease.len(target);
-        }
 
-        // Native scroll sets the target; quickTo eases the line toward it
+        // Native scroll sets the target. The spring eases toward it, including
+        // during a programmatic smooth scroll. The wildness sampler ignores those.
         const onScroll = () => {
             const target = targetLength();
-            if (target !== null) ease.len(target);
+            if (target === null) return;
+            if (pose.intro && performance.now() < gestureUntilRef.current) pose.intro = false;
+            spring.target = target;
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         return () => {
@@ -614,41 +784,79 @@ const Ribbon: React.FC = () => {
         let dir = 0;
         let energy = CALM;
         let planned = 0;
+        let revArmed = false;
+        let revDir = 0;
+        let revDist = 0;
+        let revT = 0;
+        const arm = (ms = 500) => {
+            gestureUntilRef.current = performance.now() + ms;
+        };
+        const onWheel = () => arm(500);
+        const onTouch = () => arm(700);
+        const onKey = (e: KeyboardEvent) => {
+            if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(e.key)) arm(700);
+        };
         const onScroll = () => {
             const t = performance.now();
             const y = window.scrollY;
             const dy = y - lastY;
-            const dt = Math.max(16, t - lastT);
+            const dt = Math.max(0.001, (t - lastT) / 1000);
             lastT = t;
             lastY = y;
-            let e = Math.min(1, ((Math.abs(dy) / dt) * 1000) / 2400);
+            // Anchor jumps and scrollTo({ behavior: 'smooth' }) are not the hand.
+            if (t > gestureUntilRef.current || dy === 0) return;
+            const sample = Math.min(1, Math.abs(dy) / dt / 2400);
             const d = Math.sign(dy);
-            // Turning back on itself reads as restless
-            if (d && dir && d !== dir && Math.abs(dy) > 4) e = Math.min(1, e + 0.5);
+            // A touch or wheel keeps the window open through the inertial tail.
+            // A programmatic smooth scroll never opens it, so it is not sampled.
+            gestureUntilRef.current = Math.max(gestureUntilRef.current, t + 220);
+            const noteReversal = () => {
+                if (revDist >= REVERSAL_PX && t - revT <= REVERSAL_MS) {
+                    energy = Math.min(1, energy + REVERSAL_ADD);
+                    revArmed = false;
+                } else if (t - revT > REVERSAL_MS) revArmed = false;
+            };
+            if (d && dir && d !== dir) {
+                revArmed = true;
+                revDir = d;
+                revDist = Math.abs(dy);
+                revT = t;
+                noteReversal();
+            } else if (revArmed && d === revDir) {
+                revDist += Math.abs(dy);
+                noteReversal();
+            }
             if (d) dir = d;
-            energy += (e - energy) * 0.08;
+            const goal = Math.max(CALM, sample);
+            energy += (goal - energy) * (1 - Math.exp(-dt / ENERGY_TAU));
         };
         const check = window.setInterval(() => {
             const t = performance.now();
             // Drift back toward calm while the visitor is still
-            if (t - lastT > 1500) energy += (CALM - energy) * 0.15;
-            const level = Math.round(energy * 4) / 4;
+            if (t - lastT > 1500) energy += (CALM - energy) * (1 - Math.exp(-0.4 / ENERGY_TAU));
+            const level = Math.min(1, Math.max(0, energy));
             const svg = svgRef.current;
             if (svg) svg.dataset.wild = level.toFixed(2);
             const profile = profileRef.current;
             const current = profile.length ? profile[profile.length - 1].w : CALM;
             const tip = tipRef.current;
-            if (!tip || !geoRef.current || Math.abs(level - current) < 0.25 || t - planned < 1500) return;
+            if (!tip || !geoRef.current || Math.abs(level - current) < 0.2 || t - planned < 1500) return;
             planned = t;
-            // Replan only well below the tip, so nothing already drawn moves
-            const from = tip.y + 150;
+            // New loops start well below the tip. wild() ramps the change over WILD_RAMP.
+            const from = tip.y + REPLAN_GAP;
             profileRef.current = [...profile.filter(p => p.y < from), { y: from, w: level }];
-            keepTipRef.current = true;
+            keepTipRef.current = 'arc';
             build();
         }, 400);
+        window.addEventListener('wheel', onWheel, { passive: true });
+        window.addEventListener('touchmove', onTouch, { passive: true });
+        window.addEventListener('keydown', onKey);
         window.addEventListener('scroll', onScroll, { passive: true });
         return () => {
             window.clearInterval(check);
+            window.removeEventListener('wheel', onWheel);
+            window.removeEventListener('touchmove', onTouch);
+            window.removeEventListener('keydown', onKey);
             window.removeEventListener('scroll', onScroll);
         };
     }, [build]);
@@ -657,12 +865,18 @@ const Ribbon: React.FC = () => {
         let resizeTimer: ReturnType<typeof setTimeout>;
         const rebuild = () => {
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(build, 200);
+            resizeTimer = setTimeout(() => {
+                if (tipRef.current) keepTipRef.current = 'page';
+                build();
+            }, 200);
         };
 
         build();
-        // Fonts change line breaks, so measure again once they are ready
-        document.fonts?.ready.then(build);
+        // Fonts change line breaks. Keep the tip where it is instead of redrawing from scratch.
+        document.fonts?.ready.then(() => {
+            if (tipRef.current) keepTipRef.current = 'page';
+            build();
+        });
 
         const site = svgRef.current?.closest('.site');
         const ro = new ResizeObserver(rebuild);
@@ -694,7 +908,7 @@ const Ribbon: React.FC = () => {
                         strokeWidth={narrow ? 2 : 3}
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        style={{ strokeDasharray: geo.total, strokeDashoffset: geo.total }}
+                        style={{ strokeDasharray: geo.total }}
                     />
                     {carry && (
                         <g ref={travellerRef} className="ribbon-traveller">

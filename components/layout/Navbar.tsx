@@ -9,6 +9,7 @@ import Logo from '../ui/Logo';
 import { CONTACT_EMAIL } from '../../constants';
 
 import { useScrollDirection } from '../../hooks/useScrollDirection';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import RegionToggle from '../apps/grocery-gap/ui/RegionToggle';
 
 interface NavbarProps {
@@ -22,18 +23,14 @@ const Navbar: React.FC<NavbarProps> = ({ simulationMode, toggleSimulation, setSi
   const { theme, toggleTheme } = useTheme();
   const { scrollDirection, isScrolled } = useScrollDirection();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const reduce = useReducedMotion();
   const linkClasses = 'pointer-events-auto';
 
-  // Motion Variants for fluid header (Apple Standard)
+  // A damped spring so the header settles instead of bouncing. Reduced motion skips it.
+  const headerShift = reduce ? { duration: 0 } : { type: 'spring' as const, stiffness: 260, damping: 28 };
   const navVariants = {
-    visible: {
-      y: 0,
-      transition: { type: "spring", stiffness: 260, damping: 20 }
-    },
-    hidden: {
-      y: '-100%',
-      transition: { type: "spring", stiffness: 260, damping: 20 }
-    }
+    visible: { y: 0, transition: headerShift },
+    hidden: { y: '-100%', transition: headerShift },
   };
 
   return (
