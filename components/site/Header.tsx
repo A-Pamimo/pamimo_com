@@ -1,11 +1,14 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import PAMark from './PAMark';
 import { NAV } from '../../content/site';
 
 const Header: React.FC = () => {
     const [current, setCurrent] = useState<string | null>(null);
+    const pathname = usePathname();
+    const onHome = pathname === '/';
     // The section menu on phones; on wider screens the links sit in the header
     const [open, setOpen] = useState(false);
     const headerRef = useRef<HTMLElement>(null);
@@ -47,7 +50,7 @@ const Header: React.FC = () => {
 
     // Underline the section being read
     useEffect(() => {
-        const sections = NAV.map(n => document.getElementById(n.id)).filter(Boolean) as HTMLElement[];
+        const sections = NAV.filter(n => !n.href).map(n => document.getElementById(n.id)).filter(Boolean) as HTMLElement[];
         const io = new IntersectionObserver(
             entries => {
                 const hit = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
@@ -62,7 +65,7 @@ const Header: React.FC = () => {
     return (
         <header className="site-header" ref={headerRef}>
             <div className="site-shell">
-                <a href="#top" className="site-header__mark" aria-label="Back to the top of the page">
+                <a href={onHome ? '#top' : '/'} className="site-header__mark" aria-label={onHome ? 'Back to the top of the page' : 'Back to the home page'}>
                     <PAMark variant="small" />
                 </a>
                 <button
@@ -85,8 +88,16 @@ const Header: React.FC = () => {
                         {NAV.map(item => (
                             <li key={item.id}>
                                 <a
-                                    href={`#${item.id}`}
-                                    aria-current={current === item.id ? 'location' : undefined}
+                                    href={item.href ?? (onHome ? `#${item.id}` : `/#${item.id}`)}
+                                    aria-current={
+                                        item.href
+                                            ? pathname === item.href
+                                                ? 'page'
+                                                : undefined
+                                            : onHome && current === item.id
+                                              ? 'location'
+                                              : undefined
+                                    }
                                     onClick={() => setOpen(false)}
                                 >
                                     {item.label}
