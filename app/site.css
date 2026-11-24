@@ -159,7 +159,8 @@ html:has(.site) {
 }
 
 /* The section being read is underlined in the pen colour */
-.site .site-nav a[aria-current='location'] {
+.site .site-nav a[aria-current='location'],
+.site .site-nav a[aria-current='page'] {
   color: var(--ink);
   text-decoration-line: underline;
   text-decoration-color: var(--ribbon);

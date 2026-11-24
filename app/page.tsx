@@ -10,26 +10,8 @@ import ClockPalette from '../components/site/ClockPalette';
 import ChapterFigure from '../components/site/origami/ChapterFigure';
 import { ArrowRight, ArrowUpRight } from '../components/site/Icons';
 import { site, type Entry } from '../content/site';
+import { rich } from '../components/site/rich';
 import './site.css';
-
-/** Acronyms set in small caps: RBC, AI, AKS, IaC and the like */
-const ABBR = /\b([A-Z]{2,}s?|IaC)\b/;
-
-/** Typesets copy: text between backticks becomes inline code, acronyms small caps */
-const rich = (text: string) =>
-    text.split('`').flatMap((part, i) =>
-        i % 2
-            ? [<code key={`c${i}`}>{part}</code>]
-            : part.split(new RegExp(ABBR.source, 'g')).map((bit, j) =>
-                  j % 2 ? (
-                      <abbr key={`a${i}-${j}`} className="sc">
-                          {bit}
-                      </abbr>
-                  ) : (
-                      bit
-                  ),
-              ),
-    );
 
 const EntryList: React.FC<{ entries: Entry[] }> = ({ entries }) => (
     <div className="chapter__list">
@@ -46,7 +28,7 @@ const EntryList: React.FC<{ entries: Entry[] }> = ({ entries }) => (
 );
 
 export default function Home() {
-    const { hero, experience, analysis, research, building, leadership, education, beyond, contact } = site;
+    const { hero, experience, research, building, leadership, education, beyond, contact } = site;
 
     return (
         <div className="site" id="top">
@@ -105,29 +87,6 @@ export default function Home() {
                                             ))}
                                         </ul>
                                     )}
-                                </article>
-                            ))}
-                        </div>
-                    </section>
-
-                    <section className="chapter" id="analysis" aria-labelledby="analysis-title">
-                        <ChapterFigure shape="boat" />
-                        <h2 id="analysis-title">Selected analysis</h2>
-                        <div className="chapter__list">
-                            {analysis.entries.map(entry => (
-                                <article key={entry.id}>
-                                    <h3>{entry.title}</h3>
-                                    {entry.meta && <p className="meta">{entry.meta}</p>}
-                                    {entry.body.map((para, i) => (
-                                        <p key={i}>{rich(para)}</p>
-                                    ))}
-                                    <div className="contact__links">
-                                        {entry.links.map(link => (
-                                            <a key={link.href} href={link.href} className="link-accent" target="_blank" rel="noopener noreferrer">
-                                                {link.label} <ArrowUpRight />
-                                            </a>
-                                        ))}
-                                    </div>
                                 </article>
                             ))}
                         </div>

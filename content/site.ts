@@ -93,6 +93,7 @@ export const site = {
     ] as Role[],
 
     analysis: {
+        intro: 'These are deals and policy questions I have worked through from start to finish, each with the model and the write-up side by side.',
         entries: [
             {
                 id: 'oneida',
@@ -226,13 +227,14 @@ export const site = {
     footer: '© 2026 Pamimo Akinjide, Toronto',
 };
 
-export const NAV = [
+/** Home page chapters; `href` marks a separate page instead of a chapter anchor */
+export const NAV: { id: string; label: string; href?: string }[] = [
     { id: 'experience', label: 'Experience' },
-    { id: 'analysis', label: 'Analysis' },
     { id: 'research', label: 'Research' },
     { id: 'building', label: 'Building' },
     { id: 'leadership', label: 'Leadership' },
     { id: 'education', label: 'Education' },
     { id: 'beyond', label: 'Beyond work' },
     { id: 'contact', label: 'Contact' },
+    { id: 'analysis', label: 'Selected analysis', href: '/analysis' },
 ];
