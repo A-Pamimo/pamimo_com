@@ -36,6 +36,10 @@ export interface Entry {
     body: string[];
 }
 
+export interface AnalysisEntry extends Entry {
+    links: Link[];
+}
+
 export const site = {
     name: 'Pamimo Akinjide',
 
@@ -87,6 +91,24 @@ export const site = {
             ],
         },
     ] as Role[],
+
+    analysis: {
+        entries: [
+            {
+                id: 'oneida',
+                title: 'Oneida Energy Storage: should the Canada Infrastructure Bank lend?',
+                meta: 'Project finance model and investment memo, November 2026',
+                body: [
+                    'Oneida is a 250 megawatt battery in Haldimand County, Ontario, financed with a $535 million package from the Canada Infrastructure Bank (CIB). I rebuilt the deal from public disclosures the way a lender would have seen it at financial close in May 2023, with construction funding, debt sized to a coverage target, the tax credit bridge loan, equity returns and sensitivity tables.',
+                    "My recommendation is to approve, with one condition most public lenders leave out. At a commercial interest rate the equity return drops below its hurdle, so CIB's pricing is what got the project built. The battery then came in about $100 million under budget and nearly all of that went to the owners, which is why I argue future deals should give CIB a share of the upside.",
+                ],
+                links: [
+                    { label: 'Read the memo (PDF)', href: '/analysis/oneida-energy-storage-memo.pdf' },
+                    { label: 'Download the model (Excel)', href: '/analysis/oneida-energy-storage-model.xlsx' },
+                ],
+            },
+        ] as AnalysisEntry[],
+    },
 
     research: {
         entries: [
@@ -206,6 +228,7 @@ export const site = {
 
 export const NAV = [
     { id: 'experience', label: 'Experience' },
+    { id: 'analysis', label: 'Analysis' },
     { id: 'research', label: 'Research' },
     { id: 'building', label: 'Building' },
     { id: 'leadership', label: 'Leadership' },
